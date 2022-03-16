@@ -6,6 +6,7 @@ import pandas as pd
 import os
 import csv
 import codecs
+import jsonify
 from io import StringIO
 # from pydantic_models.example_data_points import ExampleDataResponse
 from typing import Callable
@@ -27,16 +28,23 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Read in the data and extract the JSON feature representations
+print("If you see this in the console output, everything is fine.")
+df = pd.read_csv(f"data/icu_data_with_na_v2.csv")
+JSONs = jsonify.JSONify(df)
+
 
 @app.post("/get-data")
-def upload_data(name: str):
-    data = pd.read_csv(f"data/dataset_{name}.csv")
-    kmeans = KMeans(n_clusters=2, random_state=0).fit(data)
-    labels = kmeans.labels_
-    data["cluster"] = labels.tolist()
-    print(data.head())
+def upload_data(feature_name: str):
+    # data = pd.read_csv(f"data/dataset_{name}.csv")
+    # kmeans = KMeans(n_clusters=2, random_state=0).fit(data)
+    # labels = kmeans.labels_
+    # data["cluster"] = labels.tolist()
+    # print(data.head())
     # print(data.to_dict(orient="records"))
-    return data.to_dict(orient="records")
+
+    # return data.to_dict(orient="records")
+    return JSONs[feature_name]
 
 
 @app.post("/files/")
