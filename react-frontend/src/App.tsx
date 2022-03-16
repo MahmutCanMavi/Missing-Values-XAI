@@ -39,7 +39,6 @@ function App() {
       </div>
       <div>{exampleData && dataChoice && <Visualization width={1100} height={550} data={exampleData} />}</div>
       <VisFeatureInfo/>
-      <SecondHistogram/>
     </div>
   )
 }
