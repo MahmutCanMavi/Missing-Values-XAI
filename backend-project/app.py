@@ -29,9 +29,9 @@ app.add_middleware(
 )
 
 # Read in the data and extract the JSON feature representations
-print("If you see this in the console output, everything is fine.")
-df = pd.read_csv(f"data/icu_data_with_na_v2.csv")
-JSONs = jsonify.JSONify(df)
+# print("If you see this in the console output, everything is fine.")
+# df = pd.read_csv(f"data/icu_data_with_na_v2.csv")
+# JSONs = jsonify.JSONify()
 
 
 @app.post("/get-data")
@@ -44,7 +44,10 @@ def upload_data(feature_name: str):
     # print(data.to_dict(orient="records"))
 
     # return data.to_dict(orient="records")
-    return JSONs[feature_name]
+    # print(JSONs[feature_name])
+    data = jsonify.JSONs(feature_name)
+    print(data)
+    return data
 
 
 @app.post("/files/")
