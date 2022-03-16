@@ -11,6 +11,7 @@ import { axisLeft, axisBottom } from 'd3-axis'
 import { scaleLinear, scaleBand } from 'd3-scale'
 import { max } from 'd3-array'
 
+import SecondHistogram  from './VizObservable'
 
 const DEFAULT_MARGINS: Margins = {
     left: 100,
@@ -252,6 +253,11 @@ const Axis: React.FC = () => {
             .style("fill", "black"); 
             
             selection.style("background-color", "#FFF")
+            
+            
+            // Trying to include Observable vizualisations into React
+            // TODO: the better SVG is available but we have to include it somehow with the "selection"          
+            console.log(SecondHistogram())
                 
                 /*
                 .selectAll('rect')
