@@ -1,10 +1,12 @@
 import json
+import pathlib
 
 
 def JSONify(feature_name):
 
     # load data
-    path = "data/trial.json"
+    thisfile= str(pathlib.Path(__file__).parent.absolute())
+    path = thisfile+"/data/trial.json"
     f = open(path)
     data = json.load(f)
 

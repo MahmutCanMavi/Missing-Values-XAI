@@ -45,7 +45,8 @@ def upload_data(feature_name: str):
 
     # return data.to_dict(orient="records")
     # print(JSONs[feature_name])
-    data = jsonify.JSONs(feature_name)
+    print()
+    data = jsonify.JSONify(feature_name)
     print(data)
     return data
 
