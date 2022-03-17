@@ -158,7 +158,7 @@ const FeatureHistogram: React.FC<Props> = ({featureInfo}:Props) => {
     >>(null)
 
 
-    const domain = [0.5, 1.01] 
+    const domain = [0, 1.05] 
     const x = d3.scaleLinear()
         .domain(domain)     // can use this instead of 1000 to have the max of data: d3.max(data, function(d) { return +d.price })
         .range([0, dimensions.width - dimensions.marginLeft])
@@ -173,7 +173,7 @@ const FeatureHistogram: React.FC<Props> = ({featureInfo}:Props) => {
     const bins = bin(data);
 
     const y = scaleLinear()
-        .domain([0, d3.max(bins, b=> b.length)!])
+        .domain([0, d3.max(bins, b=> b.length)!+5])
         .range([dimensions.height - dimensions.marginBottom, 0])
         
     
@@ -259,7 +259,7 @@ const FeatureHistogram: React.FC<Props> = ({featureInfo}:Props) => {
             .text("No. of patients")
             .style("fill", "black"); 
             
-            selection.style("background-color", "#FFF")
+            //selection.style("background-color", "#FFF")
             
             
             
