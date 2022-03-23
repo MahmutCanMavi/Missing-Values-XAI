@@ -80,7 +80,7 @@ def clusters_to_list(df, clusters):
 
 
 
-def cluster_to_json(cluster_list):
+def vargroups2json(cluster_list):
     cluster_dict = {}
     
     cluster_number = 0
