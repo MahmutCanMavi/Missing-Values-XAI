@@ -7,9 +7,9 @@ interface Props {
     featureInfo: FeatureInfo;
     showTitle?: boolean; // enable or disable to show the feature name
    // width, height are defined in index.css
-
+    height: number;
 }
-const PctAvailGradient: React.FC<Props> = ({featureInfo, showTitle=true}:Props) => {
+const PctAvailGradient: React.FC<Props> = ({featureInfo, showTitle=true, height}:Props) => {
     // extracting the data
     const data = featureInfo.pct_avail_pp.map(o=>o.pct_avail).sort()
 
@@ -34,12 +34,33 @@ const PctAvailGradient: React.FC<Props> = ({featureInfo, showTitle=true}:Props) 
         else return color_inbetween(val)
     }
 
-    return (<><div > {/* containing div with css class for styling */}
-                {showTitle && <h3>{title}</h3>}
-                <svg className="pctAvailGradient" width="100%" viewBox={"0 0 " + data.length + " 10"} preserveAspectRatio="none">${
-                    data.map((val, idx, arr) => (<rect x={idx} key={idx} width="2" height="10" fill={color(val)}></rect>))
-                }</svg>
-            </div></>)
+    
+    //return (<><div > {/* containing div with css class for styling */}
+    //            {showTitle && <h3>{title}</h3>}
+    //            <svg className="pctAvailGradient" width="100%" viewBox={"0 0 " + data.length + " 10"} preserveAspectRatio="none">${
+    //                data.map((val, idx, arr) => (<rect x={idx} key={idx} width="2" height="10" fill={color(val)}></rect>))
+    //            }</svg>
+    //        </div>
+    //        <div > {/* containing div with css class for styling */}
+    //            {showTitle && <h3>{title}</h3>}
+    //            <svg className="pctAvailGradient" width="100%" viewBox={"0 0 " + data.length + " 10"} preserveAspectRatio="none">${
+    //                data.map((val, idx, arr) => (<rect x={idx} key={idx} width="2" height="5" fill={color(val)}></rect>))
+    //            }</svg>
+    //        </div>
+    //        </>
+    //        )
+    const string_height = String(height)
+    //return (<div > {/* containing div with css class for styling */}
+    //                {showTitle && <h3>{title}</h3>}
+    //                <svg className="pctAvailGradient" width="100%" viewBox={"0 0 " + data.length + " 10"} preserveAspectRatio="none">${
+    //                    data.map((val, idx, arr) => (<rect x={idx} key={idx} width="2" height={string_height} fill={color(val)}></rect>))
+    //                }</svg>
+    //            </div>)
+    return (<div > {/* containing div with css class for styling */}
+        <svg className="pctAvailGradient" width="100%" viewBox={"0 0 " + data.length + " 10"} preserveAspectRatio="none">${
+            data.map((val, idx, arr) => (<rect x={idx} key={idx} width="2" height={string_height} fill={color(val)}></rect>))
+        }</svg>
+    </div>)
 }
 
 

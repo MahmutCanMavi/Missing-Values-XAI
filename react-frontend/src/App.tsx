@@ -8,6 +8,7 @@ import DataChoiceComponent from './components/DataChoiceComponent';
 import PctAvailGradient from './components/PctAvailGradient';
 
 import { FeatureInfo } from './types/FeatureInfo';
+import StackedGradients from './components/StackedGradients';
 
 function App() {
 
@@ -32,7 +33,7 @@ return (
       <br/>
       <div className="gradientLegend"><svg height={40}><rect height={30} width={30} fill="black"></rect><text height={130} width={130} x={40} y={20}>100% Missing</text>
                 <rect height={30} width={30} x={130} fill="white"></rect><text height={130} width={130} x={170} y={20}>100% Available</text></svg></div>
-      {featureInfo && <PctAvailGradient featureInfo={featureInfo} showTitle={true}/>}
+      {featureInfo && <StackedGradients featureInfo={featureInfo} showTitle={true}/>}
       
       {featureInfo && <VisFeatureInfo featureInfo={featureInfo}/>}
     </div>
