@@ -11,3 +11,8 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+.pctAvailGradient{
+  width: 400px;
+  height: 80px;
+  text-align: left;
+}

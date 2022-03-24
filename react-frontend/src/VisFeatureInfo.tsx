@@ -11,16 +11,11 @@ import { axisLeft, axisBottom } from 'd3-axis'
 import { scaleLinear, scaleBand } from 'd3-scale'
 import { max } from 'd3-array'
 
-import SecondHistogram  from './VizObservable'
+
 
 import { FeatureInfo } from './types/FeatureInfo';
 
-const DEFAULT_MARGINS: Margins = {
-    left: 100,
-    top: 50,
-    bottom: 70,
-    right: 20,
-};
+// TODO: 1 CLEAN UP OLD COMMENTS, 2 MAYBE INCLUDE THE Second Histogram INSTEAD OF THE ONE BELOW
 
 // interface Props {
 //     data: DataArray;
@@ -158,7 +153,7 @@ const FeatureHistogram: React.FC<Props> = ({featureInfo}:Props) => {
     >>(null)
 
 
-    const domain = [0, 1.05] 
+    const domain = [-0.1, 1.05] 
     const x = d3.scaleLinear()
         .domain(domain)     // can use this instead of 1000 to have the max of data: d3.max(data, function(d) { return +d.price })
         .range([0, dimensions.width - dimensions.marginLeft])
@@ -265,7 +260,7 @@ const FeatureHistogram: React.FC<Props> = ({featureInfo}:Props) => {
             
             // Trying to include Observable vizualisations into React
             // TODO: the better SVG is available but we have to include it somehow with the "selection"          
-            console.log(SecondHistogram())
+            
                 
                 /*
                 .selectAll('rect')
@@ -278,6 +273,7 @@ const FeatureHistogram: React.FC<Props> = ({featureInfo}:Props) => {
                 //translate the bars
                 .attr('y', d => y(d))*/
         }
+        // not sure if it is correct to put data here
     }, [selection,data])
     return (<>
         <h1>{title}</h1>
