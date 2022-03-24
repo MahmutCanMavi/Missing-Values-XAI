@@ -1,22 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-//import { DataArray } from './types/DataArray';
+
 import queryBackend from './backend/BackendQueryEngine';
-import Visualization from './Visualization';
+
 import VisFeatureInfo from './VisFeatureInfo';
 import DataChoiceComponent from './components/DataChoiceComponent';
+import PctAvailGradient from './components/PctAvailGradient';
 
 import { FeatureInfo } from './types/FeatureInfo';
-
-import SecondHistogram  from './VizObservable'
+import StackedGradients from './components/StackedGradients';
 
 function App() {
 
- 
-  //const [exampleData, setExampleData] = useState<DataArray>();
-
   const [featureInfo, setFeatureInfo] = useState<FeatureInfo>();
-  const [dataChoice, setDataChoice] = useState<string>("HR");
+  const [dataChoice, setDataChoice] = useState<string>("Na");
   
   useEffect(() => {
     //TODO change request
@@ -24,27 +21,19 @@ function App() {
       console.log(featureInfo)
       setFeatureInfo(featureInfo);
     });
-  }, [dataChoice]); //[]
+  }, [dataChoice]); 
 
-
-  // DM: how to integrate this with the component...?
-  // const [availData, setAvailData] = useState({name: "HR", pct_avail_pp:[{patient_id:0, pct_avail:0.98}, {patient_id:134, pct_avail:0.85}]});
-  // useEffect(() => {
-  //   console.log("hi",availData) 
-  // } , []);
- 
-  //console.log(exampleData) 
-  console.log(dataChoice)
-
-
-  // old visualization <div>{exampleData && dataChoice && <Visualization width={1100} height={550} data={exampleData} />}</div>
-  return (
+return (
     <div className="App">
       <header className="App-header"> Funny Histogram of missing values
       </header>
       <div>
       <DataChoiceComponent onChoiceMade={setDataChoice}/>
       </div>
+      <br/>
+      <div className="gradientLegend"><svg height={40}><rect height={30} width={30} fill="black"></rect><text height={130} width={130} x={40} y={20}>100% Missing</text>
+                <rect height={30} width={30} x={130} fill="white"></rect><text height={130} width={130} x={170} y={20}>100% Available</text></svg></div>
+      {featureInfo && <StackedGradients featureInfo={featureInfo} showTitle={true}/>}
       
       {featureInfo && <VisFeatureInfo featureInfo={featureInfo}/>}
     </div>
