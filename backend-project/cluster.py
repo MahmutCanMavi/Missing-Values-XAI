@@ -2,9 +2,13 @@ import pandas as pd
 import numpy as np
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import MinMaxScaler
-import plotly.graph_objects as go
+#import plotly.graph_objects as go
 import numpy as np
 import json
+import pathlib
+
+thisfile= str(pathlib.Path(__file__).parent.absolute())
+datafolder = thisfile+"/data/"
 
 
 def compute_variable_groups(df, number_of_clusters = 4):
@@ -76,7 +80,7 @@ def cluster(df, number_of_clusters = 4):
     
     # KMeans clustering for the shortened
     kmeans = KMeans(
-        n_clusters = 4, init = "k-means++",
+        n_clusters = number_of_clusters, init = "k-means++",
         n_init = 10,
         tol = 1e-04, random_state = 42)
     kmeans.fit(T)
@@ -140,7 +144,7 @@ def cluster_e2e(df, number_of_clusters = 4):
     Calls on cluster_to_json to get the JSON version of the cluster list.
     Creates a JSON file of the cluster dictionary.
     """
-    out_file = open("trial.json", 'w')
+    out_file = open(datafolder+"cluster.json", 'w')
     
     cluster_dict = cluster_to_json(compute_variable_groups(df, number_of_clusters))
     
@@ -149,4 +153,5 @@ def cluster_e2e(df, number_of_clusters = 4):
     
     
 if __name__ == '__main__':
-    cluster_e2e(pd.read_csv("icu_data_with_na_v2.csv"), number_of_clusters = 4)
+    
+    cluster_e2e(pd.read_csv(datafolder+"icu_data_with_na_v2.csv"), number_of_clusters = 7)
