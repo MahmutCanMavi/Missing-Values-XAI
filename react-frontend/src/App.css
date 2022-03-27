@@ -1,14 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Neucha&display=swap');
-
 .App {
   width: 99vw;
   height: 150vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #2f74c0;
-  font-family: "Neucha", cursive;
-
+  background-color: #ece6e1;
 }
 
 .App-header {
@@ -16,7 +12,7 @@
   font-size: 40px;
   margin: 30px 0;
   margin-top:100px;
-  color: white;
+  color: rgb(7, 16, 44);
   z-index: 1;
   text-align: center;
 }
@@ -28,11 +24,33 @@
   }
 }
 
-.pctAvailGradient{
+
+.gradients {
+  padding: 100px 50px 0 50px;
+  text-align: left;
+  width: 100%;
+} 
+@media (min-width: 1350px){
+    .gradients {
+      padding: 0;
+      position: absolute;
+      top: 300px;
+      left:0;
+  }
+}
+
+
+.pctAvailGradient svg{
   width: 400px;
-  height: 60px;
- 
+  height: 90%
   
+  
+}
+.pctAvailGradient span {
+  margin:0;
+  padding:0;
+  position: relative;
+  top: -10px;
 }
 .gradientLegend {
   text-align: center;

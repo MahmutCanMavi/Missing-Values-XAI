@@ -56,10 +56,10 @@ const PctAvailGradient: React.FC<Props> = ({featureInfo, showTitle=true, height}
     //                    data.map((val, idx, arr) => (<rect x={idx} key={idx} width="2" height={string_height} fill={color(val)}></rect>))
     //                }</svg>
     //            </div>)
-    return (<div > {/* containing div with css class for styling */}
-        <svg className="pctAvailGradient" width="100%" viewBox={"0 0 " + data.length + " 10"} preserveAspectRatio="none">${
-            data.map((val, idx, arr) => (<rect x={idx} key={idx} width="2" height={string_height} fill={color(val)}></rect>))
-        }</svg>
+    return (<div className="pctAvailGradient" style={{height: string_height+"px"}} > {/* containing div with css class for styling */}
+        <svg   viewBox={"0 0 " + data.length + " 10"} preserveAspectRatio="none">${
+            data.map((val, idx, arr) => (<rect x={idx} key={idx} width="2" height="10" fill={color(val)}></rect>))
+        }</svg> {showTitle && <span>{title}</span>} 
     </div>)
 }
 

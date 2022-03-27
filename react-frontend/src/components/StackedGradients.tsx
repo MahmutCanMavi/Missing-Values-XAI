@@ -14,20 +14,21 @@ const StackedGradients: React.FC<totalProps> = ({featureInfo, showTitle=true}:to
     var total_string;
     total_string = [];
     // Here we assume that there are 3 features
-    const number = 2;
-    var height = 10.0/number;
+    const number = 5;
+    var height = Math.round(160/number);
     for (let i = 0; i < number; i++) {
-        var current_text;
-        current_text = <PctAvailGradient featureInfo={featureInfo} showTitle height={height} />;
+        var current_text; 
+        // "key" is needed by react otherwise it complains
+        current_text = <PctAvailGradient key={i} featureInfo={featureInfo} showTitle height={height} />;
         total_string.push(current_text);
       }
     // const tem = "</>"
     //total_string += tem;
 
     // return(total_string);
-    return (<>
+    return (<div className='gradients'>
         {total_string}
-        </>
+        </div>
         )
 
     //return (<><div > {/* containing div with css class for styling */}

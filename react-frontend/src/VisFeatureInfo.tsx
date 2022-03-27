@@ -241,7 +241,7 @@ const FeatureHistogram: React.FC<Props> = ({featureInfo}:Props) => {
             selection.append("text")
             .attr("transform", "translate(" + (dimensions.width / 2) + " ," + (dimensions.height - dimensions.marginBottom+40) + ")")
             .style("text-anchor", "middle")
-            .text("% of available values for this variable")
+            .text("share of available values for this variable")
             .style("fill", "black");   
             
             // y-axis

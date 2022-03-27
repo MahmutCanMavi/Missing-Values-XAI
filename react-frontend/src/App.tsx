@@ -13,7 +13,7 @@ import StackedGradients from './components/StackedGradients';
 function App() {
 
   const [featureInfo, setFeatureInfo] = useState<FeatureInfo>();
-  const [dataChoice, setDataChoice] = useState<string>("Na");
+  const [dataChoice, setDataChoice] = useState<string>("pH");
   
   useEffect(() => {
     //TODO change request
@@ -25,14 +25,14 @@ function App() {
 
 return (
     <div className="App">
-      <header className="App-header"> Funny Histogram of missing values
+      <header className="App-header"> Missing Values Dashboard
       </header>
       <div>
       <DataChoiceComponent onChoiceMade={setDataChoice}/>
       </div>
       <br/>
       <div className="gradientLegend"><svg height={40}><rect height={30} width={30} fill="black"></rect><text height={130} width={130} x={40} y={20}>100% Missing</text>
-                <rect height={30} width={30} x={130} fill="white"></rect><text height={130} width={130} x={170} y={20}>100% Available</text></svg></div>
+                <rect height={30} width={30} x={150} fill="white"></rect><text height={130} width={130} x={190} y={20}>100% Available</text></svg></div>
       {featureInfo && <StackedGradients featureInfo={featureInfo} showTitle={true}/>}
       
       {featureInfo && <VisFeatureInfo featureInfo={featureInfo}/>}
