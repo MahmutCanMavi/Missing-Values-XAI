@@ -136,6 +136,9 @@ interface Props {
 const FeatureHistogram: React.FC<Props> = ({featureInfo}:Props) => {
     const data = featureInfo.pct_avail_pp.map(o=>o.pct_avail)
     const title = "Feature shown: "+featureInfo.feature_name
+    // Cluster plotting information (TODO?)
+    // const cluster = featureInfo.cluster
+
     const dimensions = {
         width: 600,
         height: 600,
