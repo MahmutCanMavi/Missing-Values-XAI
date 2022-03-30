@@ -35,7 +35,7 @@ app.add_middleware(
 
 
 @app.post("/get-data")
-def upload_data(feature_name: str):
+def get_data(feature_name: str):
     # data = pd.read_csv(f"data/dataset_{name}.csv")
     # kmeans = KMeans(n_clusters=2, random_state=0).fit(data)
     # labels = kmeans.labels_
@@ -51,7 +51,7 @@ def upload_data(feature_name: str):
     return data
 
 @app.post("/get-clusters")
-def upload_cluster(n_clusters: int):
+def get_cluster(n_clusters: int):
     
     clustered_data = pct_avail_pp.pct_avail_clusters(n_clusters = n_clusters)
     

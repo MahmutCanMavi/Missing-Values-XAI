@@ -17,8 +17,8 @@ def pct_avail_clusters(n_clusters: int) -> list:
     # load data
     thisfile= str(pathlib.Path(__file__).parent.absolute())
     path = thisfile+"/data/icu_data_with_na_v2.csv"
-    f = open(path)
-    data = pd.read_csv(f)
+    
+    data = pd.read_csv(path)
     
     return pct_avail_all(data, n_clusters = n_clusters)
 
@@ -37,8 +37,8 @@ def pct_avail_pp(feature_name: str) -> dict:
     # load data
     thisfile= str(pathlib.Path(__file__).parent.absolute())
     path = thisfile+"/data/icu_data_with_na_v2.csv"
-    f = open(path)
-    data = pd.read_csv(f)
+    #f = open(path) readcsv can handle opening the file for us
+    data = pd.read_csv(path)
     
     if feature_name not in data.columns:
         raise ValueError("feature name not found")
@@ -75,7 +75,7 @@ def NaN_per_person(df):
     Ouput: List of all patient ids with each a dict of how many missing
            values there exist per feature
     """
-    
+   
     NaN_pp = []
     for i in range(max(df["id"])):
         # Taking the section of data corresponding to singular patients

@@ -7,8 +7,7 @@ import numpy as np
 import json
 import pathlib
 
-thisfile= str(pathlib.Path(__file__).parent.absolute())
-datafolder = thisfile+"/data/"
+
 
 
 def compute_variable_groups(df, number_of_clusters = 4):
@@ -149,5 +148,6 @@ def cluster_e2e(df, number_of_clusters = 4):
     
     
 if __name__ == '__main__':
-    
-    # cluster_e2e(pd.read_csv(datafolder+"icu_data_with_na_v2.csv"), number_of_clusters = 4)
+    thisfile= str(pathlib.Path(__file__).parent.absolute())
+    datafolder = thisfile+"/data/"  
+    cluster_e2e(pd.read_csv(datafolder+"icu_data_with_na_v2.csv"), number_of_clusters = 4)

@@ -1,2 +1,2 @@
 import app
-print(app.upload_data("HR"))
+print(app.get_data("HR"))
