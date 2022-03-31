@@ -1,4 +1,4 @@
-# Missing Data Explorer - An Interactive Interface for Visualizing and Imputing Missing Data
+# Missing Data Explorer - Visualize & Impute Missing Data
 
 ## Team Members
 1. Yan Hao
@@ -7,16 +7,21 @@
 4. Michael Zellinger
 
 ## Project Goals
-We aim to.. 
+We are developing an interactive interface for visualizing and imputing missing values. This interface allows the user to group similar features together and impute them. We offer a choice of several different imputation methods. After imputation, our app visualizes the imputation error.
 
 ### Users
-Target users
+Our target user group consists of data analysts who deal with missing data in their work.
 
 ### Datasets
-Describe the data and how to access it
+We use medical data from patients in the intensive care unit. Our current data file is a sample from the HiRiD database of ICU records.
 
 ### Tasks
-Define all the tasks you want your dashboard solve.
+Our interface solves many tasks, including the following:
+  - visualize patterns of missing data
+  - allow the user to group together features with similar missing data patterns
+  - impute missing data 
+  - allow user to specify different imputation method for each group of features
+  - compute and visualize imputation error
 
 - - -
 ## Folder Structure
