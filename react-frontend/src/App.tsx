@@ -14,11 +14,11 @@ import StackedGradients from './components/StackedGradients';
 function App() {
 
   const [clusteredFeatures, setClusteredFeatures] = useState<ClusteredFeatures>();
-  const [dataChoice, setDataChoice] = useState<string>("pH");
+  const [dataChoice, setDataChoice] = useState<number>(4);
   
   useEffect(() => {
     //TODO change request
-    queryBackend(`get-data?feature_name=` + dataChoice).then((clusteredFeatures) => {
+    queryBackend(`get-clusters?n_clusters=` + dataChoice).then((clusteredFeatures) => {
       console.log(clusteredFeatures)
       setClusteredFeatures(clusteredFeatures);
     });

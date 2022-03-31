@@ -133,7 +133,10 @@ def pct_avail_all(df, n_clusters = 4):
         
         feature_list.append(feature_dict)
     
-    return feature_list
+    # print(len(feature_list))
+    clusterinfo = {}
+    clusterinfo["FeatureInfos"] = feature_list
+    return clusterinfo
 
 
 if __name__ == "__main__":
