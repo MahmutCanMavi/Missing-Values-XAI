@@ -1,5 +1,5 @@
 import { FeatureInfo } from './FeatureInfo'
 
-export interface ClusteredFeatrues {
+export interface ClusteredFeatures {
     FeatureInfos: FeatureInfo[];
 }

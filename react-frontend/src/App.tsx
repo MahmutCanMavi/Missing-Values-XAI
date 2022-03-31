@@ -8,20 +8,23 @@ import DataChoiceComponent from './components/DataChoiceComponent';
 import PctAvailGradient from './components/PctAvailGradient';
 
 import { FeatureInfo } from './types/FeatureInfo';
+import { ClusteredFeatures } from './types/ClusteredFeatures';
 import StackedGradients from './components/StackedGradients';
 
 function App() {
 
-  const [featureInfo, setFeatureInfo] = useState<FeatureInfo>();
+  const [clusteredFeatures, setClusteredFeatures] = useState<ClusteredFeatures>();
   const [dataChoice, setDataChoice] = useState<string>("pH");
   
   useEffect(() => {
     //TODO change request
-    queryBackend(`get-data?feature_name=` + dataChoice).then((featureInfo) => {
-      console.log(featureInfo)
-      setFeatureInfo(featureInfo);
+    queryBackend(`get-data?feature_name=` + dataChoice).then((clusteredFeatures) => {
+      console.log(clusteredFeatures)
+      setClusteredFeatures(clusteredFeatures);
     });
   }, [dataChoice]); 
+
+var featureInfo = clusteredFeatures?.FeatureInfos[0];
 
 return (
     <div className="App">
@@ -33,11 +36,12 @@ return (
       <br/>
       <div className="gradientLegend"><svg height={40}><rect height={30} width={30} fill="black"></rect><text height={130} width={130} x={40} y={20}>100% Missing</text>
                 <rect height={30} width={30} x={150} fill="white"></rect><text height={130} width={130} x={190} y={20}>100% Available</text></svg></div>
-      {featureInfo && <StackedGradients featureInfo={featureInfo} showTitle={true}/>}
+      {clusteredFeatures && <StackedGradients clusteredFeatures={clusteredFeatures}/>}
       
       {featureInfo && <VisFeatureInfo featureInfo={featureInfo}/>}
     </div>
   )
 }
+
 
 export default App;

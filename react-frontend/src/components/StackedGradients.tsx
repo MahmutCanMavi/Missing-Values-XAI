@@ -4,26 +4,34 @@ import * as d3 from 'd3' // can create problems with types! if so use the one be
 import { text } from 'd3';
 //var d3: any = require('d3')
 import PctAvailGradient from './PctAvailGradient';
+import { ClusteredFeatures } from '../types/ClusteredFeatures';
 
 interface totalProps {
-    featureInfo: FeatureInfo;
+    clusteredFeatures: ClusteredFeatures;
     showTitle?: boolean; // enable or disable to show the feature name
    // width, height are defined in index.css
 }
-const StackedGradients: React.FC<totalProps> = ({featureInfo, showTitle=true}:totalProps) => {
+const StackedGradients: React.FC<totalProps> = ({clusteredFeatures, showTitle=true}:totalProps) => {
     var total_string;
     total_string = [];
     // Here we assume that there are 3 features
-    const number = 5;
-    var height = Math.round(160/number);
-    for (let i = 0; i < number; i++) {
-        var current_text; 
+    // const number = 5;
+    // var height = Math.round(160/number);
+    //for (let i = 0; i < number; i++) {
+    //    var current_text; 
         // "key" is needed by react otherwise it complains
-        current_text = <PctAvailGradient key={i} featureInfo={featureInfo} showTitle height={height} />;
-        total_string.push(current_text);
-      }
+    //    current_text = <PctAvailGradient key={i} featureInfo={featureInfo} showTitle height={height} />;
+    //    total_string.push(current_text);
+    //  }
     // const tem = "</>"
     //total_string += tem;
+
+    var arrayLength = clusteredFeatures.FeatureInfos.length;
+    for (var i = 0; i < arrayLength; i++) {
+        var featureInfo = clusteredFeatures.FeatureInfos[i];
+        var current_text = <PctAvailGradient key={i} featureInfo={featureInfo} showTitle height={20} />;
+        total_string.push(current_text);
+    }
 
     // return(total_string);
     return (<div className='gradients'>

@@ -47,7 +47,7 @@ def get_data(feature_name: str):
     # print(JSONs[feature_name])
     print(" Hey Someone accessed this!!!!")
     data = pct_avail_pp.pct_avail_pp(feature_name)
-    # print(data)
+
     return data
 
 @app.post("/get-clusters")
