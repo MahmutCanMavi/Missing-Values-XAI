@@ -57,6 +57,9 @@ def shorten_data(df):
             # Otherwise, the new list is appended by the availability of data
             new_list = 1 - sub_df.isna().sum() / curr_len
             new_row = new_list.tolist()
+
+        if new_row[0]==0: #rowid is "missing"
+            print(sub_df.head())
         
         df_short.append(new_row)
     

@@ -84,7 +84,17 @@ def NaN_per_person(df):
         # Dictionary of the missing values per category
         NaNs = {}
         for col in sub_df.columns:
-            NaNs[col] = sub_df[col].isna().sum()
+            if col in ["rowid","id","time"]:
+                if sub_df[col].isna().sum()>0:
+                    #print("Error: rowid, id or time are nan")
+                    pass
+                else:
+                    if not sub_df.empty:
+                        NaNs[col] = sub_df[col].iloc[0]    
+                    else:
+                        NaNs[col] = 0
+            else:
+                NaNs[col] = sub_df[col].isna().sum()
         
         NaN_pp.append(NaNs)
     
@@ -121,7 +131,11 @@ def pct_avail_all(df, n_clusters = 4):
         
         pid = 1
         for patient in NaN_pp:
+            # check if pid is actually corresponding to the id field in the dataset
+            if pid != patient["id"]:
+                print("error: patient ID does not match")
             length = len(df.loc[df["id"] == pid])
+
             if length == 0:
                 percentage = 0
             else: 
@@ -141,6 +155,6 @@ def pct_avail_all(df, n_clusters = 4):
 
 if __name__ == "__main__":
     # Kind Remind
-    # result = pct_avail_pp("HR")
-    # print(result)
+    result = pct_avail_clusters(6)
+    print(result)
     print("Please import the function pct_avail_pp instead of excute this file directly")

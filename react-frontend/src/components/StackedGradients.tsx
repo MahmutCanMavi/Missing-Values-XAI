@@ -27,8 +27,9 @@ const StackedGradients: React.FC<totalProps> = ({clusteredFeatures, showTitle=tr
     //total_string += tem;
 
     var arrayLength = clusteredFeatures.FeatureInfos.length;
+    var featureInfosSorted= clusteredFeatures.FeatureInfos.sort((a, b) => (a.cluster_id > b.cluster_id) ? 1 : -1);
     for (var i = 0; i < arrayLength; i++) {
-        var featureInfo = clusteredFeatures.FeatureInfos[i];
+        var featureInfo = featureInfosSorted[i];
         var current_text = <PctAvailGradient key={i} featureInfo={featureInfo} showTitle height={20} />;
         total_string.push(current_text);
     }
