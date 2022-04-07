@@ -6,7 +6,7 @@ import pandas as pd
 import os
 import csv
 import codecs
-import jsonify
+import pct_avail_pp
 from io import StringIO
 # from pydantic_models.example_data_points import ExampleDataResponse
 from typing import Callable
@@ -35,7 +35,7 @@ app.add_middleware(
 
 
 @app.post("/get-data")
-def upload_data(feature_name: str):
+def get_data(feature_name: str):
     # data = pd.read_csv(f"data/dataset_{name}.csv")
     # kmeans = KMeans(n_clusters=2, random_state=0).fit(data)
     # labels = kmeans.labels_
@@ -45,10 +45,17 @@ def upload_data(feature_name: str):
 
     # return data.to_dict(orient="records")
     # print(JSONs[feature_name])
-    print()
-    data = jsonify.JSONify(feature_name)
-    print(data)
+    print(" Hey Someone accessed this!!!!")
+    data = pct_avail_pp.pct_avail_pp(feature_name)
+
     return data
+
+@app.post("/get-clusters")
+def get_cluster(n_clusters: int):
+    
+    clustered_data = pct_avail_pp.pct_avail_clusters(n_clusters = n_clusters)
+    
+    return clustered_data
 
 
 @app.post("/files/")

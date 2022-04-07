@@ -1,2 +1,2 @@
-import jsonify
-print(jsonify.JSONify("HR"))
+import app
+print(app.get_data("HR"))

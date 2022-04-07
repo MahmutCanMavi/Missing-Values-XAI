@@ -2,9 +2,12 @@ import pandas as pd
 import numpy as np
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import MinMaxScaler
-import plotly.graph_objects as go
+#import plotly.graph_objects as go
 import numpy as np
 import json
+import pathlib
+
+
 
 
 def compute_variable_groups(df, number_of_clusters = 4):
@@ -54,6 +57,9 @@ def shorten_data(df):
             # Otherwise, the new list is appended by the availability of data
             new_list = 1 - sub_df.isna().sum() / curr_len
             new_row = new_list.tolist()
+
+        if new_row[0]==0: #rowid is "missing"
+            print(sub_df.head())
         
         df_short.append(new_row)
     
@@ -76,7 +82,7 @@ def cluster(df, number_of_clusters = 4):
     
     # KMeans clustering for the shortened
     kmeans = KMeans(
-        n_clusters = 4, init = "k-means++",
+        n_clusters = number_of_clusters, init = "k-means++",
         n_init = 10,
         tol = 1e-04, random_state = 42)
     kmeans.fit(T)
@@ -137,16 +143,14 @@ def cluster_e2e(df, number_of_clusters = 4):
     """
     Takes the datadrame and the wanted number of clusters as inputs.
     
-    Calls on cluster_to_json to get the JSON version of the cluster list.
-    Creates a JSON file of the cluster dictionary.
+    Calls on cluster_to_json to get the dictionary version of the cluster list.
     """
-    out_file = open("trial.json", 'w')
-    
     cluster_dict = cluster_to_json(compute_variable_groups(df, number_of_clusters))
     
-    json.dump(cluster_dict, out_file, indent=4)
-    out_file.close()
+    return cluster_dict
     
     
 if __name__ == '__main__':
-    cluster_e2e(pd.read_csv("icu_data_with_na_v2.csv"), number_of_clusters = 4)
+    thisfile= str(pathlib.Path(__file__).parent.absolute())
+    datafolder = thisfile+"/data/"  
+    cluster_e2e(pd.read_csv(datafolder+"icu_data_with_na_v2.csv"), number_of_clusters = 4)

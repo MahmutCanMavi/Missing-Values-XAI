@@ -33,8 +33,8 @@ const PctAvailGradient: React.FC<Props> = ({featureInfo, showTitle=true, height}
         }
         else return color_inbetween(val)
     }
-
-    
+    // TODO: replace 7 with dataChoice (as argument)
+    const cluster_color=d3.scaleSequential().domain([0,7]).interpolator(d3.interpolateRainbow)
     //return (<><div > {/* containing div with css class for styling */}
     //            {showTitle && <h3>{title}</h3>}
     //            <svg className="pctAvailGradient" width="100%" viewBox={"0 0 " + data.length + " 10"} preserveAspectRatio="none">${
@@ -56,10 +56,10 @@ const PctAvailGradient: React.FC<Props> = ({featureInfo, showTitle=true, height}
     //                    data.map((val, idx, arr) => (<rect x={idx} key={idx} width="2" height={string_height} fill={color(val)}></rect>))
     //                }</svg>
     //            </div>)
-    return (<div > {/* containing div with css class for styling */}
-        <svg className="pctAvailGradient" width="100%" viewBox={"0 0 " + data.length + " 10"} preserveAspectRatio="none">${
-            data.map((val, idx, arr) => (<rect x={idx} key={idx} width="2" height={string_height} fill={color(val)}></rect>))
-        }</svg>
+    return (<div className="pctAvailGradient" style={{height: string_height+"px"}} > {/* containing div with css class for styling */}
+        <svg className='gradient'  viewBox={"0 0 " + data.length + " 10"} preserveAspectRatio="none">${
+            data.map((val, idx, arr) => (<rect x={idx} key={idx} width="2" height="10" fill={color(val)}></rect>))
+        }</svg><svg className="cluster"><circle cx={10} cy={8} r={7} fill={cluster_color(featureInfo.cluster_id)} ></circle></svg> {showTitle && <span>{title}</span>} 
     </div>)
 }
 

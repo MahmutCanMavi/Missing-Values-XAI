@@ -10,11 +10,12 @@ class DataChoiceComponent extends React.Component<{onChoiceMade: any}, {text: st
     this.handleChoice = this.handleChoice.bind(this);
   }
 
-  render() {
+  render() { // Old Text: Which feature do you want to use? (adre_bol, adre_iv, PAPs, HR, CVPm, PVR, urine, Na, temp, pH, pO2)
+        
     return (
       <div>
         <label htmlFor="data-choice">
-          Which feature do you want to use? (adre_bol, adre_iv, PAPs, HR, CVPm, PVR, urine, Na, temp, pH, pO2)
+          Number of clusters. Clusters are shown as colored dots.    
         </label>
         <input
           id="data-choice"
@@ -35,9 +36,9 @@ class DataChoiceComponent extends React.Component<{onChoiceMade: any}, {text: st
   handleChoice(e : any){
     console.log('Previous state: ', this.state)
     this.props.onChoiceMade(this.state.text);
-    this.setState({
+    /*this.setState({
       text: '',
-    });            
+    }); */           
   }
 }
 export default DataChoiceComponent;

@@ -8,36 +8,57 @@ import DataChoiceComponent from './components/DataChoiceComponent';
 import PctAvailGradient from './components/PctAvailGradient';
 
 import { FeatureInfo } from './types/FeatureInfo';
+import { ClusteredFeatures } from './types/ClusteredFeatures';
 import StackedGradients from './components/StackedGradients';
+import MyD3Component from './components/d3histogram';
 
 function App() {
 
-  const [featureInfo, setFeatureInfo] = useState<FeatureInfo>();
-  const [dataChoice, setDataChoice] = useState<string>("Na");
-  
+  const [clusteredFeatures, setClusteredFeatures] = useState<ClusteredFeatures>();
+  const [dataChoice, setDataChoice] = useState<number>(4);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   useEffect(() => {
-    //TODO change request
-    queryBackend(`get-data?feature_name=` + dataChoice).then((featureInfo) => {
-      console.log(featureInfo)
-      setFeatureInfo(featureInfo);
+    setIsLoading(true);
+    queryBackend(`get-clusters?n_clusters=` + dataChoice).then((clusteredFeatures) => {
+      
+      setClusteredFeatures(clusteredFeatures);
+      setIsLoading(false);
     });
   }, [dataChoice]); 
 
+var featureInfo = clusteredFeatures?.FeatureInfos[12];
+
 return (
     <div className="App">
-      <header className="App-header"> Funny Histogram of missing values
-      </header>
+      
+      <div className="grid-container">
+        <header className="header"> Missing Values Dashboard</header>
+        <aside className="sidenav"><div className="gradientLegend"><svg height={40}><rect height={30} width={30} fill="black"></rect><text height={130} width={130} x={40} y={20}>100% Missing</text>
+                <rect height={30} width={30} x={150} fill="white"></rect><text height={130} width={130} x={190} y={20}>100% Available</text></svg></div>
+      {clusteredFeatures && <StackedGradients clusteredFeatures={clusteredFeatures}/>}
+      {isLoading && <div>Loading...</div>}</aside>
+
+
+      
+        <main className="main">
+          
+
       <div>
       <DataChoiceComponent onChoiceMade={setDataChoice}/>
       </div>
       <br/>
-      <div className="gradientLegend"><svg height={40}><rect height={30} width={30} fill="black"></rect><text height={130} width={130} x={40} y={20}>100% Missing</text>
-                <rect height={30} width={30} x={130} fill="white"></rect><text height={130} width={130} x={170} y={20}>100% Available</text></svg></div>
-      {featureInfo && <StackedGradients featureInfo={featureInfo} showTitle={true}/>}
       
-      {featureInfo && <VisFeatureInfo featureInfo={featureInfo}/>}
+      
+          
+      {featureInfo && <MyD3Component featureInfo={featureInfo}/>}
+
+
+        </main>
+        <footer className="footer"></footer>
+      </div>
     </div>
   )
 }
+
 
 export default App;
