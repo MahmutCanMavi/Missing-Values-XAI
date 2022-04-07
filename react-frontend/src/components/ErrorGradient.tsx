@@ -1,5 +1,5 @@
 import React from 'react';
-import { FeatureInfo } from '../types/FeatureInfo';
+import { ErrorInfo } from '../types/ErrorInfo';
 import * as d3 from 'd3' // can create problems with types! if so use the one below
 //var d3: any = require('d3')
 

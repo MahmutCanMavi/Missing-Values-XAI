@@ -1,13 +1,13 @@
 import React from 'react';
 import { FeatureInfo } from '../types/FeatureInfo';
 import * as d3 from 'd3' // can create problems with types! if so use the one below
-import { text } from 'd3';
+
 //var d3: any = require('d3')
-import ErrorInfo from './ErrorInfo';
+
 import { ClusteredFeatures } from '../types/ClusteredFeatures';
-import { ClusteredErrors } from '../types/ClusteredErrors';
+import PctAvailGradient from './PctAvailGradient';
 interface totalProps {
-    clusteredFeatures: ClusteredFeatures | ClusteredErrors;
+    clusteredFeatures: ClusteredFeatures;
     showTitle?: boolean; // enable or disable to show the feature name
    // width, height are defined in index.css
 }
@@ -36,7 +36,7 @@ const StackedGradients: React.FC<totalProps> = ({clusteredFeatures, showTitle=tr
     
     for (var i = 0; i < arrayLength; i++) {
         var featureInfo = featureInfosSorted[i];
-        var current_text = <ErrorGradient key={i} featureInfo={featureInfo} showTitle height={20} />;
+        var current_text = <PctAvailGradient key={i} featureInfo={featureInfo} showTitle height={20} />;
         total_string.push(current_text);
     }
 
