@@ -19,8 +19,9 @@ def pct_avail_clusters(n_clusters: int) -> list:
     path = thisfile+"/data/icu_data_with_na_v2.csv"
     
     data = pd.read_csv(path)
+    data_explanations = json.load(open(thisfile + "/data/explanations.json"))
     
-    return pct_avail_all(data, n_clusters = n_clusters)
+    return pct_avail_all(data, data_explanations, n_clusters = n_clusters)
 
 
 
@@ -39,6 +40,7 @@ def pct_avail_pp(feature_name: str) -> dict:
     path = thisfile+"/data/icu_data_with_na_v2.csv"
     #f = open(path) readcsv can handle opening the file for us
     data = pd.read_csv(path)
+    data_explanations = json.load(open(thisfile + "/data/explanations.json"))
     
     if feature_name not in data.columns:
         raise ValueError("feature name not found")
@@ -49,19 +51,20 @@ def pct_avail_pp(feature_name: str) -> dict:
     feature_dict = {}
     feature_dict["feature_name"] = feature_name
     feature_dict["cluster_id"] = 0
+    feature_dict["explanation"] = data_explanations[feature_name] if feature_name in data_explanations else "n/a"
     feature_dict["pct_avail_pp"] = []
     
-    pid = 1
+    # pid = 1
     for patient in NaN_pp:
-        length = len(data.loc[data["id"] == pid])
+        length = len(data.loc[data["id"] == patient[0]])
         if length == 0:
             percentage = 0
         else: 
-            percentage =  1 - patient[feature_name] / length
+            percentage =  1 - patient[1][feature_name] / length
         
         # Appending the list within the nested dictionaries
-        feature_dict["pct_avail_pp"].append({"patient_id" : pid, "pct_avail" : percentage})
-        pid += 1
+        feature_dict["pct_avail_pp"].append({"patient_id" : patient[0], "pct_avail" : percentage})
+        # pid += 1
     
     return feature_dict
 
@@ -77,9 +80,10 @@ def NaN_per_person(df):
     """
    
     NaN_pp = []
-    for i in range(max(df["id"])):
+    print(df["id"].unique())
+    for pid in df["id"].unique():
         # Taking the section of data corresponding to singular patients
-        sub_df = df.loc[df["id"] == i+1]
+        sub_df = df.loc[df["id"] == pid]
 
         # Dictionary of the missing values per category
         NaNs = {}
@@ -96,11 +100,11 @@ def NaN_per_person(df):
             else:
                 NaNs[col] = sub_df[col].isna().sum()
         
-        NaN_pp.append(NaNs)
+        NaN_pp.append([pid, NaNs])
     
     return NaN_pp
 
-def pct_avail_all(df, n_clusters = 4):
+def pct_avail_all(df, data_explanations, n_clusters = 4):
     """
     Clusters all of the features and stores them in a list. 
     
@@ -127,23 +131,22 @@ def pct_avail_all(df, n_clusters = 4):
         feature_dict = {}
         feature_dict["feature_name"] = col
         feature_dict["cluster_id"] = clusters[col]
+        feature_dict["explanation"] = data_explanations[col] if col in data_explanations else "n/a"
         feature_dict["pct_avail_pp"] = []
         
-        pid = 1
         for patient in NaN_pp:
             # check if pid is actually corresponding to the id field in the dataset
-            if pid != patient["id"]:
-                print("error: patient ID does not match")
-            length = len(df.loc[df["id"] == pid])
+            # if pid != patient["id"]:
+            #     print("error: patient ID does not match")
+            length = len(df.loc[df["id"] == patient[0]])
 
             if length == 0:
                 percentage = 0
             else: 
-                percentage =  1 - patient[col] / length
+                percentage =  1 - patient[1][col] / length
             
             # Appending the list within the nested dictionaries
-            feature_dict["pct_avail_pp"].append({"patient_id" : pid, "pct_avail" : percentage})
-            pid += 1
+            feature_dict["pct_avail_pp"].append({"patient_id" : patient[0], "pct_avail" : percentage})
         
         feature_list.append(feature_dict)
     
@@ -155,6 +158,8 @@ def pct_avail_all(df, n_clusters = 4):
 
 if __name__ == "__main__":
     # Kind Remind
-    result = pct_avail_clusters(6)
-    print(result)
+    result = pct_avail_all(pd.read_csv(str(pathlib.Path(__file__).parent.absolute())+"/data/icu_data_with_na_v2.csv"), json.load(open(str(pathlib.Path(__file__).parent.absolute())+"/data/explanations.json")))
+    # result = pct_avail_pp("dialysis")["explanation"]
+    for feat_list in result["FeatureInfos"]:
+        print(feat_list["explanation"])
     print("Please import the function pct_avail_pp instead of excute this file directly")

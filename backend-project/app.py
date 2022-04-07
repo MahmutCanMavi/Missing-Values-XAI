@@ -11,6 +11,7 @@ from io import StringIO
 # from pydantic_models.example_data_points import ExampleDataResponse
 from typing import Callable
 from sklearn.cluster import KMeans
+import impute
 
 app = FastAPI(
     title="Test Python Backend",
@@ -45,7 +46,7 @@ def get_data(feature_name: str):
 
     # return data.to_dict(orient="records")
     # print(JSONs[feature_name])
-    print(" Hey Someone accessed this!!!!")
+    # print(" Hey Someone accessed this!!!!")
     data = pct_avail_pp.pct_avail_pp(feature_name)
 
     return data
@@ -56,6 +57,15 @@ def get_cluster(n_clusters: int):
     clustered_data = pct_avail_pp.pct_avail_clusters(n_clusters = n_clusters)
     
     return clustered_data
+
+# TODO: Implement this request from frontend
+@app.post("/get-errors")
+def get_errors(errors: list):
+    # call some function
+    
+    errors = impute.errors_e2e(errors)
+    # Does not currently implement any of the other requested features
+    return errors
 
 
 @app.post("/files/")
