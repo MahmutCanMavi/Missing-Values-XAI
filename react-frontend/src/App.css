@@ -83,11 +83,11 @@
 .grid-container {
   display: grid;
   grid-template-columns: 380px 1fr;
-  grid-template-rows: 50px 1fr 50px;
+  grid-template-rows: 80px 1fr 30px;
   grid-template-areas:
-    "sidenav header"
+    "header header"
     "sidenav main"
-    "sidenav footer";
+    "footer footer";
   height: 100vh;
   width: 100%;
 }
@@ -115,5 +115,7 @@
 .footer {
   grid-area: footer;
   background-color: #648ca6;
+  padding: 5px;
+  text-align: right;
 
 }

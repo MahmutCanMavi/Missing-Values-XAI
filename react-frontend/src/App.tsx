@@ -11,6 +11,7 @@ import { FeatureInfo } from './types/FeatureInfo';
 import { ClusteredFeatures } from './types/ClusteredFeatures';
 import StackedGradients from './components/StackedGradients';
 import MyD3Component from './components/d3histogram';
+import cached_data from './backend/cachedData'
 
 function App() {
 
@@ -22,8 +23,15 @@ function App() {
     queryBackend(`get-clusters?n_clusters=` + dataChoice).then((clusteredFeatures) => {
       
       setClusteredFeatures(clusteredFeatures);
+      console.log(clusteredFeatures)
       setIsLoading(false);
     });
+
+    /* to use cached data
+    setClusteredFeatures(cached_data());
+    setIsLoading(false);
+    */
+
   }, [dataChoice]); 
 
 var featureInfo = clusteredFeatures?.FeatureInfos[12];
@@ -54,7 +62,7 @@ return (
 
 
         </main>
-        <footer className="footer"></footer>
+        <footer className="footer">By Yan, Talu, David and Michael</footer>
       </div>
     </div>
   )
