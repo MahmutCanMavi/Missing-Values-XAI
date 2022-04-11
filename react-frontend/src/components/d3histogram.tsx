@@ -33,7 +33,7 @@ export default class MyD3Component extends React.Component<D3ComponentProps> {
 
     var svg = d3.select(this.mySVG.current);
 
-
+    console.log(this.props.featureInfo.feature_name);
     const data = this.featureInfo.pct_avail_pp.map(o=>o.pct_avail).sort()
     Histogram(svg,data)
 

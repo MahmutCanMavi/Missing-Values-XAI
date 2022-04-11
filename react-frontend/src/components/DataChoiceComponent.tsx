@@ -34,7 +34,8 @@ class DataChoiceComponent extends React.Component<{onChoiceMade: any}, {text: st
   }
 
   handleChoice(e : any){
-    console.log('Previous state: ', this.state)
+    console.log('Previous state: ', this.state);
+    console.log('text: ', this.state.text);
     this.props.onChoiceMade(this.state.text);
     /*this.setState({
       text: '',

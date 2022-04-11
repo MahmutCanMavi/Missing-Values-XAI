@@ -9,6 +9,7 @@ export interface queryBackendProps {
 export const BASE_URL = 'http://127.0.0.1:8000';
 
 export const queryBackend = async (route: string): Promise<ClusteredFeatures> => {
+//export const queryBackend = async (route: string): <ClusteredFeatures> => {
     const requestURL = `${BASE_URL}/${route}`;
     // const formData = new FormData();
     const data = await fetch(requestURL,

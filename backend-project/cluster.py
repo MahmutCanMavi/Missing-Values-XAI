@@ -58,8 +58,8 @@ def shorten_data(df):
             new_list = 1 - sub_df.isna().sum() / curr_len
             new_row = new_list.tolist()
 
-        if new_row[0]==0: #rowid is "missing"
-            print(sub_df.head())
+        #if new_row[0]==0: #rowid is "missing"
+        #    print(sub_df.head())
         
         df_short.append(new_row)
     
@@ -135,6 +135,8 @@ def cluster_to_json(cluster_list):
             cluster_dict[col] = cluster_number
 
         cluster_number += 1
+
+    # print(cluster_number)
         
     return cluster_dict
             

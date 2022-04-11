@@ -132,8 +132,8 @@ def pct_avail_all(df, n_clusters = 4):
         pid = 1
         for patient in NaN_pp:
             # check if pid is actually corresponding to the id field in the dataset
-            if pid != patient["id"]:
-                print("error: patient ID does not match")
+            #if pid != patient["id"]:
+            #    print("error: patient ID does not match")
             length = len(df.loc[df["id"] == pid])
 
             if length == 0:

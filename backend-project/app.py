@@ -51,9 +51,19 @@ def get_data(feature_name: str):
     return data
 
 @app.post("/get-clusters")
-def get_cluster(n_clusters: int):
+def get_cluster(n_clusters: str):
     
+    print("New cluster number has been entered, loading ...")
+    print("Number of clusters is: " + str(n_clusters))
+    print("List if cluster id is: ")
+    n_clusters = int(n_clusters)
     clustered_data = pct_avail_pp.pct_avail_clusters(n_clusters = n_clusters)
+    string_list = ''
+    for item in clustered_data["FeatureInfos"]:
+        string_list += str(item["cluster_id"])
+    print(string_list)
+
+
     
     return clustered_data
 
