@@ -27,7 +27,7 @@ class SelectPctAvailGradient extends React.Component<SingleBar,{}> {
     }
 
     componentDidMount() {
-        document.addEventListener("mousedown", this.handleChange.bind(this));
+        //document.addEventListener("mousedown", this.handleChange.bind(this));
     }
 
     handleChange(){
@@ -56,16 +56,18 @@ class SelectPctAvailGradient extends React.Component<SingleBar,{}> {
         const string_height = String(this.height)
         const clearStyle = { height: 20, bottom: 5, }
         
-        return (<div className="pctAvailGradient" style={{height: string_height+"px"}} > {/* containing div with css class for styling */}
+        return (<div className="pctAvailGradient" style={{height: string_height+"px"}} onClick={this.handleChange.bind(this)}  > {/* containing div with css class for styling */}
             <svg className='gradient'  viewBox={"0 0 " + data.length + " 10"} preserveAspectRatio="none">${
                 data.map((val, idx, arr) => (<rect x={idx} key={idx} width="2" height="10" fill={color(val)}></rect>))
             }</svg><svg className="cluster"><circle cx={10} cy={8} r={7} fill={cluster_color(this.featureInfo.cluster_id)} ></circle></svg> {this.showTitle && <span>{title}</span>} 
-            <button onClick={this.handleChange.bind(this)} style = {clearStyle} >
-                Show
-            </button>
+            
 
         </div>)
+        /* <button  style = {clearStyle} >
+                Show
+            </button> */
     }
+    
 }
 
 export default SelectPctAvailGradient

@@ -9,7 +9,7 @@ interface D3ComponentProps {
     featureInfo: FeatureInfo;
 
 }
-export default class MyD3Component extends React.Component<D3ComponentProps> {
+export default class D3Histogram extends React.Component<D3ComponentProps> {
   mySVG: React.MutableRefObject<SVGSVGElement | null>;
   featureInfo: FeatureInfo;
 
@@ -18,7 +18,6 @@ export default class MyD3Component extends React.Component<D3ComponentProps> {
     super(props);
     this.mySVG = React.createRef();
     this.featureInfo=props.featureInfo;
-    console.log(props.featureInfo)
   }
 
 
@@ -33,7 +32,9 @@ export default class MyD3Component extends React.Component<D3ComponentProps> {
 
     var svg = d3.select(this.mySVG.current);
 
-    console.log(this.props.featureInfo.feature_name);
+    svg.selectAll("*").remove()
+
+
     const data = this.featureInfo.pct_avail_pp.map(o=>o.pct_avail).sort()
     Histogram(svg,data)
 
@@ -41,7 +42,10 @@ export default class MyD3Component extends React.Component<D3ComponentProps> {
 
 
   render() {
-
+    if (this.mySVG.current && this.featureInfo!=this.props.featureInfo){
+      this.featureInfo=this.props.featureInfo
+      this.update()
+    }
     return (
       <div className="detailView histogram">
         <h3>Feature: {this.props.featureInfo.feature_name}</h3>

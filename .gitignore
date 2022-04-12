@@ -2,4 +2,3 @@
 node_modules
 *.pyc
 .DS_Store
-start_all.sh

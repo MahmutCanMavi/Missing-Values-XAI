@@ -43,6 +43,15 @@
   }
 }*/
 
+.pctAvailGradient {
+  padding-left: 4px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.pctAvailGradient:hover {
+  background-color: white;
+  
+}
 
 .pctAvailGradient svg.gradient{
   width: 200px;
@@ -52,7 +61,9 @@
 }
 .pctAvailGradient svg.cluster{
   width: 20px;
-  height: 90%
+  height: 90%;
+  position: relative;
+  top: 6px;
   
   
 }

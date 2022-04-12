@@ -7,6 +7,7 @@ import * as d3 from 'd3'
 // https://observablehq.com/@d3/histogram                            
 function Histogram(svg,data
      ) {
+
     const xLabel = "Share of available values ->"
     const value = (d) => d; // convenience alias for x
     const type = d3.scaleLinear; // convenience alias for xType
@@ -34,7 +35,6 @@ function Histogram(svg,data
 
 
 
-    console.log(data)
     // Compute values.
     const X = d3.map(data, x);
     const Y = d3.map(data, y);
