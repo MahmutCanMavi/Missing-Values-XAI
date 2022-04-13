@@ -10,7 +10,8 @@ import pct_avail_pp
 from io import StringIO
 # from pydantic_models.example_data_points import ExampleDataResponse
 from typing import Callable
-from sklearn.cluster import KMeans
+# from sklearn.cluster import KMeans
+import impute
 
 app = FastAPI(
     title="Test Python Backend",
@@ -36,16 +37,7 @@ app.add_middleware(
 
 @app.post("/get-data")
 def get_data(feature_name: str):
-    # data = pd.read_csv(f"data/dataset_{name}.csv")
-    # kmeans = KMeans(n_clusters=2, random_state=0).fit(data)
-    # labels = kmeans.labels_
-    # data["cluster"] = labels.tolist()
-    # print(data.head())
-    # print(data.to_dict(orient="records"))
-
-    # return data.to_dict(orient="records")
-    # print(JSONs[feature_name])
-    print(" Hey Someone accessed this!!!!")
+    
     data = pct_avail_pp.pct_avail_pp(feature_name)
 
     return data
@@ -66,6 +58,15 @@ def get_cluster(n_clusters: str):
 
     
     return clustered_data
+
+
+@app.post("/get-errors")
+def get_errors(errors: list):
+    # Need to add a way to implement this s.t. the imputation 
+    # method can be specified
+    errors = impute.errors_e2e(errors)
+    
+    return errors
 
 
 @app.post("/files/")

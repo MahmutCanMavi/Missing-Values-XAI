@@ -5,4 +5,5 @@ export interface ErrorInfo {
     pct_avail_pp: PctAvail[];
     cluster_id : number;
     error_threshold: number;
+    // explanation: string;
 }
