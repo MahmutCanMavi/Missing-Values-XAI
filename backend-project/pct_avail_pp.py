@@ -159,8 +159,12 @@ def pct_avail_all(df, data_explanations = None, n_clusters = 4):
 
 if __name__ == "__main__":
     # Kind Remind
-    result = pct_avail_all(pd.read_csv(str(pathlib.Path(__file__).parent.absolute())+"/data/icu_data_with_na_v2.csv"), json.load(open(str(pathlib.Path(__file__).parent.absolute())+"/data/explanations.json")))
-    # result = pct_avail_pp("dialysis")["explanation"]
-    for feat_list in result["FeatureInfos"]:
-        print(feat_list["explanation"])
+    n_clusters = int(4)
+    clustered_data = pct_avail_clusters(n_clusters=n_clusters)
+    string_list = ''
+    print(type(clustered_data["FeatureInfos"]))
+    for item in clustered_data["FeatureInfos"]:
+        string_list += str(item["cluster_id"])
+    print(string_list)
     print("Please import the function pct_avail_pp instead of excute this file directly")
+    

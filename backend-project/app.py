@@ -1,18 +1,37 @@
+
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
+
 import uvicorn
 import pandas as pd
 import os
+
+#todo: add aiofiles to requirements if we want to use it
 import aiofiles
 import csv
-import codecs
+
 import pct_avail_pp
 from io import StringIO
 # from pydantic_models.example_data_points import ExampleDataResponse
-from typing import Callable
+
 # from sklearn.cluster import KMeans
 import impute
+
+import json
+import numpy as np
+
+# error for serialization
+class NpEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, np.integer):
+            return int(obj)
+        if isinstance(obj, np.floating):
+            return float(obj)
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        return super(NpEncoder, self).default(obj)
+
 
 app = FastAPI()
 
@@ -29,12 +48,21 @@ app.add_middleware(
 # df = pd.read_csv(f"data/icu_data_with_na_v2.csv")
 # JSONs = jsonify.JSONify()
 
-data = pd.DataFrame()  # this is our data!
 
-
-@app.get("/")
+@app.get("/", response_class=HTMLResponse)
 async def root():
-    return data
+    html_content = """
+        <html>
+            <head>
+                <title>Week 2</title>
+            </head>
+            <body>
+                <h1>Test Python Backend</h1>
+                Visit the <a href="/docs">API doc</a> (<a href="/redoc">alternative</a>) for usage information.
+            </body>
+        </html>
+        """
+    return HTMLResponse(content=html_content, status_code=200)
 
 
 @app.post("/data")
@@ -56,7 +84,9 @@ async def receive_data(file: UploadFile):
     content = f.read()
     """
 
-    global data
+    # TODO: DO NOT READ DATA LIKE THIS, you dont know if it is already written since you did this asynchronously.
+    # Write data synchronously and then read it if you want to do it this way, or process it directly
+    return{"variables": "Error: data not yet saved"}
     data = pd.read_csv(dest_path)
     variables = list(data.columns)
 
@@ -88,11 +118,12 @@ def get_cluster(n_clusters: str):
     n_clusters = int(n_clusters)
     clustered_data = pct_avail_pp.pct_avail_clusters(n_clusters=n_clusters)
     string_list = ''
+    print(type(clustered_data["FeatureInfos"]))
     for item in clustered_data["FeatureInfos"]:
         string_list += str(item["cluster_id"])
     print(string_list)
 
-    return clustered_data
+    return json.dumps(clustered_data, cls=NpEncoder)
 
 
 @app.post("/get-errors")
