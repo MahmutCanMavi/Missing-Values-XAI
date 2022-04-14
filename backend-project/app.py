@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 import pandas as pd
 import os
+import aiofiles
 import csv
 import codecs
 import pct_avail_pp
@@ -13,13 +14,7 @@ from typing import Callable
 # from sklearn.cluster import KMeans
 import impute
 
-app = FastAPI(
-    title="Test Python Backend",
-    description="""This is a template for a Python backend.
-                   It provides acess via REST API.""",
-    version="0.1.0",
-)
-
+app = FastAPI()
 
 # Allow CORS
 app.add_middleware(
@@ -34,87 +29,76 @@ app.add_middleware(
 # df = pd.read_csv(f"data/icu_data_with_na_v2.csv")
 # JSONs = jsonify.JSONify()
 
+data = pd.DataFrame()  # this is our data!
+
+
+@app.get("/")
+async def root():
+    return data
+
+
+@app.post("/data")
+async def receive_data(file: UploadFile):
+
+    print('got here!')
+
+    # path to temp folder within backend-project
+    dest_path = "./data/temp/" + file.filename
+
+    # create file and store in temp folder
+    async with aiofiles.open(dest_path, "wb") as out_file:
+        while content := await file.read(1024):
+            await out_file.write(content)
+
+    # read file
+    """
+    f = open(dest_path, "rb")
+    content = f.read()
+    """
+
+    global data
+    data = pd.read_csv(dest_path)
+    variables = list(data.columns)
+
+    # uncomment if you want to remove file after upload
+    # os.remove(dest_path)
+
+    return {"variables": variables}
+
+
+@app.get("/variables")
+async def get_variables():
+    return list(data.columns)
+
 
 @app.post("/get-data")
 def get_data(feature_name: str):
-    
+
     data = pct_avail_pp.pct_avail_pp(feature_name)
 
     return data
 
+
 @app.post("/get-clusters")
 def get_cluster(n_clusters: str):
-    
+
     print("New cluster number has been entered, loading ...")
     print("Number of clusters is: " + str(n_clusters))
     print("List if cluster id is: ")
     n_clusters = int(n_clusters)
-    clustered_data = pct_avail_pp.pct_avail_clusters(n_clusters = n_clusters)
+    clustered_data = pct_avail_pp.pct_avail_clusters(n_clusters=n_clusters)
     string_list = ''
     for item in clustered_data["FeatureInfos"]:
         string_list += str(item["cluster_id"])
     print(string_list)
 
-
-    
     return clustered_data
 
 
 @app.post("/get-errors")
 def get_errors(errors: list):
-    # Need to add a way to implement this s.t. the imputation 
+    # Need to add a way to implement this s.t. the imputation
     # method can be specified
     errors = impute.errors_e2e(errors)
-    
+
     return errors
-
-
-@app.post("/files/")
-async def create_file(file: bytes = File(...)):
-    return {"file_size": len(file)}
-
-
-@app.post("/uploadfile/")
-async def create_upload_file(file: UploadFile):
-    return {"filename": file.filename}
-
-
-@app.get("/", response_class=HTMLResponse)
-async def root():
-    html_content = """
-        <html>
-            <head>
-                <title>Week 2</title>
-            </head>
-            <body>
-                <h1>Test Python Backend</h1>
-                Visit the <a href="/docs">API doc</a> (<a href="/redoc">alternative</a>) for usage information.
-            </body>
-        </html>
-        """
-    return HTMLResponse(content=html_content, status_code=200)
-
-
-def update_schema_name(app: FastAPI, function: Callable, name: str) -> None:
-    """
-    Updates the Pydantic schema name for a FastAPI function that takes
-    in a fastapi.UploadFile = File(...) or bytes = File(...).
-
-    This is a known issue that was reported on FastAPI#1442 in which
-    the schema for file upload routes were auto-generated with no
-    customization options. This renames the auto-generated schema to
-    something more useful and clear.
-
-    Args:
-        app: The FastAPI application to modify.
-        function: The function object to modify.
-        name: The new name of the schema.
-    """
-    for route in app.routes:
-        if route.endpoint is function:
-            route.body_field.type_.__name__ = name
-            break
-
-
-update_schema_name(app, create_file, "CreateFileSchema")
-update_schema_name(app, create_upload_file, "CreateUploadSchema")

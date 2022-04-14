@@ -14,9 +14,18 @@ import D3Histogram from './components/d3histogram';
 import cached_data from './backend/cachedData'
 import ImputationMenu from './components/ImputationMenu'
 import { stackOffsetNone } from 'd3';
+import DataUploadPane from './components/DataUploadPane';
+
+interface AppState {
+  dataChoice: string, 
+  variables: string[], // names of variables in the data
+  isLoading: boolean, 
+  clusteredFeatures: ClusteredFeatures, 
+  selectedPct:FeatureInfo
+}
 
 
-class App extends React.Component<{}, {dataChoice: string, isLoading: boolean, clusteredFeatures: ClusteredFeatures, selectedPct:FeatureInfo}> {
+class App extends React.Component<{}, AppState> {
   
   constructor(props: any) {
     super(props);
@@ -29,6 +38,7 @@ class App extends React.Component<{}, {dataChoice: string, isLoading: boolean, c
     // var temClusteredFeatures = {"FeatureInfos": [{"feature_name":"SvO1","cluster_id":1,"pct_avail_pp":[]}]};
      
     this.state = {dataChoice: '4',
+                  variables: [],
                   isLoading: false,
                   clusteredFeatures: temClusteredFeatures,
                   selectedPct: temClusteredFeatures?.FeatureInfos[0],
@@ -84,8 +94,9 @@ class App extends React.Component<{}, {dataChoice: string, isLoading: boolean, c
         
           <main className="main">
             
-  
-        <div>
+        <DataUploadPane variables={this.state.variables} onChange={(vars: string[]) => this.setState({variables: vars})}/>
+
+        <div style={{marginTop: "20px"}}>
         < DataChoiceComponent onChoiceMade={this.setDataChoice.bind(this)}/>
         </div>
         <br/>
