@@ -17,7 +17,7 @@ import { stackOffsetNone } from 'd3';
 import DataUploadPane from './components/DataUploadPane';
 
 interface AppState {
-  dataChoice: string, 
+   
   variables: string[], // names of variables in the data
   isLoading: boolean, 
   clusteredFeatures: ClusteredFeatures, 
@@ -37,7 +37,7 @@ class App extends React.Component<{}, AppState> {
     ]}
     // var temClusteredFeatures = {"FeatureInfos": [{"feature_name":"SvO1","cluster_id":1,"pct_avail_pp":[]}]};
      
-    this.state = {dataChoice: '4',
+    this.state = {
                   variables: [],
                   isLoading: false,
                   clusteredFeatures: temClusteredFeatures,
@@ -50,23 +50,30 @@ class App extends React.Component<{}, AppState> {
     this.setState({isLoading: value});
   }
 
-  setDataChoice = (event: string) => {
+  setDataChoice = (n_clusters: string) => {
     this.setIsLoading(true);
-    console.log(event);
-    this.setState({dataChoice : event}, () => {                              
-      //callback
-      console.log(this.state.dataChoice); // myname
-      queryBackend(`get-clusters?n_clusters=` + event).then((clusteredvalues) => {
-        this.setState({clusteredFeatures: clusteredvalues}, () => {
-          //console.log(this.state.clusteredFeatures);
-        });
-        this.setIsLoading(false);
+    console.log(n_clusters);
+    
+    var queryStr = `get-clusters?n_clusters=`;
+    //callback
+    if (n_clusters == "d" ){
+      var queryStr = `get-dummy?`;
+    }
+
+    queryBackend(queryStr + n_clusters).then((clusteredvalues) => {
+   
+      
+      this.setState({clusteredFeatures: clusteredvalues}, () => {
+        
       });
+      
+      this.setIsLoading(false);
     });
+
     
   }
   
-  setSelectedPct(event: FeatureInfo){
+  setSelectedFeature(event: FeatureInfo){
     this.setState({selectedPct: event}, () => {
       //console.log(this.state.selectedPct);
     });
@@ -86,7 +93,7 @@ class App extends React.Component<{}, AppState> {
           <aside className="sidenav"><div className="gradientLegend"><svg height={40}><rect height={30} width={30} fill="black"></rect><text height={130} width={130} x={40} y={20}>100% Missing</text>
                   <rect height={30} width={30} x={150} fill="white"></rect><text height={130} width={130} x={190} y={20}>100% Available</text></svg></div>
         
-        {this.state.clusteredFeatures && <StackedGradients clusteredFeatures={this.state.clusteredFeatures} onSelect={this.setSelectedPct.bind(this)}/>}
+        {this.state.clusteredFeatures && <StackedGradients clusteredFeatures={this.state.clusteredFeatures} onSelectFeature={this.setSelectedFeature.bind(this)}/>}
         
         {this.state.isLoading && <div>Loading...</div>}</aside>
   

@@ -9,14 +9,16 @@ export interface queryBackendProps {
 export const BASE_URL = 'http://127.0.0.1:8000';
 
 export const queryBackend = async (route: string): Promise<ClusteredFeatures> => {
-//export const queryBackend = async (route: string): <ClusteredFeatures> => {
     const requestURL = `${BASE_URL}/${route}`;
     // const formData = new FormData();
     const data = await fetch(requestURL,
         {
             method: 'POST'
         }
-    ).then(response => response.json()).then(d => d as ClusteredFeatures);
+    )
+    .then(response =>  { return response.json()})
+    .then(d =>  JSON.parse(d) as ClusteredFeatures); // It seems we have to parse it again because it is a stringified string??
+    // https://stackoverflow.com/questions/42494823/json-parse-returns-string-instead-of-object
 
     return data;
 }
