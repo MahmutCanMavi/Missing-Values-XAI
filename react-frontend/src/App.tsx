@@ -1,6 +1,8 @@
 import React from "react";
 import { FeatureInfo, FeatureGroup } from './types/feature_types';
 import VizPage from './pages/VizPage';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import Navbar from './components/Navbar';
 
 interface AppState {
   data: FeatureInfo[] | null;
@@ -16,11 +18,17 @@ class App extends React.Component<{}, AppState> {
 
   render() {
     return (
-      {(pageActive === "viz") && <VizPage data={this.state.data} groups={this.state.groups}/>}
+      <div>
+      <Navbar pageActive={this.state.pageActive}/>
+      (this.state.pageActive === "viz") && <VizPage data={this.state.data} groups={this.state.groups}
+                                                handleDataUpload={console.log}/>)
+      </div>
     )
   }
 
 }
+
+export default App;
 
 
 // import React, { useEffect, useState } from 'react';
