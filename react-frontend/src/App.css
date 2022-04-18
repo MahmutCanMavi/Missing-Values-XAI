@@ -22,7 +22,8 @@
   flex: 33%;
 }
 .pageTitle{
-  padding:23px;
+  padding-top: 30px;
+  padding-left: 23px;
   text-align: left;
 }
 @media (max-width: 2000px){

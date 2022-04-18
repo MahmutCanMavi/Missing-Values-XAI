@@ -33,7 +33,8 @@ class VizPage extends React.Component<VizPageProps,VizState> {
         // sorting by avg pct avail
         
         return (<>
-            <aside className="sidenav">        
+            <aside className="sidenav">  
+              At the moment, the upload is not yet connected with the backend, and when you upload a file, it only requests a static dataset trom the backend      
                 {this.props.data && <StackedGradients 
                     data={this.props.data} 
                     onSelectFeature={this.setSelectedFeature.bind(this)}/>}
