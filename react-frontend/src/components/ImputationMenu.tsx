@@ -1,10 +1,10 @@
 import React from 'react';
 
 // Type for Feature Group
-type FeatureGroup = {
+export type FeatureGroup = {
     name: string, // name of the group, for example "Cluster1"
     features: string[] // features contained in the group
-  }
+}
 
 // ImputationMenu: component to choose imputation method for all feature groups
 class ImputationMenu extends React.Component<{ groups: FeatureGroup[] },{}> {
@@ -54,4 +54,4 @@ class ImputationOptions extends React.Component<{feature_group: FeatureGroup},{c
     }
 }
 
-export default ImputationMenu;
+export { ImputationMenu };
