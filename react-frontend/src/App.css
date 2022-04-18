@@ -9,20 +9,51 @@
 }
 
 .header {
-  text-transform: uppercase;
+  /* text-transform: uppercase; */
   font-size: 25px;
   
-  padding-top:10px;
+  
   color: rgb(7, 16, 44);
   z-index: 1;
-  text-align: center;
+  /* text-align: center; */
+  display: flex;
 }
-
+.navbar, .pageTitle {
+  flex: 33%;
+}
+.pageTitle{
+  padding:23px;
+  text-align: left;
+}
 @media (max-width: 2000px){
   .App-header{
-    margin: 15px 0;
+    margin: 10px 0;
     font-size: 35px;
   }
+}
+
+.navbar{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+.navbar div {
+    margin-top:12px;
+    padding: 20px;
+    cursor: pointer;
+    
+}
+@media (max-width: 1200px){
+  .pageTitle{
+    display: none;
+  }
+}
+
+.navbar div:hover {
+  background-color: gray;
+}
+.navbar div.selected, .navbar div.selected:hover {
+  background-color: white;
 }
 
 

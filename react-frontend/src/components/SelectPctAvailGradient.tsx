@@ -58,8 +58,11 @@ class SelectPctAvailGradient extends React.Component<SingleBar,{}> {
         
         return (<div className="pctAvailGradient" style={{height: string_height+"px"}} onClick={this.onSelectFeature.bind(this)}  > {/* containing div with css class for styling */}
             <svg className='gradient'  viewBox={"0 0 " + data.length + " 10"} preserveAspectRatio="none">${
-                data.map((val, idx, arr) => (<rect x={idx} key={idx} width="2" height="10" fill={color(val)}></rect>))
+                data.map((val, idx, arr) => (<rect x={idx} key={idx} width="2" height="10" fill={color(val)}></rect> 
+                
+                ))
             }</svg>
+            {this.showTitle &&  <span>&nbsp;&nbsp;{title}</span>} 
 
         </div>)
         /* <button  style = {clearStyle} >

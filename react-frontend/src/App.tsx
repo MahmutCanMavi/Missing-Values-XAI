@@ -1,6 +1,7 @@
 import React from "react";
 import { FeatureInfo, FeatureGroup } from './types/feature_types';
 import VizPage from './pages/VizPage';
+import './App.css';
 //import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbar from './components/Navbar';
 
@@ -15,6 +16,7 @@ class App extends React.Component<{}, AppState> {
     super(props);
     this.state = {data: null, groups: null, pageActive: "viz"};
     this.handleDataUpload=this.handleDataUpload.bind(this);
+    this.setPageActive=this.setPageActive.bind(this);
   }
   handleDataUpload(data: FeatureInfo[] | null){
     // var dummydata= [
@@ -29,14 +31,22 @@ class App extends React.Component<{}, AppState> {
       console.log("don't have any data!");
     }
   }
+  setPageActive(pageActive:"viz" | "group" | "impute"){
+    this.setState({pageActive:pageActive})
+  }
 
   render() {
     return (
       <div className="App">
-       <div className="grid-container">
-       <header className="header"> Missing Values Dashboard</header>
-        {//<Navbar pageActive={this.state.pageActive}/>
-    }
+      <div className="grid-container">
+      <header className="header"> 
+        <div className="pageTitle">Missing Values Dashboard</div>
+        <Navbar pageActive={this.state.pageActive} setPageActive={this.setPageActive}/> 
+        <div className="pageTitle"></div>
+        
+      </header>
+        
+    
         {(this.state.pageActive === "viz") && <VizPage data={this.state.data} groups={this.state.groups}
                                                   handleDataUpload={this.handleDataUpload}/>}
       <footer className="footer">By Yan, Talu, David and Michael</footer>
