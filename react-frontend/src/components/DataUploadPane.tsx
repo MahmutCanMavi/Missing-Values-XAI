@@ -1,7 +1,8 @@
 import React from "react";
 import { fileURLToPath } from "url";
-import getVariablesFromBackend from "../backend/getVariablesFromBackend";
-import postDataToBackend from "../backend/postDataToBackend";
+//import getVariablesFromBackend from "../backend/getVariablesFromBackend";
+//import postDataToBackend from "../backend/postDataToBackend";
+import queryData from "../backend/queryData";
 import axios from 'axios';
 
 
@@ -36,20 +37,18 @@ class DataInput extends React.Component<{onFileSelection: Function},{}> {
 }
 
 
-class DataUploadPane extends React.Component<{variables: string[], onChange: Function},{}> {
-    constructor(props: {variables: string[], onChange: Function}) {
+class DataUploadPane extends React.Component<{features: string[], onChange: Function},{}> {
+    constructor(props: {features: string[], onChange: Function}) {
         super(props);
         this.handleFileSelection = this.handleFileSelection.bind(this);
     }
     
     handleFileSelection(file: any) {
-        console.log(file);
-        // I am getting the right file!
 
-        // Now send it to the back.
-        postDataToBackend(file).then(() =>
-            getVariablesFromBackend().then(vars => this.props.onChange(vars))
-        );
+        // we're grabbing the user-provided file from the file dialog,
+        // but not doing anything with it
+
+        this.props.onChange(queryData("get-dummy").then()) // in the right format for App component state
     }
 
     // async uploadFile (e: any) {
