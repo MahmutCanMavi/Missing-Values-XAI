@@ -78,31 +78,34 @@ class App extends React.Component<{}, AppState> {
 //     // this.setState()
 //   }
 
-//   setIsLoading(value: boolean){
-//     this.setState({isLoading: value});
-//   }
+  // setDataChoice = (n_clusters: string) => {
+  //   this.setIsLoading(true);
+  //   console.log(n_clusters);
+    
+  //   var queryStr = `get-clusters?n_clusters=`;
+  //   //callback
+  //   if (n_clusters == "d" ){
+  //     var queryStr = `get-dummy?`;
+  //   }
 
-//   setDataChoice = (event: string) => {
-//     this.setIsLoading(true);
-//     console.log(event);
-//     this.setState({dataChoice : event}, () => {                              
-//       //callback
-//       console.log(this.state.dataChoice); // myname
-//       queryBackend(`get-clusters?n_clusters=` + event).then((clusteredvalues) => {
-//         this.setState({clusteredFeatures: clusteredvalues}, () => {
-//           //console.log(this.state.clusteredFeatures);
-//         });
-//         this.setIsLoading(false);
-//       });
-//     });
+  //   queryBackend(queryStr + n_clusters).then((clusteredvalues) => {
+   
+      
+  //     this.setState({clusteredFeatures: clusteredvalues}, () => {
+        
+  //     });
+      
+  //     this.setIsLoading(false);
+  //   });
+
     
 //   }
   
-//   setSelectedPct(event: FeatureInfo){
-//     this.setState({selectedPct: event}, () => {
-//       //console.log(this.state.selectedPct);
-//     });
-//   }
+  // setSelectedFeature(event: FeatureInfo){
+  //   this.setState({selectedPct: event}, () => {
+  //     //console.log(this.state.selectedPct);
+  //   });
+  // }
 
 //   render(){
   
@@ -118,7 +121,7 @@ class App extends React.Component<{}, AppState> {
 //           <aside className="sidenav"><div className="gradientLegend"><svg height={40}><rect height={30} width={30} fill="black"></rect><text height={130} width={130} x={40} y={20}>100% Missing</text>
 //                   <rect height={30} width={30} x={150} fill="white"></rect><text height={130} width={130} x={190} y={20}>100% Available</text></svg></div>
         
-//         {this.state.clusteredFeatures && <StackedGradients clusteredFeatures={this.state.clusteredFeatures} onSelect={this.setSelectedPct.bind(this)}/>}
+//         {this.state.clusteredFeatures && <StackedGradients clusteredFeatures={this.state.clusteredFeatures} onSelectFeature={this.setSelectedFeature.bind(this)}/>}
         
 //         {this.state.isLoading && <div>Loading...</div>}</aside>
   

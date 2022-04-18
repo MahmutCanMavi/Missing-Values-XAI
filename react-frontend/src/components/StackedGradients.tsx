@@ -6,11 +6,12 @@ import * as d3 from 'd3' // can create problems with types! if so use the one be
 
 import { ClusteredFeatures } from '../types/ClusteredFeatures';
 import SelectPctAvailGradient from './SelectPctAvailGradient';
+import { stringify } from 'querystring';
 
 type Gradients = {
     clusteredFeatures: ClusteredFeatures;
     showTitle?: boolean;
-    onSelect: any;
+    onSelectFeature: any;
   }
 
 
@@ -20,30 +21,35 @@ class StackedGradients extends React.Component<Gradients, {}> {
     constructor(props: Gradients) {
         super(props);
         this.current_number = 0;
+        //this.onSelectFeature = this.onSelectFeature.bind(this)
     }
 
-    choosePct = (event: FeatureInfo) => {
-        this.props.onSelect(event);
+    onSelectFeature = (event: FeatureInfo) => {
+        this.props.onSelectFeature(event);
     }
 
     render(){
-        var total_string;
-        total_string = [];
-        var arrayLength = this.props.clusteredFeatures.FeatureInfos.length;
-        var featureInfosSorted= this.props.clusteredFeatures.FeatureInfos.sort((a, b) => (a.pct_avail_pp.map(pct=>pct.pct_avail).reduce((a,b)=>a+b,0)/a.pct_avail_pp.length < b.pct_avail_pp.map(pct=>pct.pct_avail).reduce((a,b)=>a+b,0)/b.pct_avail_pp.length ? 1 : -1));
-        
-        for (var i = 0; i < arrayLength; i++) {
-            // console.log(this.current_number);
-            this.current_number = i; 
-            var featureInfo = featureInfosSorted[i];
-            var current_text = <SelectPctAvailGradient key={i} featureInfo={featureInfo} showTitle height={28} onMouseDown={this.choosePct.bind(this)} />;
-            total_string.push(current_text);
-        }
 
+        //console.log("props",typeof(this.props.clusteredFeatures));
+        //console.log("infos",this.props.clusteredFeatures.FeatureInfos);
+         // sorting by cluster
+        //featureInfosSorted= clusteredFeatures.FeatureInfos.sort((a, b) => (a.cluster_id > b.cluster_id) ? 1 : -1);
+        
+        // sorting by avg pct avail
+        const featureInfosSorted= this.props.clusteredFeatures.FeatureInfos.sort((a, b) => (a.pct_avail_pp.map(pct=>pct.pct_avail).reduce((a,b)=>a+b,0)/a.pct_avail_pp.length < b.pct_avail_pp.map(pct=>pct.pct_avail).reduce((a,b)=>a+b,0)/b.pct_avail_pp.length ? 1 : -1));
+        
+       
         return (<div className='gradients'>
-            {total_string}
+                {featureInfosSorted.map((featureInfo,i)=>
+                    <>
+
+                    <SelectPctAvailGradient key={featureInfo.feature_name} featureInfo={featureInfo} 
+                    showTitle height={28} onSelectFeature={this.onSelectFeature} />            
+                    </>
+                    )
+                }
             </div>
-            )
+        )
     }
 }
 
