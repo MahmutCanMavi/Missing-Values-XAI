@@ -11,21 +11,17 @@ class Navbar extends React.Component<NavbarProps,{}> {
 
     render() {
         return (
-            <div>
+            <div className="navbar">
+                <div className={(this.props.pageActive=="viz")?"selected":""}>
+                Vizualize
+                </div>
+                <div className={(this.props.pageActive=="group")?"selected":""}>
+                Group
+                </div>
+                <div className={(this.props.pageActive=="impute")?"selected":""}>
+                Impute
+                </div>
 
-            </div>
-        )
-    }
-}
-
-class NavbarItem extends React.Component<{isSelected: boolean},{}> {
-    constructor(props: {isSelected: boolean}) {
-        super(props);
-    }
-
-    render() {
-        return (
-            <div className={"NavbarItem "+(this.props.isSelected?"selected":"")}>
             </div>
         )
     }

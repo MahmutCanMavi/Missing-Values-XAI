@@ -3,7 +3,7 @@ import React from 'react';
 import * as d3 from "d3";
 
 import Histogram from './d3histogramObservableHQ';
-import { FeatureInfo } from '../types/FeatureInfo';
+import { FeatureInfo } from '../types/feature_types';
 
 interface D3ComponentProps {
     featureInfo: FeatureInfo;

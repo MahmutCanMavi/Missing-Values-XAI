@@ -33,10 +33,13 @@ class App extends React.Component<{}, AppState> {
   render() {
     return (
       <div className="App">
-       <div className="grid-container">
-       <header className="header"> Missing Values Dashboard</header>
-        {//<Navbar pageActive={this.state.pageActive}/>
-    }
+      <div className="grid-container">
+      <header className="header"> 
+        <Navbar pageActive={this.state.pageActive}/> 
+        <div className="pageTitle">Missing Values Dashboard</div>
+      </header>
+        
+    
         {(this.state.pageActive === "viz") && <VizPage data={this.state.data} groups={this.state.groups}
                                                   handleDataUpload={this.handleDataUpload}/>}
       <footer className="footer">By Yan, Talu, David and Michael</footer>
