@@ -25,7 +25,7 @@ class NavbarItem extends React.Component<{isSelected: boolean},{}> {
 
     render() {
         return (
-            <div className="NavbarItem">
+            <div className={"NavbarItem "+(this.props.isSelected?"selected":"")}>
             </div>
         )
     }
