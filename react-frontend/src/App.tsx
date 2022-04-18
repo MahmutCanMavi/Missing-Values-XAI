@@ -16,6 +16,7 @@ class App extends React.Component<{}, AppState> {
     super(props);
     this.state = {data: null, groups: null, pageActive: "viz"};
     this.handleDataUpload=this.handleDataUpload.bind(this);
+    this.setPageActive=this.setPageActive.bind(this);
   }
   handleDataUpload(){
     var dummydata= [
@@ -29,14 +30,19 @@ class App extends React.Component<{}, AppState> {
   componentDidMount(){
     this.handleDataUpload()
   }
+  setPageActive(pageActive:"viz" | "group" | "impute"){
+    this.setState({pageActive:pageActive})
+  }
 
   render() {
     return (
       <div className="App">
       <div className="grid-container">
       <header className="header"> 
-        <Navbar pageActive={this.state.pageActive}/> 
         <div className="pageTitle">Missing Values Dashboard</div>
+        <Navbar pageActive={this.state.pageActive} setPageActive={this.setPageActive}/> 
+        <div className="pageTitle"></div>
+        
       </header>
         
     

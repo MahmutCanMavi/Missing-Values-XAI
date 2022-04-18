@@ -19,11 +19,11 @@
   display: flex;
 }
 .navbar, .pageTitle {
-  flex: 50%;
+  flex: 33%;
 }
 .pageTitle{
-  padding-top:25px;
-  text-align: right;
+  padding:23px;
+  text-align: left;
 }
 @media (max-width: 2000px){
   .App-header{
@@ -35,13 +35,24 @@
 .navbar{
   display: flex;
   flex-direction: row;
+  justify-content: center;
 }
 .navbar div {
-  
-    padding: 10px;
-    height: 100%;
+    margin-top:12px;
+    padding: 20px;
+    cursor: pointer;
+    
 }
-.navbar div.selected {
+@media (max-width: 1200px){
+  .pageTitle{
+    display: none;
+  }
+}
+
+.navbar div:hover {
+  background-color: gray;
+}
+.navbar div.selected, .navbar div.selected:hover {
   background-color: white;
 }
 
