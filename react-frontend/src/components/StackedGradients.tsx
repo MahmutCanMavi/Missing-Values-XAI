@@ -1,17 +1,16 @@
 import React from 'react';
-import { FeatureInfo } from '../types/FeatureInfo';
-import * as d3 from 'd3' // can create problems with types! if so use the one below
-
+import  {FeatureInfo} from '../types/feature_types';
+//import * as d3 from 'd3' // can create problems with types! if so use the one below
 //var d3: any = require('d3')
 
-import { ClusteredFeatures } from '../types/ClusteredFeatures';
+
 import SelectPctAvailGradient from './SelectPctAvailGradient';
-import { stringify } from 'querystring';
+
 
 type Gradients = {
-    clusteredFeatures: ClusteredFeatures;
+    data: FeatureInfo[];
     showTitle?: boolean;
-    onSelectFeature: any;
+    onSelectFeature: Function;
   }
 
 
@@ -36,20 +35,22 @@ class StackedGradients extends React.Component<Gradients, {}> {
         //featureInfosSorted= clusteredFeatures.FeatureInfos.sort((a, b) => (a.cluster_id > b.cluster_id) ? 1 : -1);
         
         // sorting by avg pct avail
-        const featureInfosSorted= this.props.clusteredFeatures.FeatureInfos.sort((a, b) => (a.pct_avail_pp.map(pct=>pct.pct_avail).reduce((a,b)=>a+b,0)/a.pct_avail_pp.length < b.pct_avail_pp.map(pct=>pct.pct_avail).reduce((a,b)=>a+b,0)/b.pct_avail_pp.length ? 1 : -1));
+        const featureInfosSorted= this.props.data.sort((a, b) => (a.pct_avail_pp.map(pct=>pct.pct_avail).reduce((a,b)=>a+b,0)/a.pct_avail_pp.length < b.pct_avail_pp.map(pct=>pct.pct_avail).reduce((a,b)=>a+b,0)/b.pct_avail_pp.length ? 1 : -1));
         
        
-        return (<div className='gradients'>
+        return (<>
+            <div className="gradientLegend"><svg height={40}><rect height={30} width={30} fill="black"></rect><text height={130} width={130} x={40} y={20}>100% Missing</text>
+                   <rect height={30} width={30} x={150} fill="white"></rect><text height={130} width={130} x={190} y={20}>100% Available</text></svg></div>
+            <div className='gradients'>
                 {featureInfosSorted.map((featureInfo,i)=>
-                    <>
 
                     <SelectPctAvailGradient key={featureInfo.feature_name} featureInfo={featureInfo} 
                     showTitle height={28} onSelectFeature={this.onSelectFeature} />            
-                    </>
+                    
                     )
                 }
             </div>
-        )
+        </>)
     }
 }
 
