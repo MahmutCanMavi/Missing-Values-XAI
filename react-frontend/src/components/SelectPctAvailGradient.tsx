@@ -1,5 +1,5 @@
 import React from 'react';
-import { FeatureInfo } from '../types/FeatureInfo';
+import { FeatureInfo } from '../types/feature_types';
 import * as d3 from 'd3' // can create problems with types! if so use the one below
 //var d3: any = require('d3')
 import ReactDOM from 'react-dom';
@@ -59,13 +59,15 @@ class SelectPctAvailGradient extends React.Component<SingleBar,{}> {
         return (<div className="pctAvailGradient" style={{height: string_height+"px"}} onClick={this.onSelectFeature.bind(this)}  > {/* containing div with css class for styling */}
             <svg className='gradient'  viewBox={"0 0 " + data.length + " 10"} preserveAspectRatio="none">${
                 data.map((val, idx, arr) => (<rect x={idx} key={idx} width="2" height="10" fill={color(val)}></rect>))
-            }</svg><svg className="cluster"><circle cx={10} cy={8} r={7} fill={cluster_color(this.featureInfo.cluster_id)} ></circle></svg> {this.showTitle && <span>{title}</span>} 
-            
+            }</svg>
 
         </div>)
         /* <button  style = {clearStyle} >
                 Show
-            </button> */
+            </button> 
+            
+            <svg className="cluster"><circle cx={10} cy={8} r={7} fill={cluster_color(this.featureInfo.cluster_id)} ></circle></svg> {this.showTitle && <span>{title}</span>} 
+            */
     }
     
 }

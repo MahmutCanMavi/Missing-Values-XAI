@@ -52,7 +52,7 @@ export default VizPage;
 
 
 
-
+/*
 
 interface AppState {
     dataChoice: string, 
@@ -114,3 +114,4 @@ interface AppState {
       
     }
     
+*/

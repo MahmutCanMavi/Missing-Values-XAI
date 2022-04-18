@@ -1,7 +1,7 @@
 import React from "react";
 import { FeatureInfo, FeatureGroup } from './types/feature_types';
 import VizPage from './pages/VizPage';
-import 'bootstrap/dist/css/bootstrap.min.css';
+//import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbar from './components/Navbar';
 
 interface AppState {
@@ -14,14 +14,32 @@ class App extends React.Component<{}, AppState> {
   constructor(props: {}) {
     super(props);
     this.state = {data: null, groups: null, pageActive: "viz"};
+    this.handleDataUpload=this.handleDataUpload.bind(this);
+  }
+  handleDataUpload(){
+    var dummydata= [
+            {"feature_name":"SvO1","description":null,"imputation_error":null,"pct_avail_pp":[{"patient_id":1,"pct_avail":0.2},{"patient_id":2,"pct_avail":0.9484536082474226},{"patient_id":3,"pct_avail":0.7422680412371134},{"patient_id":4,"pct_avail":0.6185567010309279}]},
+            {"feature_name":"SvO2","description":null,"imputation_error":null,"pct_avail_pp":[{"patient_id":1,"pct_avail":0.4},{"patient_id":2,"pct_avail":0.9484536082474226},{"patient_id":3,"pct_avail":0.7422680412371134},{"patient_id":4,"pct_avail":0.6185567010309279}]},
+            {"feature_name":"SvO3","description":null,"imputation_error":null,"pct_avail_pp":[{"patient_id":1,"pct_avail":0.6},{"patient_id":2,"pct_avail":0.9484536082474226},{"patient_id":3,"pct_avail":0.7422680412371134},{"patient_id":4,"pct_avail":0.6185567010309279}]},
+            {"feature_name":"SvO4","description":null,"imputation_error":null,"pct_avail_pp":[{"patient_id":1,"pct_avail":0.8},{"patient_id":2,"pct_avail":0.9484536082474226},{"patient_id":3,"pct_avail":0.7422680412371134},{"patient_id":4,"pct_avail":0.6185567010309279}]}
+          ]
+    this.setState({data:dummydata})
+  }
+  componentDidMount(){
+    this.handleDataUpload()
   }
 
   render() {
     return (
-      <div>
-      <Navbar pageActive={this.state.pageActive}/>
-      (this.state.pageActive === "viz") && <VizPage data={this.state.data} groups={this.state.groups}
-                                                handleDataUpload={console.log}/>)
+      <div className="App">
+       <div className="grid-container">
+       <header className="header"> Missing Values Dashboard</header>
+        {//<Navbar pageActive={this.state.pageActive}/>
+    }
+        {(this.state.pageActive === "viz") && <VizPage data={this.state.data} groups={this.state.groups}
+                                                  handleDataUpload={this.handleDataUpload}/>}
+      <footer className="footer">By Yan, Talu, David and Michael</footer>
+      </div>
       </div>
     )
   }
