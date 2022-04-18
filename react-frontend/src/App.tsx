@@ -1,6 +1,7 @@
 import React from "react";
 import { FeatureInfo, FeatureGroup } from './types/feature_types';
 import VizPage from './pages/VizPage';
+import './App.css';
 //import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbar from './components/Navbar';
 
