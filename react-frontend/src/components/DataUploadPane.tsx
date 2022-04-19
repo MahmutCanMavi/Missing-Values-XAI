@@ -48,7 +48,7 @@ class DataUploadPane extends React.Component<{features: string[], onChange: Func
         // we're grabbing the user-provided file from the file dialog,
         // but not doing anything with it
 
-        this.props.onChange(queryData("get-dummy").then()) // in the right format for App component state
+        queryData("get-dummy").then(response => (this.props.onChange(response))) // in the right format for App component state
     }
 
     // async uploadFile (e: any) {
@@ -66,7 +66,7 @@ class DataUploadPane extends React.Component<{features: string[], onChange: Func
                 <DataInput onFileSelection={this.handleFileSelection}/>
                 <label>
                     Variables:
-                    {" " + this.props.variables.join(', ')}
+                    {" " + this.props.features.join(', ')}
                 </label>
             </div>
         )

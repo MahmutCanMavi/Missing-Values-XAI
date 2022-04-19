@@ -1,4 +1,3 @@
-import { DataArray } from "../types/DataArray";
 // import { FeatureInfo } from "../types/FeatureInfo";
 import { FeatureInfo } from "../types/feature_types";
 
@@ -13,7 +12,7 @@ export const queryData = async (route: string): Promise<FeatureInfo[]> => {
         }
     )
     .then(response =>  { return response.json()})
-    .then(d =>  JSON.parse(d) as FeatureInfo[]); 
+    .then(d =>  JSON.parse(d).data as FeatureInfo[]); 
     // It seems we have to parse it again because it is a stringified string??
     // https://stackoverflow.com/questions/42494823/json-parse-returns-string-instead-of-object
 

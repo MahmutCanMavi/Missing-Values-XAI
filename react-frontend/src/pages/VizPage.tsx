@@ -31,11 +31,13 @@ class VizPage extends React.Component<VizPageProps,VizState> {
         //const featureInfosSorted= this.props.data.sort((a, b) => (a.cluster_id > b.cluster_id) ? 1 : -1);
         
         // sorting by avg pct avail
-
-         const feature_names = (this.props.data) ? this.props.data?.map( (val,idx) => val.feature_name ) : [];
-        
+        console.log(this.props.data)
+         let feature_names = (this.props.data) ? (this.props.data).map( (val: FeatureInfo,idx: number) => val.feature_name ) : [];
+         if (feature_names.length > 5) {
+             feature_names = feature_names.slice(0,5)
+             feature_names.push("...");
+         }
         return (<>
-            <DataUploadPane features={feature_names} onChange={this.props.handleDataUpload}/>
 
             <aside className="sidenav">        
                 {this.props.data && <StackedGradients 
@@ -44,7 +46,7 @@ class VizPage extends React.Component<VizPageProps,VizState> {
             </aside>
 
             <main className="main">          
-                
+                <DataUploadPane features={feature_names} onChange={this.props.handleDataUpload}/>
                 <hr/>
                 {this.state.selectedFeature && <D3Histogram featureInfo={this.state.selectedFeature}/>}
             </main>
