@@ -20,8 +20,8 @@ async function postDataToBackend (file){
     const headers={'Content-Type': file.type};
 
     let res = await axios.post(destination, fd, headers);
+    res.then((res)=>console.log(res))
     
-    console.log(res);
     console.log('posted data to backend');
 }
 

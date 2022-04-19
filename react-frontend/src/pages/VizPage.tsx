@@ -38,8 +38,13 @@ class VizPage extends React.Component<VizPageProps,VizState> {
              feature_names.push("...");
          }
         return (<>
+<<<<<<< HEAD
 
             <aside className="sidenav">        
+=======
+            <aside className="sidenav">  
+              At the moment, the upload is not yet connected with the backend, and when you upload a file, it only requests a static dataset trom the backend      
+>>>>>>> ed54326437e22dd03246a2d7c42833bfdc2ea9dd
                 {this.props.data && <StackedGradients 
                     data={this.props.data} 
                     onSelectFeature={this.setSelectedFeature.bind(this)}/>}

@@ -69,6 +69,11 @@ def save_file(filename, data):
 
 @app.post("/upload-data")
 async def upload(file: UploadFile = File(...)):
+    
+    # if file is not .csv, return error
+
+    
+    # security: this filename might need to be escaped to be sure
     dest_path = "./data/temp/" + file.filename
     contents = await file.read()
     save_file( dest_path, contents)
@@ -77,8 +82,13 @@ async def upload(file: UploadFile = File(...)):
 
     # uncomment if you want to remove file after upload
     # os.remove(dest_path)
+    
 
-    return get_dummy()
+    # uncomment if you want to remove file after upload
+    # os.remove(dest_path)
+
+    return {"variables": variables}
+    #return get_dummy()
     
 
 @app.post("/data")
