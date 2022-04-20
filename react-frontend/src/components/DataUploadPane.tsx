@@ -62,7 +62,7 @@ class DataUploadPane extends React.Component<{features: string[], onChange: Func
         const max_tries=15;
         while (result == null && i <= max_tries){
             try {
-                result = await axios.post('http://127.0.0.1:8000/get-data', form, {headers:headers});
+                result = await axios.post('http://127.0.0.1:8000/upload-data', form, {headers:headers});
             }
             catch (error:any){
 
