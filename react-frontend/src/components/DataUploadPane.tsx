@@ -4,17 +4,16 @@ import { fileURLToPath } from "url";
 //import postDataToBackend from "../backend/postDataToBackend";
 import queryData from "../backend/queryData";
 import axios from 'axios';
+import { isLabeledStatement } from "typescript";
+import { FeatureInfo } from "../types/feature_types";
+import { stratify } from "d3";
 
 
-// async function handleUpload(file: any) {
-//     const form = new FormData();
-
-//     form.append('file', file, file.name);
-//     const headers={'Content-Type': file.type};
-//     const res = await axios.post('http://127.0.0.1:8000/data/', form, headers)
-    
-//     console.log(res)
-// }
+function delay(n:number){
+    return new Promise(function(resolve){
+        setTimeout(resolve,n*1000);
+    });
+}
 
 class DataInput extends React.Component<{onFileSelection: Function},{}> {
     constructor(props: {onFileSelection: Function}) {
@@ -37,19 +36,90 @@ class DataInput extends React.Component<{onFileSelection: Function},{}> {
 }
 
 
-class DataUploadPane extends React.Component<{features: string[], onChange: Function},{}> {
+class DataUploadPane extends React.Component<{features: string[], onChange: Function},{isLoading:boolean,uploadError:string|null}> {
     constructor(props: {features: string[], onChange: Function}) {
         super(props);
+        this.state = {isLoading: false, uploadError:null};
         this.handleFileSelection = this.handleFileSelection.bind(this);
     }
-    
-    handleFileSelection(file: any) {
 
-        // we're grabbing the user-provided file from the file dialog,
-        // but not doing anything with it
+    async uploadAndReceiveData(file:any) {
+        // this function is very similar to queryBackend. It also sends a request and returns data. 
+        
 
-        queryData("get-dummy").then(response => (this.props.onChange(response))) // in the right format for App component state
+        this.setState({isLoading:true, uploadError:null})
+
+        // as usual, to upload file we create a form
+        const form = new FormData();
+        form.append('file', file, file.name);
+        const headers={'Content-Type': file.type};
+        
+        // console.log("sending request")
+
+        //dirty fixing of the backend error: just try again until it works
+        let result = null;
+        let i=0;
+        const max_tries=15;
+        while (result == null && i <= max_tries){
+            try {
+                result = await axios.post('http://127.0.0.1:8000/upload-data/', form, {headers:headers});
+            }
+            catch (error:any){
+
+                // // uncomment to debug
+                // if (error.response) {
+                //     // The request was made and the server responded with a status code
+                //     // that falls out of the range of 2xx
+                //     console.log(error.response.data);
+                //     console.log(error.response.status);
+                //     console.log(error.response.headers);
+                //   } else if (error.request) {
+                //     // The request was made but no response was received
+                //     // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+                //     // http.ClientRequest in node.js
+                //     console.log(error.request);
+                //   } else {
+                //     // Something happened in setting up the request that triggered an Error
+                //     console.log('Error', error.message);
+                //   }
+                //   console.log(error.config);
+
+                //if max tries is reached
+                if (i>=(max_tries-1)){
+                    this.setState({isLoading: false, uploadError:"Upload failed, try again"})
+                    console.log("max tries exceeded, check the server logs for errors")
+                    throw error;
+                }
+                else {
+                    console.log("Upload: try no. "+i.toString())
+                    await delay(0.5);
+                }
+            }
+            i= i+1;
+        }
+        if(result && result.data){
+            this.setState({isLoading: false, uploadError:null})
+        }
+        else{
+            this.setState({isLoading: false, uploadError:"Upload failed, try again"})
+            throw new Error("Result or result.data is empty")
+        }
+        // result.data has the actual message that is sent in the return clause of the server. 
+        return JSON.parse(result.data)
     }
+    
+    async handleFileSelection(file: any) {
+
+        
+
+        // we cannot easily do type-checking after typescript compilation ->
+        // careful, the statement "data as FeatureInfo[]" does not actually check in runtime if it conforms to the interface
+        // we have no guarantees, if we want to be sure, it might be easier to implement it server-side in pydantic
+        const data = await this.uploadAndReceiveData(file); // as FeatureInfo[]
+        this.props.onChange(data);
+        
+        
+        }
 
     // async uploadFile (e: any) {
     //     const form = new FormData();
@@ -63,11 +133,14 @@ class DataUploadPane extends React.Component<{features: string[], onChange: Func
     render() {
         return (
             <div>
+                
                 <DataInput onFileSelection={this.handleFileSelection}/>
                 <label>
                     Variables:
                     {" " + this.props.features.join(', ')}
                 </label>
+                {this.state.isLoading && <span className="isLoading">Uploading...</span>}
+                {this.state.uploadError && <span className="uploadError">{this.state.uploadError}</span>}
             </div>
         )
     }

@@ -31,26 +31,21 @@ class VizPage extends React.Component<VizPageProps,VizState> {
         //const featureInfosSorted= this.props.data.sort((a, b) => (a.cluster_id > b.cluster_id) ? 1 : -1);
         
         // sorting by avg pct avail
-        console.log(this.props.data)
+        // console.log(this.props.data)
          let feature_names = (this.props.data) ? (this.props.data).map( (val: FeatureInfo,idx: number) => val.feature_name ) : [];
          if (feature_names.length > 5) {
              feature_names = feature_names.slice(0,5)
              feature_names.push("...");
          }
         return (<>
-<<<<<<< HEAD
-
-            <aside className="sidenav">        
-=======
             <aside className="sidenav">  
-              At the moment, the upload is not yet connected with the backend, and when you upload a file, it only requests a static dataset trom the backend      
->>>>>>> ed54326437e22dd03246a2d7c42833bfdc2ea9dd
                 {this.props.data && <StackedGradients 
                     data={this.props.data} 
                     onSelectFeature={this.setSelectedFeature.bind(this)}/>}
             </aside>
 
-            <main className="main">          
+            <main className="main">   
+            Choose a csv file from the folder example-data. They are the same dataset, only the variable names are changed such that you can see if it was actually loaded.       
                 <DataUploadPane features={feature_names} onChange={this.props.handleDataUpload}/>
                 <hr/>
                 {this.state.selectedFeature && <D3Histogram featureInfo={this.state.selectedFeature}/>}

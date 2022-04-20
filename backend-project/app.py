@@ -12,7 +12,8 @@ import csv
 
 import pct_avail_pp
 from io import StringIO
-# from pydantic_models.example_data_points import ExampleDataResponse
+from pydantic_models.feature_info import FeatureInfoList
+from pydantic import ValidationError
 
 # from sklearn.cluster import KMeans
 import impute
@@ -29,16 +30,17 @@ class NpEncoder(json.JSONEncoder):
             return float(obj)
         if isinstance(obj, np.ndarray):
             return obj.tolist()
+        
         return super(NpEncoder, self).default(obj)
 
 
-app = FastAPI()
+app = FastAPI(debug=True)
 
 # Allow CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_methods=["*"],
+    allow_methods=["GET","POST"],
     allow_headers=["*"],
 )
 
@@ -69,7 +71,7 @@ def save_file(filename, data):
 
 @app.post("/upload-data")
 async def upload(file: UploadFile = File(...)):
-    
+    print("request received")
     # if file is not .csv, return error
 
     
@@ -78,7 +80,18 @@ async def upload(file: UploadFile = File(...)):
     contents = await file.read()
     save_file( dest_path, contents)
     data = pd.read_csv(dest_path)
-    variables = list(data.columns)
+    print(data.head())
+    feature_list = pct_avail_pp.pct_avail_all_noclusters(data)
+    
+
+    # this prints an error if it does not conform to the data type
+    try:
+        FeatureInfoList(__root__=feature_list)
+    except ValidationError as e:
+        print("Validation error",e.json()[0:500])
+
+
+    return json.dumps(feature_list, cls=NpEncoder)
 
     # uncomment if you want to remove file after upload
     # os.remove(dest_path)
@@ -123,9 +136,7 @@ async def receive_data(file: UploadFile):
     return {"variables": variables}
 
 
-@app.get("/variables")
-async def get_variables():
-    return list(data.columns)
+
 
 
 @app.post("/get-data")

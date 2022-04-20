@@ -83,15 +83,32 @@ Write here all intructions to build the environment and run your code.\
 Write here **DETAILED** intructions on how to run your code.\
 **NOTE:** If we cannot run your code following these instructions we will not be able to evaluate it.
 
+cd backend-project
+uvicorn app:app --reload
+
+cd ../react-frontend
+npm start
+
+-> then in the web app: Choose a csv file from the folder example-data. They are all the same dataset, only the variable names are changed such that you can see if it was actually loaded. After its loaded, you can click on the variables on the left to show a histogram in the middle.     
+            
+
+
+
 ## Milestones
 Document here the major milestones of your code and future planned steps.\
-- [x] Week 1
-  - [x] Completed Sub-task: [#20984ec2](https://gitlab.inf.ethz.ch/COURSE-XAI-IML22/dummy-fullstack/-/commit/20984ec2197fa8dcdc50f19723e5aa234b9588a3)
-  - [x] Completed Sub-task: ...
 
-- [ ] Week 2
-  - [ ] Sub-task: [#2](https://gitlab.inf.ethz.ch/COURSE-XAI-IML22/dummy-fullstack/-/issues/2)
-  - [ ] Sub-task: ...
+- [x] Week 21.04.2022 
+  - [x] Running Visualisation of dataset
+  - [x] posibility to upload dataset
+  - [x] put the tabs in place for the pages "group" and "impute" (fancy react stuff) & define the general structure
+  - [x] workaround for bug in uvicorn/fastapi for uploading files
+
+- [ ] Week 05.05.2022
+  - [ ] Fill the group page with some content
+
+- [ ] At some point  
+  - [ ] choose groups of features automatically or manually
+  - [ ] add different imputation algorithms and display them on the imputation page
 
 Create a list subtask.\
 Open an issue for each subtask. Once you create a subtask, link the corresponding issue.\

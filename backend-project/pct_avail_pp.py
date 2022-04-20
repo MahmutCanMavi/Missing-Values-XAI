@@ -107,7 +107,7 @@ def NaN_per_person(df):
     return NaN_pp
 
 
-def pct_avail_all(df, data_explanations = None, n_clusters = 4):
+def pct_avail_all(df, data_explanations = None):
     """[]
     Clusters all of the features and stores them in a list. 
     
@@ -122,6 +122,8 @@ def pct_avail_all(df, data_explanations = None, n_clusters = 4):
     # Get cluster dictionary
     if n_clusters >= 1:
         clusters = cluster.cluster_e2e(df, n_clusters)
+    elif n_clusters==1:
+        clusters = {col:1 for col in df.columns}
     else:
         raise ValueError("number of clusters needs to exceed 0")
     
@@ -156,6 +158,49 @@ def pct_avail_all(df, data_explanations = None, n_clusters = 4):
     clusterinfo["FeatureInfos"] = feature_list
     return clusterinfo
 
+def pct_avail_all_noclusters(df, data_explanations = None):
+    """[]
+    Clusters all of the features and stores them in a list. 
+    
+    Inputs: data as a pandas DataFrame and the number of clusters requested (int) 
+    
+    Ouput: list contaning all of the features with cluster information (list)
+    """
+    
+    # Gets individual NaNs from the dataset per patient
+    NaN_pp = NaN_per_person(df)
+    
+    # Dictionary of JSONs to be stored per feature, each feature 
+    # having a distinct JSON
+    feature_list = []
+    for col in df.columns:
+        # The data format is dictionary -> dictionary -> string(feature name) + list(pct_avail_pp)
+        # The feature name is also the key to access the value in the dictionary for the values
+        feature_dict = {}
+        feature_dict["feature_name"] = col
+        # feature_dict["description"] = None
+        # feature_dict["imputation_error"] = None
+        
+        # # feature_dict["explanation"] = data_explanations[col] if col in data_explanations else "n/a"
+        feature_dict["pct_avail_pp"] = []
+        
+        for patient in NaN_pp:
+            # check if pid is actually corresponding to the id field in the dataset
+            length = len(df.loc[df["id"] == patient[0]])
+
+            if length == 0:
+                percentage = 0
+            else: 
+                percentage =  1 - patient[1][col] / length
+            
+            # Appending the list within the nested dictionaries
+            feature_dict["pct_avail_pp"].append({"patient_id" : patient[0], "pct_avail" : percentage})
+        
+        feature_list.append(feature_dict)
+    
+    # print(len(feature_list))
+    
+    return feature_list
 
 if __name__ == "__main__":
     # Kind Remind
