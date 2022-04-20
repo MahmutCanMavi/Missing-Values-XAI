@@ -20,7 +20,7 @@ class FeatureGroup(TypedDict):
 
 
 class FeatureInfoList(BaseModel):
-    __root__: List[FeatureInfo]
+    FeatureInfos: List[FeatureInfo]
 
     class Config:
         schema_extra = [
@@ -37,5 +37,5 @@ schema_extra = [
             {"feature_name":"SvO3","description":None,"imputation_error":None,"pct_avail_pp":[{"patient_id":1,"pct_avail":0.6},{"patient_id":2,"pct_avail":0.9484536082474226},{"patient_id":3,"pct_avail":0.7422680412371134},{"patient_id":4,"pct_avail":0.6185567010309279}]},
             {"feature_name":"SvO4","description":None,"imputation_error":None,"pct_avail_pp":[{"patient_id":1,"pct_avail":0.8},{"patient_id":2,"pct_avail":0.9484536082474226},{"patient_id":3,"pct_avail":0.7422680412371134},{"patient_id":4,"pct_avail":0.6185567010309279}]}
           ]
-print(FeatureInfoList(__root__=schema_extra))
+
 

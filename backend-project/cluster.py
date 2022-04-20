@@ -6,7 +6,7 @@ from sklearn.preprocessing import MinMaxScaler
 import numpy as np
 import json
 import pathlib
-
+import app
 
 
 
@@ -27,6 +27,25 @@ def compute_variable_groups(df, number_of_clusters = 4):
     
     # Returns the clusters as a list
     return clusters_to_list(df, clusters, number_of_clusters)
+
+
+def compute_clusters(data, number_of_clusters = 4):
+    """
+    Takes the datadrame and the wanted number of clusters as inputs.
+    
+    Outputs the variable groups as a list.
+    """
+    
+    # Functions to shorten the dataset to averages per patient
+    # This aides in efficiency whilst not losing much information
+    shorter_df = shorten_data(data)
+    
+    # Clustering algorihtm with optional declaration of requested 
+    # number of clusters
+    clusters = cluster(shorter_df, number_of_clusters)
+    
+    # Returns the clusters as a list
+    return clusters_dict(clusters_to_list(data, clusters, number_of_clusters))
 
     
     
@@ -139,6 +158,22 @@ def cluster_to_json(cluster_list):
     # print(cluster_number)
         
     return cluster_dict
+
+
+def clusters_dict(cluster_list):
+    """
+    Takes the cluster list as an input.
+    
+    Outputs a dictionary of " "cluster" : feature[] ".
+    """
+    cluster_dict = {}
+    
+    pos = 0
+    for clusters in cluster_list:
+        cluster_dict[str(pos)] = clusters
+        pos += 1 
+
+    return cluster_dict
             
 
 def cluster_e2e(df, number_of_clusters = 4):
@@ -155,4 +190,4 @@ def cluster_e2e(df, number_of_clusters = 4):
 if __name__ == '__main__':
     thisfile= str(pathlib.Path(__file__).parent.absolute())
     datafolder = thisfile+"/data/"  
-    cluster_e2e(pd.read_csv(datafolder+"icu_data_with_na_v2.csv"), number_of_clusters = 4)
+    print(compute_clusters(pd.read_csv(datafolder+"icu_data_with_na_v2.csv"), number_of_clusters = 5))

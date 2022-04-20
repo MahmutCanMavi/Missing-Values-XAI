@@ -62,7 +62,7 @@ class DataUploadPane extends React.Component<{features: string[], onChange: Func
         const max_tries=15;
         while (result == null && i <= max_tries){
             try {
-                result = await axios.post('http://127.0.0.1:8000/upload-data/', form, {headers:headers});
+                result = await axios.post('http://127.0.0.1:8000/get-data', form, {headers:headers});
             }
             catch (error:any){
 
@@ -105,7 +105,12 @@ class DataUploadPane extends React.Component<{features: string[], onChange: Func
             throw new Error("Result or result.data is empty")
         }
         // result.data has the actual message that is sent in the return clause of the server. 
-        return JSON.parse(result.data)
+        console.log("Upload: succesful, data received")
+        const resultdata = JSON.parse(result.data)
+        if (!resultdata.FeatureInfos){
+            throw new Error("Data does not have FeatureInfos")
+        }
+        return resultdata.FeatureInfos
     }
     
     async handleFileSelection(file: any) {
@@ -139,6 +144,7 @@ class DataUploadPane extends React.Component<{features: string[], onChange: Func
                     Variables:
                     {" " + this.props.features.join(', ')}
                 </label>
+                <br></br>
                 {this.state.isLoading && <span className="isLoading">Uploading...</span>}
                 {this.state.uploadError && <span className="uploadError">{this.state.uploadError}</span>}
             </div>
