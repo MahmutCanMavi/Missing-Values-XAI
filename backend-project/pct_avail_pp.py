@@ -2,6 +2,7 @@ import json
 import pathlib
 import pandas as pd
 import cluster
+import app
 
 def pct_avail_clusters(n_clusters: int) -> list:
     """
@@ -15,10 +16,14 @@ def pct_avail_clusters(n_clusters: int) -> list:
     Ouput: list contaning all of the features with cluster information (list)
     """
     # load data
-    thisfile= str(pathlib.Path(__file__).parent.absolute())
-    path = thisfile+"/data/icu_data_with_na_v2.csv"
-    
-    data = pd.read_csv(path)
+    try:
+        # Uploaded Path
+        data = pd.read_csv(app.DATA_PATH)
+    except:
+        # Hardcoded datapath
+        thisfile= str(pathlib.Path(__file__).parent.absolute())
+        path = thisfile+"/data/icu_data_with_na_v2.csv"
+        data = pd.read_csv(path)
     
     # Code to add data explanations, if requested
     # data_explanations = json.load(open(thisfile + "/data/explanations.json"))
@@ -39,10 +44,17 @@ def pct_avail_pp(feature_name: str) -> dict:
     Ouput: dictionary of data model containing feature information (dict)
     """
     # load data
-    thisfile= str(pathlib.Path(__file__).parent.absolute())
-    path = thisfile+"/data/icu_data_with_na_v2.csv"
+    # thisfile= str(pathlib.Path(__file__).parent.absolute())
+    # path = thisfile+"/data/icu_data_with_na_v2.csv"
     #f = open(path) readcsv can handle opening the file for us
-    data = pd.read_csv(path)
+    try:
+        # Uploaded Path
+        data = pd.read_csv(app.DATA_PATH)
+    except:
+        # Hardcoded datapath
+        thisfile= str(pathlib.Path(__file__).parent.absolute())
+        path = thisfile+"/data/icu_data_with_na_v2.csv"
+        data = pd.read_csv(path)
     # data_explanations = json.load(open(thisfile + "/data/explanations.json"))
     
     if feature_name not in data.columns:
@@ -53,9 +65,11 @@ def pct_avail_pp(feature_name: str) -> dict:
     
     feature_dict = {}
     feature_dict["feature_name"] = feature_name
-    feature_dict["cluster_id"] = 0
+    # feature_dict["cluster_id"] = 0
     # feature_dict["explanation"] = data_explanations[feature_name] if feature_name in data_explanations else "n/a"
     feature_dict["pct_avail_pp"] = []
+    feature_dict["description"] = None
+    feature_dict["imputation_error"] = None
     
     # pid = 1
     for patient in NaN_pp:
@@ -107,7 +121,7 @@ def NaN_per_person(df):
     return NaN_pp
 
 
-def pct_avail_all(df, data_explanations = None, n_clusters = 4):
+def pct_avail_all(data_explanations = None, n_clusters = 4):
     """[]
     Clusters all of the features and stores them in a list. 
     
@@ -115,15 +129,23 @@ def pct_avail_all(df, data_explanations = None, n_clusters = 4):
     
     Ouput: list contaning all of the features with cluster information (list)
     """
+    try:
+        # Uploaded Path
+        df = pd.read_csv(app.DATA_PATH)
+    except:
+        # Hardcoded datapath
+        thisfile= str(pathlib.Path(__file__).parent.absolute())
+        path = thisfile+"/data/icu_data_with_na_v2.csv"
+        df = pd.read_csv(path)
     
     # Gets individual NaNs from the dataset per patient
     NaN_pp = NaN_per_person(df)
     
     # Get cluster dictionary
-    if n_clusters >= 1:
-        clusters = cluster.cluster_e2e(df, n_clusters)
-    else:
-        raise ValueError("number of clusters needs to exceed 0")
+    # if n_clusters >= 1:
+    #     clusters = cluster.cluster_e2e(df, n_clusters)
+    # else:
+    #     raise ValueError("number of clusters needs to exceed 0")
     
     # Dictionary of JSONs to be stored per feature, each feature 
     # having a distinct JSON
@@ -133,9 +155,12 @@ def pct_avail_all(df, data_explanations = None, n_clusters = 4):
         # The feature name is also the key to access the value in the dictionary for the values
         feature_dict = {}
         feature_dict["feature_name"] = col
-        feature_dict["cluster_id"] = clusters[col]
-        # feature_dict["explanation"] = data_explanations[col] if col in data_explanations else "n/a"
+        # feature_dict["cluster_id"] = clusters[col]
         feature_dict["pct_avail_pp"] = []
+        # feature_dict["explanation"] = data_explanations[col] if col in data_explanations else "n/a"
+        feature_dict["description"] = None
+        feature_dict["imputation_error"] = None
+        
         
         for patient in NaN_pp:
             # check if pid is actually corresponding to the id field in the dataset

@@ -4,6 +4,7 @@ import pathlib
 import json
 import pct_avail_pp
 import math
+import app
 
 
 
@@ -14,7 +15,7 @@ def errors_e2e(features: list, method = "ffill"):
     ErrorInfos = []
     for feature in features:
         pct_avail_dict = pct_avail_pp.pct_avail_pp(feature)
-        pct_avail_dict["error_threshold"] = errors[feature]
+        pct_avail_dict["imputation_error"] = errors[feature]
         ErrorInfos.append(pct_avail_dict)
     
     return ErrorInfos
@@ -35,10 +36,17 @@ def impute(features : list, method = "mean", manual_data = pd.DataFrame()):
         else:
             raise ValueError("manual data not a pd series")
     else:
-        thisfile= str(pathlib.Path(__file__).parent.absolute())
-        path = thisfile+"/data/icu_data_with_na_v2.csv"
-        data = pd.read_csv(path)
-    
+        # thisfile= str(pathlib.Path(__file__).parent.absolute())
+        # path = thisfile+"/data/icu_data_with_na_v2.csv"
+        try:
+            # Uploaded Path
+            data = pd.read_csv(app.DATA_PATH)
+        except:
+            # Hardcoded datapath
+            thisfile= str(pathlib.Path(__file__).parent.absolute())
+            path = thisfile+"/data/icu_data_with_na_v2.csv"
+            data = pd.read_csv(path)
+        
     imputed_output = {}
     for feature in features:
         if method == "ffill": imputed_output[feature] = forward_fill(feature, data)
@@ -113,10 +121,17 @@ def evaluate_imputation(imputed_outputs : dict, method = "ffill"):
     
     Output: Errors as integers in a dictionary (dict)
     """
-    thisfile= str(pathlib.Path(__file__).parent.absolute())
-    path = thisfile+"/data/icu_data_with_na_v2.csv"
+    # thisfile= str(pathlib.Path(__file__).parent.absolute())
+    # path = thisfile+"/data/icu_data_with_na_v2.csv"
     
-    data = pd.read_csv(path)
+    try:
+        # Uploaded Path
+        data = pd.read_csv(app.DATA_PATH)
+    except:
+        # Hardcoded datapath
+        thisfile= str(pathlib.Path(__file__).parent.absolute())
+        path = thisfile+"/data/icu_data_with_na_v2.csv"
+        data = pd.read_csv(path)
     
     
     error = {}
