@@ -45,7 +45,7 @@ class VizPage extends React.Component<VizPageProps,VizState> {
             </aside>
 
             <main className="main">   
-            Choose a csv file from the folder example-data. They are the same dataset, only the variable names are changed such that you can see if it was actually loaded.       
+            Choose a csv file from the folder example-data. The two files are the same dataset, only the variable names are changed such that you can see if it was actually loaded.       
                 <DataUploadPane features={feature_names} onChange={this.props.handleDataUpload}/>
                 <hr/>
                 {this.state.selectedFeature && <D3Histogram featureInfo={this.state.selectedFeature}/>}
