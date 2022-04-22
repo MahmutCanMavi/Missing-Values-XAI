@@ -43,6 +43,7 @@ Specify here the structure of you code and comment what the most important files
 ## Requirements
 <!-- Write here all intructions to build the environment and run your code.\
 **NOTE:** If we cannot run your code following these requirements we will not be able to evaluate it. -->
+Please make sure your system satisfies all the requirements in the `requirements.txt` file (standard format).
 
 ## How to Run
 <!-- Write here **DETAILED** intructions on how to run your code.\
