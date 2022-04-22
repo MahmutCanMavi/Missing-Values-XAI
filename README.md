@@ -29,11 +29,11 @@ We aim to implement a three-tab layout with a navigation bar **`[ Visualize | Gr
 
 On the **`[ Visualize ]` tab**, the user uploads data and studies the patterns of missing values for different features. To accomplish this purpose, we developed a visualization called "missing value gradient." These gradients consist of thin rectangles colored in grayscale. The coloring of each rectangle corresponds to the percentage of missing values for a specific patient. Ordering these grayscale rectangles results in a gradient from black to white. The thicker the dark part of the gradient, the more patients with many missing values. Conversely, the thicker the light part, the more patients with very few missing values.
 
-On the **`[ Group ]` tab**, the user defines groups of variables with similar missing value patterns. For example, all the laboratory test results could be part of the same group, and likewise for all the drug treatment variables. Specifying groups is important, because the user later selects a different missing value imputation method for each group. We give the user two choices for grouping variables together: 1) manual grouping based on domain knowledge or trial and error, and 2) automatic grouping based on clustering methods. We have already implemented clustering logic in the backend, but in the current version of our code, this implementation is not connected with the frontend.
+On the **`[ Group ]` tab**, the user defines groups of variables with similar missing value patterns. For example, all the laboratory test results could be part of the same group, and likewise for all the drug treatment variables. Specifying groups is important because it allows the user to select a different imputation method for each group of features. We give the user two choices for grouping variables together: 1) manual grouping based on domain knowledge or trial and error, and 2) automatic grouping based on clustering methods. We have already implemented clustering logic in the backend, but in the current version of our code, this implementation is not connected with the frontend.
 
 On the **`[ Impute ]` tab**, the user specifies an imputation method for each group of variables. It is also on this tab that the user visualizes the error of the imputation. To estimate the imputation error, we artificially remove some existing data and assess how well our imputation methods perform.
 
-Up until this moment, we have made tremendous strides to implement our overall plan. **The best is yet to come!**
+Up until this moment, we have made tremendous strides to implement our overall plan. But: **the best is yet to come!**
 
 - - -
 ## Folder Structure
