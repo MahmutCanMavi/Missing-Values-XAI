@@ -23,6 +23,18 @@ Our interface solves many tasks, including the following:
   - allow user to specify different imputation method for each group of features
   - compute and visualize imputation error
 
+## Design Vision
+
+We aim to implement a three-tab layout with a navigation bar **`[ Visualize | Group | Impute ]`**. 
+
+On the **`[ Visualize ]` tab**, the user uploads data and studies the patterns of missing values for different features. To accomplish this purpose, we developed a visualization called "missing value gradient." These gradients consist of thin rectangles colored in grayscale. The coloring of each rectangle corresponds to the percentage of missing values for a specific patient. Ordering these grayscale rectangles results in a gradient from black to white. The thicker the dark part of the gradient, the more patients with many missing values. Conversely, the thicker the light part, the more patients with very few missing values.
+
+On the **`[ Group ]` tab**, the user defines groups of variables with similar missing value patterns. For example, all the laboratory test results could be part of the same group, and likewise for all the drug treatment variables. Specifying groups is important, because the user later selects a different missing value imputation method for each group. We give the user two choices for grouping variables together: 1) manual grouping based on domain knowledge or trial and error, and 2) automatic grouping based on clustering methods. We have already implemented clustering logic in the backend, but in the current version of our code, this implementation is not connected with the frontend.
+
+On the **`[ Impute ]` tab**, the user specifies an imputation method for each group of variables. It is also on this tab that the user visualizes the error of the imputation. To estimate the imputation error, we artificially remove some existing data and assess how well our imputation methods perform.
+
+Up until this moment, we have made tremendous strides to implement our overall plan. **The best is yet to come!**
+
 - - -
 ## Folder Structure
 Specify here the structure of you code and comment what the most important files contain
@@ -55,16 +67,19 @@ Run **frontend**: Do `cd ../react-frontend`, then `npm start`.
 
 Once you're in the web app: choose a .csv file from the folder example-data. They are all the same dataset. Only the variable names are changed such that you can see if it was actually loaded. After it's loaded, you can click on the variables on the left to show a histogram in the middle.     
 
+#### Once it's running...
+You're looking at the beginnings of a very special tool for visualizing and imputing missing values. Savor the moment!
 
 
 ## Milestones
 Major milestones of our code + future planned steps.\
 
 - [x] Week 21.04.2022 
-  - [x] Running Visualisation of dataset
-  - [x] posibility to upload dataset
-  - [x] put the tabs in place for the pages "group" and "impute" (fancy react stuff) & define the general structure
-  - [x] workaround for bug in uvicorn/fastapi for uploading files
+  - [x] Manage interaction between Missing Value Gradients and Histogram: clicking on a gradient shows the corresponding histogram
+  - [x] Allow the user to upload their own data
+  - [x] Put in place an aesthetically pleasing three-tab layout
+  - [x] Implemented [ Visualize ] tab
+  - [x] Develop workaround for bug in uvicorn/fastapi when uploading files
 
 - [ ] Week 05.05.2022
   - [ ] Fill the group page with some content
