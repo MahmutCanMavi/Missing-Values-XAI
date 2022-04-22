@@ -61,14 +61,20 @@ Please make sure your system satisfies all the requirements in the `requirements
 <!-- Write here **DETAILED** intructions on how to run your code.\
 **NOTE:** If we cannot run your code following these instructions we will not be able to evaluate it. -->
 
-Run **backend**: do `cd backend-project`, then `uvicorn app:app --reload`.
+Run **backend**: go inside the folder `./backend-project`, then enter the command `uvicorn app:app --reload`.
 
-Run **frontend**: Do `cd ../react-frontend`, then `npm start`.
-
-Once you're in the web app: choose a .csv file from the folder example-data. They are all the same dataset. Only the variable names are changed such that you can see if it was actually loaded. After it's loaded, you can click on the variables on the left to show a histogram in the middle.     
+Run **frontend**: go inside the folder `./react-frontend`, then enter the command `npm start`.
+ 
 
 #### Once it's running...
-You're looking at the beginnings of a very special tool for visualizing and imputing missing values. Savor the moment!
+
+Choose a .csv file from within the folder `./example-data`. These files all contain the same data, but the variables names differ. In this way, you can see that the data changes when you upload a new file, as it should. 
+
+After the data is loaded, you can play around with our visualization. The gradients on the left visualize the percentage of missing data per patient. Each gradient is made up of thin rectangles colored in grayscale. The brightness of each rectangle represents the percentage of missing data for a specific patient. These rectangles are ordered by their brightness. Thus, a gradient with mostly dark rectangles represents lots of missing data, and a gradient with mostly bright rectangles indicates little missing data. 
+
+Each gradient refers to one of the features in the data set. Clicking on a gradient reveals, for the chosen feature, the distribution of the percentage of missing values over all patients in the data set. We visualize this distribution as a histogram.
+
+_You're looking at the beginnings of a very special tool for visualizing and imputing missing values. Savor the moment!_
 
 
 ## Milestones
