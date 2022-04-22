@@ -67,6 +67,7 @@ Run **frontend**: go inside the folder `./react-frontend`, then enter the comman
  
 
 #### Once it's running...
+###### (_For a quick overview, check out our demo video under release notes for the most recent tag!_)
 
 Choose a .csv file from within the folder `./example-data`. These files all contain the same data, but the variables names differ. In this way, you can see that the data changes when you upload a new file, as it should. 
 
