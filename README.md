@@ -60,6 +60,7 @@ Please make sure your system satisfies all the requirements in the `requirements
 ## How to Run
 <!-- Write here **DETAILED** intructions on how to run your code.\
 **NOTE:** If we cannot run your code following these instructions we will not be able to evaluate it. -->
+IMPORTANT: **Make sure there is a folder "tmp" inside "backend-project/data".** Otherwise, uploading data will not work.
 
 Run **backend**: go inside the folder `./backend-project`, then enter the command `uvicorn app:app --reload`.
 
