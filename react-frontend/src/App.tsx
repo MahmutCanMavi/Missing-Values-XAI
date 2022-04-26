@@ -4,6 +4,7 @@ import VizPage from './pages/VizPage';
 import './App.css';
 //import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbar from './components/Navbar';
+import GroupPage from "./pages/GroupPage";
 
 interface AppState {
   data: FeatureInfo[] | null;
@@ -14,17 +15,23 @@ interface AppState {
 class App extends React.Component<{}, AppState> {
   constructor(props: {}) {
     super(props);
-    this.state = {data: null, groups: null, pageActive: "viz"};
+    const dummydata= [
+            {"feature_name":"example1","description":null,"imputation_error":null,"pct_avail_pp":[{"patient_id":1,"pct_avail":0.2},{"patient_id":2,"pct_avail":0.9484536082474226},{"patient_id":3,"pct_avail":0.7422680412371134},{"patient_id":4,"pct_avail":0.6185567010309279}]},
+            {"feature_name":"example2","description":null,"imputation_error":null,"pct_avail_pp":[{"patient_id":1,"pct_avail":0.4},{"patient_id":2,"pct_avail":0.9484536082474226},{"patient_id":3,"pct_avail":0.7422680412371134},{"patient_id":4,"pct_avail":0.6185567010309279}]},
+            {"feature_name":"example3","description":null,"imputation_error":null,"pct_avail_pp":[{"patient_id":1,"pct_avail":0.6},{"patient_id":2,"pct_avail":0.9484536082474226},{"patient_id":3,"pct_avail":0.7422680412371134},{"patient_id":4,"pct_avail":0.6185567010309279}]},
+            {"feature_name":"example4","description":null,"imputation_error":null,"pct_avail_pp":[{"patient_id":1,"pct_avail":0.8},{"patient_id":2,"pct_avail":0.9484536082474226},{"patient_id":3,"pct_avail":0.7422680412371134},{"patient_id":4,"pct_avail":0.6185567010309279}]}
+          ]
+    const dummygroups:FeatureGroup[] = [
+      {"name": "Example Group 1", "features":["example1","example2"]},
+      {"name": "Example Group 2", "features":["example3","example4"]}
+    ]
+    this.state = {data: dummydata, groups: dummygroups, pageActive: "viz"};
     this.handleDataUpload=this.handleDataUpload.bind(this);
     this.setPageActive=this.setPageActive.bind(this);
+    this.setGroupSelection=this.setGroupSelection.bind(this);
   }
   handleDataUpload(data: FeatureInfo[] | null){
-    // var dummydata= [
-    //         {"feature_name":"SvO1","description":null,"imputation_error":null,"pct_avail_pp":[{"patient_id":1,"pct_avail":0.2},{"patient_id":2,"pct_avail":0.9484536082474226},{"patient_id":3,"pct_avail":0.7422680412371134},{"patient_id":4,"pct_avail":0.6185567010309279}]},
-    //         {"feature_name":"SvO2","description":null,"imputation_error":null,"pct_avail_pp":[{"patient_id":1,"pct_avail":0.4},{"patient_id":2,"pct_avail":0.9484536082474226},{"patient_id":3,"pct_avail":0.7422680412371134},{"patient_id":4,"pct_avail":0.6185567010309279}]},
-    //         {"feature_name":"SvO3","description":null,"imputation_error":null,"pct_avail_pp":[{"patient_id":1,"pct_avail":0.6},{"patient_id":2,"pct_avail":0.9484536082474226},{"patient_id":3,"pct_avail":0.7422680412371134},{"patient_id":4,"pct_avail":0.6185567010309279}]},
-    //         {"feature_name":"SvO4","description":null,"imputation_error":null,"pct_avail_pp":[{"patient_id":1,"pct_avail":0.8},{"patient_id":2,"pct_avail":0.9484536082474226},{"patient_id":3,"pct_avail":0.7422680412371134},{"patient_id":4,"pct_avail":0.6185567010309279}]}
-    //       ]
+    
     if (data) {
       this.setState({data: data})
     } else {
@@ -33,6 +40,11 @@ class App extends React.Component<{}, AppState> {
   }
   setPageActive(pageActive:"viz" | "group" | "impute"){
     this.setState({pageActive:pageActive})
+  }
+  setGroupSelection(groups:FeatureGroup[] | null){
+    const allfeatures=this.state.data?.map((featureInfo)=>featureInfo.feature_name);
+    console.log(allfeatures)
+    //this.setState({groups:groups})
   }
 
   render() {
@@ -49,6 +61,8 @@ class App extends React.Component<{}, AppState> {
     
         {(this.state.pageActive === "viz") && <VizPage data={this.state.data} groups={this.state.groups}
                                                   handleDataUpload={this.handleDataUpload}/>}
+        {(this.state.pageActive === "group") && <GroupPage data={this.state.data} groups={this.state.groups} 
+                                                  handleGroupSelection={this.setGroupSelection} />}
       <footer className="footer">By Yan, Talu, David and Michael</footer>
       </div>
       </div>
