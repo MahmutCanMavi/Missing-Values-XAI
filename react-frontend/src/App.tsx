@@ -55,7 +55,7 @@ class App extends React.Component<{}, AppState> {
       <header className="header"> 
         <div className="pageTitle">Missing Values Dashboard</div>
         <Navbar pageActive={this.state.pageActive} setPageActive={this.setPageActive}/> 
-        <div className="pageTitle">{this.state.groups&&this.state.groups[0].name}</div>
+        <div className="pageTitle"></div>
         
       </header>
         
