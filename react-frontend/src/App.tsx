@@ -41,20 +41,21 @@ class App extends React.Component<{}, AppState> {
   setPageActive(pageActive:"viz" | "group" | "impute"){
     this.setState({pageActive:pageActive})
   }
-  setGroupSelection(groups:FeatureGroup[] | null){
-    const allfeatures=this.state.data?.map((featureInfo)=>featureInfo.feature_name);
-    console.log(allfeatures)
-    //this.setState({groups:groups})
+  setGroupSelection(newGroups:FeatureGroup[] | null){
+    // const allfeatures=this.state.data?.map((featureInfo)=>featureInfo.feature_name);
+    // console.log(allfeatures)
+    this.setState({groups:newGroups})
   }
 
   render() {
+    console.log("app rendered")
     return (
       <div className="App">
       <div className="grid-container">
       <header className="header"> 
         <div className="pageTitle">Missing Values Dashboard</div>
         <Navbar pageActive={this.state.pageActive} setPageActive={this.setPageActive}/> 
-        <div className="pageTitle"></div>
+        <div className="pageTitle">{this.state.groups&&this.state.groups[0].name}</div>
         
       </header>
         
