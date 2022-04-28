@@ -11,16 +11,24 @@ class NameChoiceComponent extends React.Component<{onChoiceMade: any, oldtext:st
       this.handleChange = this.handleChange.bind(this);
       this.handleChoice = this.handleChoice.bind(this);
     }
-  
+    handleChange(e : any) {
+        this.setState({ text: e.target.value});
+    }
+
+    handleChoice(e : any){
+        this.props.onChoiceMade(this.state.text);
+        this.setState({isEditing:false})          
+    }
     render() { // Old Text: Which feature do you want to use? (adre_bol, adre_iv, PAPs, HR, CVPm, PVR, urine, Na, temp, pH, pO2)
-        console.log("name choice component rendered")    
+        // console.log("name choice component rendered")    
       return (
         <div className="groupName" onClick={this.props.onClickGroup}>
-          <><label htmlFor="data-choice">
+          {this.state.isEditing==false &&<><label htmlFor="data-choice">
             {this.props.oldtext}    
           </label><span>&nbsp;&nbsp;</span>
           <button onClick={()=>this.setState({isEditing:true})}>edit</button>
           </>
+            }
           {this.state.isEditing && <> <input
             id="data-choice"
             onChange={this.handleChange}
@@ -31,19 +39,6 @@ class NameChoiceComponent extends React.Component<{onChoiceMade: any, oldtext:st
           </button></>}
         </div>
       );
-    }
-  
-    handleChange(e : any) {
-      this.setState({ text: e.target.value});
-    }
-  
-    handleChoice(e : any){
-      this.props.onChoiceMade(this.state.text);
-      this.setState({isEditing:false})
-      
-      /*this.setState({
-        text: '',
-      }); */           
     }
   }
 
@@ -114,7 +109,7 @@ class GroupPage extends React.Component<GroupPageProps,{textarea:string,error:st
         //             <button onClick={this.changeGroupName(featureGroup.feature_name)}>Save</button>
         //         </div>
         // style={{padding:10}}
-        console.log("group page rendered")
+        // console.log("group page rendered")
         return (
         <>
             <aside className="sidenav">
