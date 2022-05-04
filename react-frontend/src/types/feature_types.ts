@@ -7,9 +7,11 @@ export interface FeatureInfo {
     pct_avail_pp: PctAvail[];
     description: string | null; // description the meaning of the variable
     imputation_error: number | null;
+    group_id: number | null;
 }
 
 export interface FeatureGroup {
+    id : number;
     name: string; // name of the group, for example "Cluster1"
-    features: string[]; // features contained in the group
+    filters?: string[];
 }

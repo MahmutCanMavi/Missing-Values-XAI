@@ -16,19 +16,21 @@ class App extends React.Component<{}, AppState> {
   constructor(props: {}) {
     super(props);
     const dummydata= [
-            {"feature_name":"example1","description":null,"imputation_error":null,"pct_avail_pp":[{"patient_id":1,"pct_avail":0.2},{"patient_id":2,"pct_avail":0.9484536082474226},{"patient_id":3,"pct_avail":0.7422680412371134},{"patient_id":4,"pct_avail":0.6185567010309279}]},
-            {"feature_name":"example2","description":null,"imputation_error":null,"pct_avail_pp":[{"patient_id":1,"pct_avail":0.4},{"patient_id":2,"pct_avail":0.9484536082474226},{"patient_id":3,"pct_avail":0.7422680412371134},{"patient_id":4,"pct_avail":0.6185567010309279}]},
-            {"feature_name":"example3","description":null,"imputation_error":null,"pct_avail_pp":[{"patient_id":1,"pct_avail":0.6},{"patient_id":2,"pct_avail":0.9484536082474226},{"patient_id":3,"pct_avail":0.7422680412371134},{"patient_id":4,"pct_avail":0.6185567010309279}]},
-            {"feature_name":"example4","description":null,"imputation_error":null,"pct_avail_pp":[{"patient_id":1,"pct_avail":0.8},{"patient_id":2,"pct_avail":0.9484536082474226},{"patient_id":3,"pct_avail":0.7422680412371134},{"patient_id":4,"pct_avail":0.6185567010309279}]}
+            {"feature_name":"example1","group_id":0,"description":"description 1: lorem ipsum dolores supametrarekdjfnkadn fsdflkajns lkfjadf","imputation_error":null,"pct_avail_pp":[{"patient_id":1,"pct_avail":0.2},{"patient_id":2,"pct_avail":0.9484536082474226},{"patient_id":3,"pct_avail":0.7422680412371134},{"patient_id":4,"pct_avail":0.6185567010309279}]},
+            {"feature_name":"example2","group_id":0,"description":"description 2: lorem ipsum dolores supametrarekdjfnkadn fsdflkajns lkfjadf","imputation_error":null,"pct_avail_pp":[{"patient_id":1,"pct_avail":0.4},{"patient_id":2,"pct_avail":0.9484536082474226},{"patient_id":3,"pct_avail":0.7422680412371134},{"patient_id":4,"pct_avail":0.6185567010309279}]},
+            {"feature_name":"example3","group_id":null,"description":"description 3: lorem ipsum dolores supametrarekdjfnkadn fsdflkajns lkfjadf","imputation_error":null,"pct_avail_pp":[{"patient_id":1,"pct_avail":0.6},{"patient_id":2,"pct_avail":0.9484536082474226},{"patient_id":3,"pct_avail":0.7422680412371134},{"patient_id":4,"pct_avail":0.6185567010309279}]},
+            {"feature_name":"example4","group_id":2,"description":"description 4: lorem ipsum dolores supametrarekdjfnkadn fsdflkajns lkfjadf","imputation_error":null,"pct_avail_pp":[{"patient_id":1,"pct_avail":0.8},{"patient_id":2,"pct_avail":0.9484536082474226},{"patient_id":3,"pct_avail":0.7422680412371134},{"patient_id":4,"pct_avail":0.6185567010309279}]},
+            {"feature_name":"example5","group_id":1,"description":"description 5: lorem ipsum dolores supametrarekdjfnkadn fsdflkajns lkfjadf","imputation_error":null,"pct_avail_pp":[{"patient_id":1,"pct_avail":0.8},{"patient_id":2,"pct_avail":0.9484536082474226},{"patient_id":3,"pct_avail":0.7422680412371134},{"patient_id":4,"pct_avail":0.6185567010309279}]}
           ]
     const dummygroups:FeatureGroup[] = [
-      {"name": "Example Group 1", "features":["example1","example2"]},
-      {"name": "Example Group 2", "features":["example3","example4"]}
+      {"name": "Example Group 1", "id":0},
+      {"name": "Example Group 2", "id":1},
     ]
     this.state = {data: dummydata, groups: dummygroups, pageActive: "viz"};
     this.handleDataUpload=this.handleDataUpload.bind(this);
     this.setPageActive=this.setPageActive.bind(this);
     this.setGroupSelection=this.setGroupSelection.bind(this);
+    this.setDataChange=this.setDataChange.bind(this);
   }
   handleDataUpload(data: FeatureInfo[] | null){
     
@@ -42,9 +44,13 @@ class App extends React.Component<{}, AppState> {
     this.setState({pageActive:pageActive})
   }
   setGroupSelection(newGroups:FeatureGroup[] | null){
-    // const allfeatures=this.state.data?.map((featureInfo)=>featureInfo.feature_name);
+    const allfeatures=this.state.data?.map((featureInfo)=>featureInfo.feature_name).sort();
+    const featuresInGroups = this.state.groups?.map
     // console.log(allfeatures)
     this.setState({groups:newGroups})
+  }
+  setDataChange(newData:FeatureInfo[] | null){
+    this.setState({data:newData})
   }
 
   render() {
@@ -63,7 +69,7 @@ class App extends React.Component<{}, AppState> {
         {(this.state.pageActive === "viz") && <VizPage data={this.state.data} groups={this.state.groups}
                                                   handleDataUpload={this.handleDataUpload}/>}
         {(this.state.pageActive === "group") && <GroupPage data={this.state.data} groups={this.state.groups} 
-                                                  handleGroupSelection={this.setGroupSelection} />}
+                                                  handleGroupSelection={this.setGroupSelection} handleDataChange={this.setDataChange}/>}
       <footer className="footer">By Yan, Talu, David and Michael</footer>
       </div>
       </div>

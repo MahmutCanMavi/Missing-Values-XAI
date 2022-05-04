@@ -1,9 +1,10 @@
 import React from "react";
+import SelectPctAvailGradient from "../components/SelectPctAvailGradient";
 import { FeatureInfo, FeatureGroup } from "../types/feature_types";
 
 
 
-class NameChoiceComponent extends React.Component<{onChoiceMade: any, oldtext:string, onClickGroup:any}, {text: string,isEditing:boolean}>{
+class NameChoiceComponent extends React.Component<{oldtext:string, onChoiceMade: any, onClickGroup:any, onRemoveGroup: Function}, {text: string,isEditing:boolean}>{
 
     constructor(props: any) {
       super(props);
@@ -23,10 +24,11 @@ class NameChoiceComponent extends React.Component<{onChoiceMade: any, oldtext:st
         // console.log("name choice component rendered")    
       return (
         <div className="groupName" onClick={this.props.onClickGroup}>
-          {this.state.isEditing==false &&<><label htmlFor="data-choice">
+          {this.state.isEditing===false &&<><label htmlFor="data-choice">
             {this.props.oldtext}    
           </label><span>&nbsp;&nbsp;</span>
           <button onClick={()=>this.setState({isEditing:true})}>edit</button>
+          <button onClick={()=>this.props.onRemoveGroup()}>remove</button>
           </>
             }
           {this.state.isEditing && <> <input
@@ -46,6 +48,7 @@ interface GroupPageProps {
     data: FeatureInfo[] | null;
     groups: FeatureGroup[] | null;
     handleGroupSelection: Function;
+    handleDataChange: Function;
 }
 
 class GroupPage extends React.Component<GroupPageProps,{textarea:string,error:string|null, activeGroup:number|null}> {
@@ -56,6 +59,7 @@ class GroupPage extends React.Component<GroupPageProps,{textarea:string,error:st
         this.handleTextareaChoice = this.handleTextareaChoice.bind(this);
         this.resetTextarea = this.resetTextarea.bind(this);
         this.selectActiveGroup=this.selectActiveGroup.bind(this);
+        this.removeGroup=this.removeGroup.bind(this);
         
     }
     handleTextareaChange(e : any) {
@@ -65,6 +69,7 @@ class GroupPage extends React.Component<GroupPageProps,{textarea:string,error:st
 
         this.setState({textarea: JSON.stringify(this.props.groups,null, 2),error:null})
     }
+
     handleTextareaChoice(e : any){
         
         
@@ -84,11 +89,14 @@ class GroupPage extends React.Component<GroupPageProps,{textarea:string,error:st
     checkTextareaHasChanged() {
         return JSON.stringify(this.props.groups,null, 2) != this.state.textarea;
     }
-    changeGroupName(index:number, newName:string){
+    changeGroupName(group_id:number, newName:string){
         // console.log(index,newName)
         if (this.props.groups){
             let newGroups = this.props.groups
-            newGroups[index].name=newName
+            if (newGroups.filter(group=>group.id===group_id).length!==1){
+                Error("Group not found or duplicates"+group_id)
+            }
+            newGroups.filter(group=>group.id===group_id)[0].name=newName
             // console.log(groups)
             this.props.handleGroupSelection(newGroups)
         }
@@ -97,6 +105,22 @@ class GroupPage extends React.Component<GroupPageProps,{textarea:string,error:st
         }
 
 
+    }
+    removeGroup(group_id:number){
+        
+        // const group_id=0;
+        const newgroups = this.props.groups?.filter(group => group.id !== group_id);
+        const newdata = this.props.data?.map(feature => {
+            if (feature.group_id === group_id){
+                // console.log({...feature, group_id:null});
+                return {...feature, group_id:null};
+
+            }
+            else return feature
+        })
+        this.setState({activeGroup:null})
+        this.props.handleDataChange(newdata);
+        this.props.handleGroupSelection(newgroups);
     }
     selectActiveGroup(index:number){
         // console.log(index)
@@ -113,46 +137,77 @@ class GroupPage extends React.Component<GroupPageProps,{textarea:string,error:st
         return (
         <>
             <aside className="sidenav">
-                Hello Grouping Page.
-                {this.state.error && <pre>error : {this.state.error}</pre>}
-                <div>
-                {this.checkTextareaHasChanged() && <span>Unsaved Changes</span>}
-                </div>
-                
-
-                <textarea
-                style={{width:300, height:400}}
-                id="data-choice"
-                onChange={this.handleTextareaChange}
-                value={this.state.textarea}
-                />
-                <button onClick={this.handleTextareaChoice}>
-                Confirm 
-                </button>
-                <button onClick={this.resetTextarea}>
-                reset text to groups state
-                </button>
-            </aside>
-            <main className="main">
-                <div>{this.props.groups?.map(
+            <div>{this.props.groups?.map(
                     (featureGroup,i) => <NameChoiceComponent 
-                        key={i} 
+                        key={featureGroup.id} 
                         oldtext={featureGroup.name} 
-                        onChoiceMade={(newName:string)=>this.changeGroupName(i,newName)}
-                        onClickGroup={ ()=>this.selectActiveGroup(i) } />
+                        onChoiceMade={(newName:string)=>this.changeGroupName(featureGroup.id,newName)}
+                        onClickGroup={ ()=>this.selectActiveGroup(featureGroup.id)}
+                        onRemoveGroup={()=> this.removeGroup(featureGroup.id)} 
+                        />
                     )
                 }
                 </div>
+                
+            </aside>
+            <main className="main maingrid">
+                
                 <div>
-                    { this.props.groups && this.state.activeGroup!=null && <> {this.props.groups[this.state.activeGroup].name}  has the following features </> }
-                     
-
+                    { this.props.groups && this.state.activeGroup!==null && 
+                    this.props.groups.filter(group=>group.id===this.state.activeGroup).length !== 0 && 
+                    
+                    <> {this.props.groups.filter(group=>group.id===this.state.activeGroup)[0].name}  has the following features </> }
+                    
+                <button onClick={()=>this.removeGroup.bind(this)(0)}> remove group 0 </button>
+                <button onClick={()=>this.removeGroup.bind(this)(1)}> remove group1 </button>
+                
                 <ul>
-                {  this.props.groups && this.state.activeGroup!=null && 
-                        this.props.groups[this.state.activeGroup].features.map(
-                            (feature,i) => <li key={i}>{feature}</li> 
-                        )}
+                {  this.props.groups && this.props.data && this.state.activeGroup!==null && 
+                this.props.groups.filter(group=>group.id===this.state.activeGroup).length !== 0&&
+                        // for each feature that is in the active group
+                        this.props.data.filter(feature => feature.group_id === this.state.activeGroup).map((feature,i)=>{
+                            return <li key={i}>{feature.feature_name}</li>
+                        })
+                }
+                        
+                        
+                        
+                        {/* this.props.groups.filter(group => group.id === this.state.activeGroup)[0].map(group=>{
+                            this.props.data && this.props.data..features.map(
+                                (feature,i) => <li key={i}>{feature}</li> 
+                            )}
+                        }. */}
                 </ul>
+                </div>
+                <div className="group-search">
+                {  this.props.groups && this.props.data  && 
+                
+                        // for each feature that is in the active group
+                        this.props.data.map((feature,i)=>{
+                            return <li className="groupName" key={i}><SelectPctAvailGradient featureInfo={feature} showTitle={true} height={20} onSelectFeature={()=>null}/></li>
+                        })
+                }
+
+                </div>
+                <div className="JSON-group-editor">
+                    {this.state.error && <pre>error : {this.state.error}</pre>}
+                    <div>
+                    {this.checkTextareaHasChanged() && <span>Unsaved Changes</span>}
+                    </div>
+                    
+
+                    <textarea
+                    style={{width:300, height:400}}
+                    id="data-choice"
+                    onChange={this.handleTextareaChange}
+                    value={this.state.textarea}
+                    />
+                    <button onClick={this.handleTextareaChoice}>
+                    Confirm 
+                    </button>
+                    <button onClick={this.resetTextarea}>
+                    reset text to groups state
+                    </button>
                 </div>
 
             </main>

@@ -163,6 +163,17 @@
 
 }
 
+/* .maingrid {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  grid-template-rows: 1fr ;
+  grid-template-areas:
+    "main_left main_right";
+
+  height: 100%;
+  width: 100%;
+} */
+
 
 .groupName {
   padding:10px;

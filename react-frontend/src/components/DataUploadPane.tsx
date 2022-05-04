@@ -59,7 +59,7 @@ class DataUploadPane extends React.Component<{features: string[], onChange: Func
         //dirty fixing of the backend error: just try again until it works
         let result = null;
         let i=0;
-        const max_tries=15;
+        const max_tries=25;
         while (result == null && i <= max_tries){
             try {
                 result = await axios.post('http://127.0.0.1:8000/upload-data', form, {headers:headers});
@@ -92,7 +92,7 @@ class DataUploadPane extends React.Component<{features: string[], onChange: Func
                 }
                 else {
                     console.log("Upload: try no. "+i.toString())
-                    await delay(0.5);
+                    await delay(0.1);
                 }
             }
             i= i+1;
@@ -115,7 +115,7 @@ class DataUploadPane extends React.Component<{features: string[], onChange: Func
     
     async handleFileSelection(file: any) {
 
-        
+        await delay(0.1)
 
         // we cannot easily do type-checking after typescript compilation ->
         // careful, the statement "data as FeatureInfo[]" does not actually check in runtime if it conforms to the interface
