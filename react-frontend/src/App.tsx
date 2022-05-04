@@ -5,6 +5,7 @@ import './App.css';
 //import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbar from './components/Navbar';
 import GroupPage from "./pages/GroupPage";
+import Icons from "./components/icons";
 
 interface AppState {
   data: FeatureInfo[] | null;
