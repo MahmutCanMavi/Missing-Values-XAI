@@ -1,6 +1,6 @@
 import { group } from "console";
 import React from "react";
-import FilterFeatures from "../components/FilterNamesComponent";
+import FilterFeatures from "../components/FilterFeatures";
 import Icons from "../components/icons";
 import SelectPctAvailGradient from "../components/SelectPctAvailGradient";
 import { FeatureInfo, FeatureGroup } from "../types/feature_types";
