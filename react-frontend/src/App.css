@@ -163,16 +163,17 @@
 
 }
 
-/* .maingrid {
+ .maingrid {
   display: grid;
-  grid-template-columns: 1fr 380px;
+  padding: 0;
+  grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr ;
   grid-template-areas:
     "main_left main_right";
 
   height: 100%;
   width: 100%;
-} */
+} 
 .group-colorbar{
   display: inline-block;
   height: 60px;

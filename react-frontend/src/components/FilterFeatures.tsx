@@ -21,6 +21,7 @@ interface FilterFeaturesProps {
     groups: FeatureGroup[], 
     activeGroup: FeatureGroup, 
     setGroups: Function, 
+    addToActiveGroup:Function,
 }
 
 interface FilterFeaturesState {
@@ -118,7 +119,7 @@ class FilterFeatures extends React.Component<FilterFeaturesProps,FilterFeaturesS
                         this.state.textInput, this.toggleMode("endsWith"))}>Ends With</button>
 
                 <button onClick={this.handleAddAll}>Add All</button>
-                <FeatureList features={this.state.selectedFeatures}/>
+                <FeatureList features={this.state.selectedFeatures} addToActiveGroup={this.props.addToActiveGroup}/>
 
 
             </div>
@@ -127,8 +128,8 @@ class FilterFeatures extends React.Component<FilterFeaturesProps,FilterFeaturesS
 }
 
 
-class FeatureList extends React.Component<{features: FeatureInfo[]},{}> {
-    constructor(props: {features: FeatureInfo[]}) {
+class FeatureList extends React.Component<{features: FeatureInfo[], addToActiveGroup:Function},{}> {
+    constructor(props:{features: FeatureInfo[], addToActiveGroup:Function}) {
         super(props);
     }
 
@@ -144,7 +145,7 @@ class FeatureList extends React.Component<{features: FeatureInfo[]},{}> {
                                
                                 </div>
                                 <div className="group-buttons">
-                                        <div className="iconbutton" onClick={()=>console.log("TO DO... would have added",feature.feature_name)}><Icons icon="plus"/></div>
+                                        <div className="iconbutton" onClick={()=>this.props.addToActiveGroup(feature.feature_name)}><Icons icon="plus"/></div>
                                 </div>
                             </div>
                 ) }

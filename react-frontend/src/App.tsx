@@ -6,6 +6,7 @@ import './App.css';
 import Navbar from './components/Navbar';
 import GroupPage from "./pages/GroupPage";
 import Icons from "./components/icons";
+import ImputePage from "./pages/ImputePage";
 
 interface AppState {
   data: FeatureInfo[] | null;
@@ -71,6 +72,8 @@ class App extends React.Component<{}, AppState> {
                                                   handleDataUpload={this.handleDataUpload}/>}
         {(this.state.pageActive === "group") && <GroupPage data={this.state.data} groups={this.state.groups} 
                                                   handleGroupSelection={this.setGroupSelection} handleDataChange={this.setDataChange}/>}
+        {(this.state.pageActive === "impute") && <ImputePage data={this.state.data} groups={this.state.groups} 
+                                            handleImputationScore={()=>null} />}
       <footer className="footer">By Yan, Talu, David and Michael</footer>
       </div>
       </div>

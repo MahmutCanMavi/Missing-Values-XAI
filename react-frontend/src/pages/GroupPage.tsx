@@ -51,11 +51,11 @@ class NameChoiceComponent extends React.Component<{group:FeatureGroup, N:number,
             <label>
                 {this.props.group.name}, N: {this.props.N}    
             </label><span>&nbsp;&nbsp;</span>
-            <div className="iconbutton" onClick={()=>this.setState({isEditing:true})}><Icons icon="edit"/></div>
+            <div className="iconbutton" title="Edit Group Name" onClick={()=>this.setState({isEditing:true})}><Icons icon="edit"/></div>
             </div>
             <div className="group-buttons">
                       
-                      <div className="iconbutton" onClick={()=>this.props.onRemoveGroup()}><Icons icon="trash"/></div>
+                      <div title="Delete Group" className="iconbutton" onClick={()=>this.props.onRemoveGroup()}><Icons icon="trash"/></div>
             </div>
             </>
                 }
@@ -226,15 +226,16 @@ class GroupPage extends React.Component<GroupPageProps,{textarea:string,error:st
                 </div>
                 <button onClick={this.addGroup}>Add new group</button>
                 <br></br>
-                <div className="JSON-group-editor">
+                <div className="JSON-group-editor" style={{marginTop:300}}>
+                    For testing &amp; development: groups as JSON
                     {this.state.error && <pre>error : {this.state.error}</pre>}
                     <div>
-                    {this.checkTextareaHasChanged() && <span>Unsaved Changes</span>}
+                    {this.checkTextareaHasChanged() && <span>State != text field</span>}
                     </div>
                     
 
                     <textarea
-                    style={{width:300, height:400}}
+                    style={{width:300, height:200,  backgroundColor:"#eee"}}
                     id="data-choice"
                     onChange={this.handleTextareaChange}
                     value={this.state.textarea}
@@ -249,17 +250,18 @@ class GroupPage extends React.Component<GroupPageProps,{textarea:string,error:st
             </aside>
             <main className="main maingrid">
                 
-                <div>
+                <div className="main-left">
+                { this.props.groups && this.state.activeGroup===null && <>Choose Group</>}
                     { this.props.groups && this.state.activeGroup!==null && 
                     this.props.groups.filter(group=>group.id===this.state.activeGroup).length !== 0 && 
                     <>
                     <h2> {this.props.groups.filter(group=>group.id===this.state.activeGroup)[0].name}  </h2>
-                    Filters: {this.props.groups.filter(group=>group.id===this.state.activeGroup)[0].filters?.join(", ")}
+                    Filters: {this.props.groups.filter(group=>group.id===this.state.activeGroup)[0].filters?.join(",  ")||"none"}
                     </> }
                     
                 
                 
-                <ul>
+                <div>
                 {  this.props.groups && this.props.data && this.state.activeGroup!==null && 
                 this.props.groups.filter(group=>group.id===this.state.activeGroup).length !== 0&&
                         // for each feature that is in the active group
@@ -269,9 +271,10 @@ class GroupPage extends React.Component<GroupPageProps,{textarea:string,error:st
                                 <div style={{backgroundColor:groupcolor(feature.group_id)}} className="group-colorbar"></div>
                                 <div className="group-name">
                                 
-                                    {feature.feature_name}    
-                               
+                                    {feature.feature_name}  
                                 </div>
+                                <SelectPctAvailGradient featureInfo={feature} height={20} onSelectFeature={()=>null}/>  
+                               
                                 <div className="group-buttons">
                                         <div className="iconbutton" onClick={()=>this.removeFromGroup(feature.feature_name)}><Icons icon="X"/></div>
                                 </div>
@@ -287,14 +290,15 @@ class GroupPage extends React.Component<GroupPageProps,{textarea:string,error:st
                                 (feature,i) => <li key={i}>{feature}</li> 
                             )}
                         }. */}
-                </ul>
                 </div>
-                <div className="group-search">
+                </div>
+                <div className="group-search main-right">
+                
                 { this.props.groups && this.state.activeGroup!==null && 
                     this.props.groups.filter(group=>group.id===this.state.activeGroup).length !== 0 && 
                     <>
                     <h2> Add elements to Group "{this.props.groups.filter(group=>group.id===this.state.activeGroup)[0].name}"  </h2>
-                    
+                    <p>Search:</p>
                     
                     </>
                     }
@@ -324,7 +328,7 @@ class GroupPage extends React.Component<GroupPageProps,{textarea:string,error:st
                 {(this.props.data && this.props.groups) && this.state.activeGroup !== null &&
             <FilterFeatures data={this.props.data} groups={this.props.groups} 
                 activeGroup={this.props.groups?.filter(group => (group.id === this.state.activeGroup))[0]} 
-                setData={this.props.handleDataChange} setGroups={this.props.handleGroupSelection}/>}
+                setData={this.props.handleDataChange} setGroups={this.props.handleGroupSelection} addToActiveGroup={this.addToActiveGroup}/>}
 
                 </div>
                 
