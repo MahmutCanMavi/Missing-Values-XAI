@@ -1,12 +1,19 @@
 import React from "react";
 import { FeatureInfo, FeatureGroup } from '../types/feature_types';
 import '../App.css';
+import Icons from "./icons";
 
-function addGroup(groups: FeatureGroup[], setGroups: Function) {
-    const new_id: number = Math.max(...groups.map(group => group.id)) + 1;
-    const new_group: FeatureGroup = {id: new_id, name: `New Group (${new_id})`};
-    setGroups([...groups, new_group]);
+function groupcolor(id:number|null){
+    if (id==null){
+        return "#fff";
+    }
+    else {
+        const colors = ["#07c4b2","#6f5ed3","#ce3665","#ffcd1c","#3896e3","#db61db","#929a9b","#59cb59","#fc8943","#db3e3e"];
+        return colors[id%10];
+    }
 }
+
+
 
 interface FilterFeaturesProps {
     data: FeatureInfo[],
@@ -63,22 +70,24 @@ class FilterFeatures extends React.Component<FilterFeaturesProps,FilterFeaturesS
 
         // if using a filter, record filter usage in "filter" attribute of activeGroup
         if (this.state.mode !== "normal") {
-            const filter: string = this.state.mode + ": " + this.state.textInput;
-            const previous_filters = this.props.activeGroup.filters
+            
 
-            // check if filters is still undefined
-            const new_filters = previous_filters ? [...previous_filters, filter] : [filter];
 
             const new_groups = this.props.groups.map(
                 group => {
                     if (group.id === this.props.activeGroup.id) {
-                        return {...this.props.activeGroup, filters: new_filters};
+                        
+                        const filter: string = this.state.mode + ": " + this.state.textInput;
+                        const previous_filters = group.filters
+                        // check if filters is still undefined
+                        const new_filters = previous_filters ? [...previous_filters, filter] : [filter];
+                        return {...group, filters: new_filters};
                     } else {
                         return group;
                     }
                 }
             );
-
+            console.log(new_groups)
             this.props.setGroups(new_groups);
         }
     }
@@ -93,14 +102,13 @@ class FilterFeatures extends React.Component<FilterFeaturesProps,FilterFeaturesS
         }
     }
 
+
+
     render() {
         return (
             <div>
                 <input type="text" onChange={(e) => this.updateSelectedFeatures(
                     e.target.value, this.state.mode)}></input>
-
-                <FeatureList features={this.state.selectedFeatures}/>
-
                 <button className={this.state.mode === "startsWith" ? "active" : "inactive"}
                     onClick={() => this.updateSelectedFeatures(
                         this.state.textInput, this.toggleMode("startsWith"))}>Starts With</button>
@@ -110,6 +118,9 @@ class FilterFeatures extends React.Component<FilterFeaturesProps,FilterFeaturesS
                         this.state.textInput, this.toggleMode("endsWith"))}>Ends With</button>
 
                 <button onClick={this.handleAddAll}>Add All</button>
+                <FeatureList features={this.state.selectedFeatures}/>
+
+
             </div>
         )
     }
@@ -123,11 +134,21 @@ class FeatureList extends React.Component<{features: FeatureInfo[]},{}> {
 
     render() {
         return (
-            <ul className="FeatureList">
-                { this.props.features.map(feature_info => feature_info.feature_name).map(
-                    feature_name => <li>{feature_name}</li>
+            <div className="FeatureList">
+                { this.props.features.map(feature => 
+                    <div className="group-row"  key={feature.feature_name}>
+                                <div style={{backgroundColor:groupcolor(feature.group_id)}} className="group-colorbar"></div>
+                                <div className="group-name">
+                                
+                                    {feature.feature_name}    
+                               
+                                </div>
+                                <div className="group-buttons">
+                                        <div className="iconbutton" onClick={()=>console.log("TO DO... would have added",feature.feature_name)}><Icons icon="plus"/></div>
+                                </div>
+                            </div>
                 ) }
-            </ul>
+            </div>
             
         )
     }

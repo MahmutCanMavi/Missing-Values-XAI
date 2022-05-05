@@ -15,6 +15,12 @@ function groupcolor(id:number|null){
     }
 }
 
+function addGroup(groups: FeatureGroup[], setGroups: Function) {
+    const new_id: number = Math.max(...groups.map(group => group.id)) + 1;
+    const new_group: FeatureGroup = {id: new_id, name: `New Group (${new_id})`};
+    setGroups([...groups, new_group]);
+}
+
 class NameChoiceComponent extends React.Component<{group:FeatureGroup, N:number, onChoiceMade: any, onClickGroup:any, onRemoveGroup: Function}, {text: string,isEditing:boolean}>{
 
     constructor(props: any) {
@@ -86,6 +92,7 @@ class GroupPage extends React.Component<GroupPageProps,{textarea:string,error:st
         this.removeGroup=this.removeGroup.bind(this);
         this.removeFromGroup=this.removeFromGroup.bind(this);
         this.addToActiveGroup=this.addToActiveGroup.bind(this);
+        this.addGroup=this.addGroup.bind(this);
         
     }
     handleTextareaChange(e : any) {
@@ -132,6 +139,16 @@ class GroupPage extends React.Component<GroupPageProps,{textarea:string,error:st
 
 
     }
+    addGroup() {
+        const groups = this.props.groups;
+        if (groups === null){
+            return;
+        }
+        const new_id: number = Math.max(...groups.map(group => group.id)) + 1;
+        const new_group: FeatureGroup = {id: new_id, name: `New Group (${new_id})`};
+        this.props.handleGroupSelection([...groups, new_group]);
+    }
+    
     removeGroup(group_id:number){
         
         // const group_id=0;
@@ -207,6 +224,7 @@ class GroupPage extends React.Component<GroupPageProps,{textarea:string,error:st
                     )
                 }
                 </div>
+                <button onClick={this.addGroup}>Add new group</button>
                 <br></br>
                 <div className="JSON-group-editor">
                     {this.state.error && <pre>error : {this.state.error}</pre>}
@@ -234,8 +252,10 @@ class GroupPage extends React.Component<GroupPageProps,{textarea:string,error:st
                 <div>
                     { this.props.groups && this.state.activeGroup!==null && 
                     this.props.groups.filter(group=>group.id===this.state.activeGroup).length !== 0 && 
-                    
-                    <h2> {this.props.groups.filter(group=>group.id===this.state.activeGroup)[0].name}  </h2> }
+                    <>
+                    <h2> {this.props.groups.filter(group=>group.id===this.state.activeGroup)[0].name}  </h2>
+                    Filters: {this.props.groups.filter(group=>group.id===this.state.activeGroup)[0].filters?.join(", ")}
+                    </> }
                     
                 
                 
@@ -272,10 +292,14 @@ class GroupPage extends React.Component<GroupPageProps,{textarea:string,error:st
                 <div className="group-search">
                 { this.props.groups && this.state.activeGroup!==null && 
                     this.props.groups.filter(group=>group.id===this.state.activeGroup).length !== 0 && 
+                    <>
+                    <h2> Add elements to Group "{this.props.groups.filter(group=>group.id===this.state.activeGroup)[0].name}"  </h2>
                     
-                    <h2> Add elements to Group "{this.props.groups.filter(group=>group.id===this.state.activeGroup)[0].name}"  </h2> }
+                    
+                    </>
+                    }
                 
-                {  this.props.groups && this.props.data  && this.state.activeGroup!==null &&  
+                {/* { this.props.groups && this.props.data  && this.state.activeGroup!==null &&  
                 this.props.data.filter(feature => typeof(feature.group_id) === "undefined" || feature.group_id === null).map((feature,i)=>{
                             return(
                             <div className="group-row"  key={feature.feature_name}>
@@ -290,22 +314,25 @@ class GroupPage extends React.Component<GroupPageProps,{textarea:string,error:st
                                 </div>
                             </div>)
                         })
+
+                 
                         
                         // this.props.data.map((feature,i)=>{
                         //     return <li className="groupName" key={i}><SelectPctAvailGradient featureInfo={feature} showTitle={true} height={20} onSelectFeature={()=>null}/></li>
                         // })
-                }
+                } */}
+                {(this.props.data && this.props.groups) && this.state.activeGroup !== null &&
+            <FilterFeatures data={this.props.data} groups={this.props.groups} 
+                activeGroup={this.props.groups?.filter(group => (group.id === this.state.activeGroup))[0]} 
+                setData={this.props.handleDataChange} setGroups={this.props.handleGroupSelection}/>}
 
                 </div>
                 
 
             </main>
 
-            // testing
-            {(this.props.data && this.props.groups) &&
-            <FilterFeatures data={this.props.data} groups={this.props.groups} 
-                activeGroup={this.props.groups?.filter(group => (group.id === 0))[0]} 
-                setData={console.log} setGroups={console.log}/>}
+            
+            
             
         </>
             
