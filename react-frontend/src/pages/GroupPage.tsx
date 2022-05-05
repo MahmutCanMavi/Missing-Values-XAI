@@ -143,9 +143,10 @@ class GroupPage extends React.Component<GroupPageProps,{textarea:string,error:st
             }
             else return feature
         })
-        this.setState({activeGroup:null})
+        
         this.props.handleDataChange(newdata);
         this.props.handleGroupSelection(newgroups);
+        this.setState({activeGroup:null})
     }
     selectActiveGroup(index:number){
         // console.log(index)
@@ -169,16 +170,18 @@ class GroupPage extends React.Component<GroupPageProps,{textarea:string,error:st
             console.log("no active group to add to");
             return
         }
-        const newdata = this.props.data?.map(feature => {
-            if (feature.feature_name === feature_name){
-                // console.log({...feature, group_id:null});
-                return {...feature, group_id:this.state.activeGroup };
+        else{
+            const newdata = this.props.data?.map(feature => {
+                if (feature.feature_name === feature_name){
+                    // console.log({...feature, group_id:null});
+                    return {...feature, group_id:this.state.activeGroup };
 
-            }
-            else return feature
-        })
-        
-        this.props.handleDataChange(newdata);
+                }
+                else return feature
+            })
+            
+            this.props.handleDataChange(newdata);
+        }
     }
     
     render(){
@@ -272,7 +275,7 @@ class GroupPage extends React.Component<GroupPageProps,{textarea:string,error:st
                     <h2> Add elements to Group "{this.props.groups.filter(group=>group.id===this.state.activeGroup)[0].name}"  </h2> }
                 
                 {  this.props.groups && this.props.data  && this.state.activeGroup!==null &&  
-                this.props.data.filter(feature => feature.group_id === null).map((feature,i)=>{
+                this.props.data.filter(feature => typeof(feature.group_id) === "undefined" || feature.group_id === null).map((feature,i)=>{
                             return(
                             <div className="group-row"  key={feature.feature_name}>
                                 <div style={{backgroundColor:groupcolor(feature.group_id)}} className="group-colorbar"></div>
