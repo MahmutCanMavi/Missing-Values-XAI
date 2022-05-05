@@ -211,3 +211,19 @@
   align-items: center;
   border-bottom: 1px solid #919191;
 }
+
+.active {
+  background-color: #648ca6;
+}
+
+ul.FeatureList > li {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.FeatureList{
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid black;
+}

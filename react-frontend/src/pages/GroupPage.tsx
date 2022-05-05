@@ -1,5 +1,6 @@
 import { group } from "console";
 import React from "react";
+import FilterFeatures from "../components/FilterFeatures";
 import Icons from "../components/icons";
 import SelectPctAvailGradient from "../components/SelectPctAvailGradient";
 import { FeatureInfo, FeatureGroup } from "../types/feature_types";
@@ -299,6 +300,12 @@ class GroupPage extends React.Component<GroupPageProps,{textarea:string,error:st
                 
 
             </main>
+
+            // testing
+            {(this.props.data && this.props.groups) &&
+            <FilterFeatures data={this.props.data} groups={this.props.groups} 
+                activeGroup={this.props.groups?.filter(group => (group.id === 0))[0]} 
+                setData={console.log} setGroups={console.log}/>}
             
         </>
             
