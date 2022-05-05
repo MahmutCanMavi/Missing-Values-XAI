@@ -89,11 +89,21 @@ Major milestones of our code + future planned steps.\
   - [x] Implemented [ Visualize ] tab
   - [x] Develop workaround for bug in uvicorn/fastapi when uploading files
 
-- [ ] Week 05.05.2022
-  - [ ] Fill the group page with some content
+- [x] Week 05.05.2022
+  - [x] Add search bar to add feature (Michael)
+  - [x] Make features filterable by pre- and suffix (Michael)
+  - [x] Groups: add, remove, bulk add features, change group name, add, remove. Color coding of groups (David)
+  - [x] Backend: cluster features by missing value pattern. make tsne plot (on a jupyter notebook) (Yan, Talu)
+
+- [ ] Week 19.05.2022
+  - [ ] connect clustering with frontend as group suggestions & tsne plot 
+  - [ ] clean up code 
+  - [ ] viz of how well the manually chosen group (?)
+  - [ ] start connecting some simple imputation methods with the frontend
+
 
 - [ ] At some point  
-  - [ ] choose groups of features automatically or manually
+  
   - [ ] add different imputation algorithms and display them on the imputation page
 
 <!-- Create a list subtask.\
