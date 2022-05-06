@@ -16,9 +16,9 @@ export const queryBackend = async (route: string): Promise<FeatureInfo[]> => {
         }
     )
     .then(response =>  { return response.json()})
-    .then(d =>  JSON.parse(d) as FeatureInfo[]); // It seems we have to parse it again because it is a stringified string??
+    .then(d =>  JSON.parse(d.replaceAll("NaN","null")) as FeatureInfo[]); // It seems we have to parse it again because it is a stringified string??
     // https://stackoverflow.com/questions/42494823/json-parse-returns-string-instead-of-object
-
+    
     return data;
 }
 

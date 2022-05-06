@@ -129,6 +129,27 @@ def get_errors(errors: list, imputation_method: str = "ffill"):
     return dumps(errors, cls=NpEncoder)
 
 
+@app.post("/get-fulldata")
+def get_cluster(feature_name: str):
+
+    
+    data = pd.read_csv(DATA_PATH)
+    datana=data.isna()
+    # put back the patient ids so we can group by
+    datana["id"]=data["id"]
+    # sum all nas
+    naPerPatient=datana.groupby("id").sum().sum(axis=1)
+    sortetPatientIds= naPerPatient.sort_values().keys().values
+
+    fulldata=data.loc[:,["id","time",feature_name]]
+    fullpivot = fulldata.pivot(index="id", columns="time", values=feature_name)
+    print(fullpivot)
+    
+    fullpivot=fullpivot.loc[sortetPatientIds,:]
+    
+    returndict= {"values":fullpivot.values,"names":fullpivot.index.values,"years":fullpivot.columns.values}
+    return dumps(returndict, cls=NpEncoder)
+
 
 ############################
 # Previous Implementations

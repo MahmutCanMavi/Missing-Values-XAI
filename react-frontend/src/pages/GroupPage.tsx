@@ -70,12 +70,7 @@ class GroupNameEditorComponent extends React.Component<{ group: FeatureGroup, N:
         );
     }
 }
-interface GroupPageProps {
-    features: FeatureInfo[] | null;
-    groups: FeatureGroup[] | null;
-    setGroups: Function;
-    setFeatures: Function;
-}
+
 class JsonGroupEditor extends React.Component<GroupPageProps, { textarea: string, error: string | null, activeGroup: number | null }> {
     constructor(props: GroupPageProps) {
         super(props);
@@ -150,7 +145,12 @@ class JsonGroupEditor extends React.Component<GroupPageProps, { textarea: string
 
 
 }
-
+interface GroupPageProps {
+    features: FeatureInfo[] | null;
+    groups: FeatureGroup[] | null;
+    setGroups: Function;
+    setFeatures: Function;
+}
 class GroupPage extends React.Component<GroupPageProps, { activeGroupId: number | null }> {
     constructor(props: GroupPageProps) {
         super(props);

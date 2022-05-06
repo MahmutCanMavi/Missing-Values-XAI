@@ -20,7 +20,8 @@ function Scatterplot2(svg, cars){
     xLabel: "Miles per gallon →",
     yLabel: "↑ Horsepower",
     fill: d => groupcolor(d?.group_id),
-    width:800,
+    width:400,
+    height:300,
     r:7,
     stroke:"none"
   })
@@ -70,7 +71,7 @@ function Scatterplot(svg,data, {
   const Y = d3.map(data, y);
   const T = title == null ? null : d3.map(data, title);
   const G = d3.map(data,fill)
-  console.log(G)
+  // console.log(G)
   const I = d3.range(X.length).filter(i => !isNaN(X[i]) && !isNaN(Y[i]));
 
   // Compute default domains.

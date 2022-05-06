@@ -1,4 +1,5 @@
 import React from "react";
+import D3DetailSquares from "../components/d3detailSquares";
 import D3Histogram from "../components/d3histogram";
 import DataUploadPane from "../components/DataUploadPane";
 import StackedGradients from "../components/StackedGradients";
@@ -49,6 +50,8 @@ class VizPage extends React.Component<VizPageProps,VizState> {
                 <DataUploadPane features={feature_names} onChange={this.props.handleDataUpload}/>
                 <hr/>
                 {this.state.selectedFeature && <D3Histogram featureInfo={this.state.selectedFeature}/>}
+                <hr/>
+                {this.state.selectedFeature && <D3DetailSquares featureInfo={this.state.selectedFeature}/>}
             </main>
         </>)
     }
