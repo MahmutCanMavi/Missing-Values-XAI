@@ -1,137 +1,179 @@
-import { group } from "console";
+
 import React from "react";
+import D3Scatterplot from "../components/d3scatterplot";
 import FilterFeatures from "../components/FilterFeatures";
 import Icons from "../components/icons";
 import SelectPctAvailGradient from "../components/SelectPctAvailGradient";
 import { FeatureInfo, FeatureGroup } from "../types/feature_types";
 
-function groupcolor(id:number|null){
-    if (id==null){
+function groupcolor(id: number | null) {
+    if (id == null) {
         return "#fff";
     }
     else {
-        const colors = ["#07c4b2","#6f5ed3","#ce3665","#ffcd1c","#3896e3","#db61db","#929a9b","#59cb59","#fc8943","#db3e3e"];
-        return colors[id%10];
+        const colors = ["#07c4b2", "#6f5ed3", "#ce3665", "#ffcd1c", "#3896e3", "#db61db", "#929a9b", "#59cb59", "#fc8943", "#db3e3e"];
+        return colors[id % 10];
     }
 }
 
-function addGroup(groups: FeatureGroup[], setGroups: Function) {
-    const new_id: number = Math.max(...groups.map(group => group.id)) + 1;
-    const new_group: FeatureGroup = {id: new_id, name: `New Group (${new_id})`};
-    setGroups([...groups, new_group]);
-}
 
-class NameChoiceComponent extends React.Component<{group:FeatureGroup, N:number, onChoiceMade: any, onClickGroup:any, onRemoveGroup: Function}, {text: string,isEditing:boolean}>{
+
+class GroupNameEditorComponent extends React.Component<{ group: FeatureGroup, N: number, onConfirmNewName: any, onClickGroup: any, onRemoveGroup: Function }, { text: string, isEditing: boolean }>{
 
     constructor(props: any) {
-      super(props);
-      this.state = {text: this.props.group.name, isEditing:false};
-      this.handleChange = this.handleChange.bind(this);
-      this.handleChoice = this.handleChoice.bind(this);
+        super(props);
+        this.state = { text: this.props.group.name, isEditing: false };
+        this.handleChange = this.handleChange.bind(this);
+        this.handleChoice = this.handleChoice.bind(this);
     }
-    handleChange(e : any) {
-        this.setState({ text: e.target.value});
+    handleChange(e: any) {
+        this.setState({ text: e.target.value });
     }
 
-    handleChoice(e : any){
-        this.props.onChoiceMade(this.state.text);
-        this.setState({isEditing:false})          
+    handleChoice(e: any) {
+        this.props.onConfirmNewName(this.state.text);
+        this.setState({ isEditing: false })
     }
     render() { // Old Text: Which feature do you want to use? (adre_bol, adre_iv, PAPs, HR, CVPm, PVR, urine, Na, temp, pH, pO2)
         // console.log("name choice component rendered")    
-      return (
-        <div className="group-row" onClick={this.props.onClickGroup}>
-            <div style={{backgroundColor:groupcolor(this.props.group.id)}} className="group-colorbar"></div>
-            
-            
-            {this.state.isEditing===false &&
-            
-            <>
-            <div className="group-name">
-            <label>
-                {this.props.group.name}, N: {this.props.N}    
-            </label><span>&nbsp;&nbsp;</span>
-            <div className="iconbutton" title="Edit Group Name" onClick={()=>this.setState({isEditing:true})}><Icons icon="edit"/></div>
-            </div>
-            <div className="group-buttons">
-                      
-                      <div title="Delete Group" className="iconbutton" onClick={()=>this.props.onRemoveGroup()}><Icons icon="trash"/></div>
-            </div>
-            </>
+        return (
+            <div className="group-row" onClick={this.props.onClickGroup}>
+                <div style={{ backgroundColor: groupcolor(this.props.group.id) }} className="group-colorbar"></div>
+
+
+                {this.state.isEditing === false &&
+
+                    <>
+                        <div className="group-name">
+                            <label>
+                                {this.props.group.name}, N: {this.props.N}
+                            </label><span>&nbsp;&nbsp;</span>
+                            <div className="iconbutton" title="Edit Group Name" onClick={() => this.setState({ isEditing: true })}><Icons icon="edit" /></div>
+                        </div>
+                        <div className="group-buttons">
+
+                            <div title="Delete Group" className="iconbutton" onClick={() => this.props.onRemoveGroup()}><Icons icon="trash" /></div>
+                        </div>
+                    </>
                 }
-            {this.state.isEditing && 
-            <> <input
-                id="data-choice"
-                onChange={this.handleChange}
-                value={this.state.text}
-            />   <span>&nbsp;&nbsp;</span>
-            <button onClick={this.handleChoice}>
-                Confirm 
-            </button></>}
-        </div>
-        
-      );
+                {this.state.isEditing &&
+                    <> <input
+                        id="data-choice"
+                        onChange={this.handleChange}
+                        value={this.state.text}
+                    />   <span>&nbsp;&nbsp;</span>
+                        <button onClick={this.handleChoice}>
+                            Confirm
+                        </button></>}
+            </div>
+
+        );
     }
-  }
-
-interface GroupPageProps {
-    data: FeatureInfo[] | null;
-    groups: FeatureGroup[] | null;
-    handleGroupSelection: Function;
-    handleDataChange: Function;
 }
-
-class GroupPage extends React.Component<GroupPageProps,{textarea:string,error:string|null, activeGroup:number|null}> {
+interface GroupPageProps {
+    features: FeatureInfo[] | null;
+    groups: FeatureGroup[] | null;
+    setGroups: Function;
+    setFeatures: Function;
+}
+class JsonGroupEditor extends React.Component<GroupPageProps, { textarea: string, error: string | null, activeGroup: number | null }> {
     constructor(props: GroupPageProps) {
         super(props);
-        this.state={textarea: JSON.stringify(this.props.groups,null, 2),error:null,activeGroup:null}
+        this.state = { textarea: JSON.stringify(this.props.groups, null, 2), error: null, activeGroup: null }
         this.handleTextareaChange = this.handleTextareaChange.bind(this);
         this.handleTextareaChoice = this.handleTextareaChoice.bind(this);
         this.resetTextarea = this.resetTextarea.bind(this);
-        this.selectActiveGroup=this.selectActiveGroup.bind(this);
-        this.removeGroup=this.removeGroup.bind(this);
-        this.removeFromGroup=this.removeFromGroup.bind(this);
-        this.addToActiveGroup=this.addToActiveGroup.bind(this);
-        this.addGroup=this.addGroup.bind(this);
-        
+
+
     }
-    handleTextareaChange(e : any) {
-        this.setState({ textarea: e.target.value,error:null });
+    handleTextareaChange(e: any) {
+        this.setState({ textarea: e.target.value, error: null });
     }
     resetTextarea() {
 
-        this.setState({textarea: JSON.stringify(this.props.groups,null, 2),error:null})
+        this.setState({ textarea: JSON.stringify(this.props.groups, null, 2), error: null })
     }
 
-    handleTextareaChoice(e : any){
-        
-        
+    handleTextareaChoice(e: any) {
+
+
         let groups = null;
         try {
             groups = JSON.parse(this.state.textarea)
-            this.props.handleGroupSelection(groups)  
+            this.props.setGroups(groups)
         }
-        catch(error:any) {
+        catch (error: any) {
             console.log(error)
-            this.setState({error:error.message})
+            this.setState({ error: error.message })
             return
         }
-        
-          
+
+
     }
     checkTextareaHasChanged() {
-        return JSON.stringify(this.props.groups,null, 2) != this.state.textarea;
+        return JSON.stringify(this.props.groups, null, 2) != this.state.textarea;
     }
-    changeGroupName(group_id:number, newName:string){
+
+    render() {
+        // <div className="group">{featureGroup.feature_name} 
+        //             <input defaultValue={featureGroup.feature_name}></input> 
+        //             <button onClick={this.changeGroupName(featureGroup.feature_name)}>Save</button>
+        //         </div>
+        // style={{padding:10}}
+        // console.log("group page rendered")
+        return (
+
+            <div className="JSON-group-editor" style={{ marginTop: 300 }}>
+                For testing &amp; development: groups as JSON
+                {this.state.error && <pre>error : {this.state.error}</pre>}
+                <div>
+                    {this.checkTextareaHasChanged() && <span>State != text field</span>}
+                </div>
+
+
+                <textarea
+                    style={{ width: 300, height: 200, backgroundColor: "#eee" }}
+                    id="data-choice"
+                    onChange={this.handleTextareaChange}
+                    value={this.state.textarea}
+                />
+                <button onClick={this.handleTextareaChoice}>
+                    Confirm
+                </button>
+                <button onClick={this.resetTextarea}>
+                    reset text to groups state
+                </button>
+            </div>
+
+        )
+    }
+
+
+}
+
+class GroupPage extends React.Component<GroupPageProps, { activeGroupId: number | null }> {
+    constructor(props: GroupPageProps) {
+        super(props);
+        this.state = { activeGroupId: null }
+
+        this.selectActiveGroup = this.selectActiveGroup.bind(this);
+        this.removeGroup = this.removeGroup.bind(this);
+        this.removeFromGroup = this.removeFromGroup.bind(this);
+        this.addToActiveGroup = this.addToActiveGroup.bind(this);
+        this.addGroup = this.addGroup.bind(this);
+
+    }
+
+    changeGroupName(group_id: number, newName: string) {
         // console.log(index,newName)
-        if (this.props.groups){
+        if (this.props.groups) {
             let newGroups = this.props.groups
-            if (newGroups.filter(group=>group.id===group_id).length!==1){
-                Error("Group not found or duplicates"+group_id)
+            if (newGroups.filter(group => group.id === group_id).length !== 1) {
+                Error("Group not found or duplicates" + group_id)
             }
-            newGroups.filter(group=>group.id===group_id)[0].name=newName
+            newGroups.filter(group => group.id === group_id)[0].name = newName
             // console.log(groups)
-            this.props.handleGroupSelection(newGroups)
+            this.props.setGroups(newGroups)
         }
         else {
             return null
@@ -141,210 +183,172 @@ class GroupPage extends React.Component<GroupPageProps,{textarea:string,error:st
     }
     addGroup() {
         const groups = this.props.groups;
-        if (groups === null){
+        if (groups === null) {
             return;
         }
         const new_id: number = Math.max(...groups.map(group => group.id)) + 1;
-        const new_group: FeatureGroup = {id: new_id, name: `New Group (${new_id})`};
-        this.props.handleGroupSelection([...groups, new_group]);
+        const new_group: FeatureGroup = { id: new_id, name: `New Group (${new_id})` };
+        this.props.setGroups([...groups, new_group]);
     }
-    
-    removeGroup(group_id:number){
-        
+
+    removeGroup(group_id: number) {
+
         // const group_id=0;
         const newgroups = this.props.groups?.filter(group => group.id !== group_id);
-        const newdata = this.props.data?.map(feature => {
-            if (feature.group_id === group_id){
+        const newdata = this.props.features?.map(feature => {
+            if (feature.group_id === group_id) {
                 // console.log({...feature, group_id:null});
-                return {...feature, group_id:null};
+                return { ...feature, group_id: null };
 
             }
             else return feature
         })
-        
-        this.props.handleDataChange(newdata);
-        this.props.handleGroupSelection(newgroups);
-        this.setState({activeGroup:null})
+
+        this.props.setFeatures(newdata);
+        this.props.setGroups(newgroups);
+        this.setState({ activeGroupId: null })
     }
-    selectActiveGroup(index:number){
+    selectActiveGroup(index: number) {
         // console.log(index)
-        this.setState({activeGroup:index})
+        this.setState({ activeGroupId: index })
     }
-    removeFromGroup(feature_name:string){
-        const newdata = this.props.data?.map(feature => {
-            if (feature.feature_name === feature_name){
+    removeFromGroup(feature_name: string) {
+        const newdata = this.props.features?.map(feature => {
+            if (feature.feature_name === feature_name) {
                 // console.log({...feature, group_id:null});
-                return {...feature, group_id:null};
+                return { ...feature, group_id: null };
 
             }
             else return feature
         })
-        
-        this.props.handleDataChange(newdata);
+
+        this.props.setFeatures(newdata);
         return
     }
-    addToActiveGroup(feature_name:string) {
-        if (this.state.activeGroup === null){
+    addToActiveGroup(feature_name: string) {
+        if (this.state.activeGroupId === null) {
             console.log("no active group to add to");
             return
         }
-        else{
-            const newdata = this.props.data?.map(feature => {
-                if (feature.feature_name === feature_name){
+        else {
+            const newdata = this.props.features?.map(feature => {
+                if (feature.feature_name === feature_name) {
                     // console.log({...feature, group_id:null});
-                    return {...feature, group_id:this.state.activeGroup };
+                    return { ...feature, group_id: this.state.activeGroupId };
 
                 }
                 else return feature
             })
-            
-            this.props.handleDataChange(newdata);
+
+            this.props.setFeatures(newdata);
         }
     }
-    
-    render(){
-        // <div className="group">{featureGroup.feature_name} 
-        //             <input defaultValue={featureGroup.feature_name}></input> 
-        //             <button onClick={this.changeGroupName(featureGroup.feature_name)}>Save</button>
-        //         </div>
-        // style={{padding:10}}
-        // console.log("group page rendered")
+
+    render() {
+
         return (
-        <>
-            <aside className="sidenav">
-            <div>{this.props.groups?.map(
-                    (featureGroup,i) => <NameChoiceComponent 
-                        key={featureGroup.id} 
-                        group={featureGroup} 
-                        N={this.props.data?.filter(feature=>feature.group_id===featureGroup.id).length || 0} 
-                        onChoiceMade={(newName:string)=>this.changeGroupName(featureGroup.id,newName)}
-                        onClickGroup={ ()=>this.selectActiveGroup(featureGroup.id)}
-                        onRemoveGroup={()=> this.removeGroup(featureGroup.id)} 
+            <>
+                <aside className="sidenav">
+                    {/* list of all groups, you can add, remove, edit name, click to edit members/set active */}
+                    <div>{this.props.groups?.map(
+                        (featureGroup, i) => <GroupNameEditorComponent
+                            key={featureGroup.id}
+                            group={featureGroup}
+                            // Number of members (features in the group)
+                            N={this.props.features?.filter(feature => feature.group_id === featureGroup.id).length || 0}
+                            onConfirmNewName={(newName: string) => this.changeGroupName(featureGroup.id, newName)}
+                            onClickGroup={() => this.selectActiveGroup(featureGroup.id)}
+                            onRemoveGroup={() => this.removeGroup(featureGroup.id)}
                         />
                     )
-                }
-                </div>
-                <button onClick={this.addGroup}>Add new group</button>
-                <br></br>
-                <div className="JSON-group-editor" style={{marginTop:300}}>
-                    For testing &amp; development: groups as JSON
-                    {this.state.error && <pre>error : {this.state.error}</pre>}
-                    <div>
-                    {this.checkTextareaHasChanged() && <span>State != text field</span>}
-                    </div>
-                    
-
-                    <textarea
-                    style={{width:300, height:200,  backgroundColor:"#eee"}}
-                    id="data-choice"
-                    onChange={this.handleTextareaChange}
-                    value={this.state.textarea}
-                    />
-                    <button onClick={this.handleTextareaChoice}>
-                    Confirm 
-                    </button>
-                    <button onClick={this.resetTextarea}>
-                    reset text to groups state
-                    </button>
-                </div>
-            </aside>
-            <main className="main maingrid">
-                
-                <div className="main-left">
-                { this.props.groups && this.state.activeGroup===null && <>Choose Group</>}
-                    { this.props.groups && this.state.activeGroup!==null && 
-                    this.props.groups.filter(group=>group.id===this.state.activeGroup).length !== 0 && 
-                    <>
-                    <h2> {this.props.groups.filter(group=>group.id===this.state.activeGroup)[0].name}  </h2>
-                    Filters: {this.props.groups.filter(group=>group.id===this.state.activeGroup)[0].filters?.join(",  ")||"none"}
-                    </> }
-                    
-                
-                
-                <div>
-                {  this.props.groups && this.props.data && this.state.activeGroup!==null && 
-                this.props.groups.filter(group=>group.id===this.state.activeGroup).length !== 0&&
-                        // for each feature that is in the active group
-                        this.props.data.filter(feature => feature.group_id === this.state.activeGroup).map((feature,i)=>{
-                            return(
-                            <div className="group-row" key={feature.feature_name}>
-                                <div style={{backgroundColor:groupcolor(feature.group_id)}} className="group-colorbar"></div>
-                                <div className="group-name">
-                                
-                                    {feature.feature_name}  
-                                </div>
-                                <SelectPctAvailGradient featureInfo={feature} height={20} onSelectFeature={()=>null}/>  
-                               
-                                <div className="group-buttons">
-                                        <div className="iconbutton" onClick={()=>this.removeFromGroup(feature.feature_name)}><Icons icon="X"/></div>
-                                </div>
-                            </div>)
-                        }) 
-
-                }
-                        
-                        
-                        
-                        {/* this.props.groups.filter(group => group.id === this.state.activeGroup)[0].map(group=>{
-                            this.props.data && this.props.data..features.map(
-                                (feature,i) => <li key={i}>{feature}</li> 
-                            )}
-                        }. */}
-                </div>
-                </div>
-                <div className="group-search main-right">
-                
-                { this.props.groups && this.state.activeGroup!==null && 
-                    this.props.groups.filter(group=>group.id===this.state.activeGroup).length !== 0 && 
-                    <>
-                    <h2> Add elements to Group "{this.props.groups.filter(group=>group.id===this.state.activeGroup)[0].name}"  </h2>
-                    <p>Search:</p>
-                    
-                    </>
                     }
-                
-                {/* { this.props.groups && this.props.data  && this.state.activeGroup!==null &&  
-                this.props.data.filter(feature => typeof(feature.group_id) === "undefined" || feature.group_id === null).map((feature,i)=>{
-                            return(
-                            <div className="group-row"  key={feature.feature_name}>
-                                <div style={{backgroundColor:groupcolor(feature.group_id)}} className="group-colorbar"></div>
-                                <div className="group-name">
-                                
-                                    {feature.feature_name}    
-                               
-                                </div>
-                                <div className="group-buttons">
-                                        <div className="iconbutton" onClick={()=>this.addToActiveGroup(feature.feature_name)}><Icons icon="plus"/></div>
-                                </div>
-                            </div>)
-                        })
+                    </div>
+                    <button onClick={this.addGroup}>Add new group</button>
+                    <br></br>
+                    {/* textarea to edit the groups object manually. Can be removed for deployment */}
+                    <JsonGroupEditor features={this.props.features} groups={this.props.groups}
+                        setFeatures={this.props.setFeatures} setGroups={this.props.setGroups} />
+                </aside>
+                <main className="main maingrid">
 
-                 
-                        
-                        // this.props.data.map((feature,i)=>{
-                        //     return <li className="groupName" key={i}><SelectPctAvailGradient featureInfo={feature} showTitle={true} height={20} onSelectFeature={()=>null}/></li>
-                        // })
-                } */}
-                {(this.props.data && this.props.groups) && this.state.activeGroup !== null &&
-            <FilterFeatures data={this.props.data} groups={this.props.groups} 
-                activeGroup={this.props.groups?.filter(group => (group.id === this.state.activeGroup))[0]} 
-                setData={this.props.handleDataChange} setGroups={this.props.handleGroupSelection} addToActiveGroup={this.addToActiveGroup}/>}
+                    <div className="main-left">
+                        {/* If there is no active group, display only "Choose group" */}
+                        {this.props.groups && this.state.activeGroupId === null && <>Choose Group</>}
 
-                </div>
-                
+                        {/* Center column: Show name and filters of active group */}
+                        {this.props.groups && this.state.activeGroupId !== null &&
+                            this.props.groups.filter(group => group.id === this.state.activeGroupId).length !== 0 &&
+                            <>
+                                <h2> {this.props.groups.filter(group => group.id === this.state.activeGroupId)[0].name}  </h2>
+                                Filters: {this.props.groups.filter(group => group.id === this.state.activeGroupId)[0].filters?.join(",  ") || "none"}
+                            </>}
 
-            </main>
 
-            
-            
-            
-        </>
-            
+                        {/* Show list of member features of active group in the center column */}
+                        <div>
+                            {this.props.groups && this.props.features && this.state.activeGroupId !== null &&
+                                this.props.groups.filter(group => group.id === this.state.activeGroupId).length !== 0 &&
+                                // for each feature that is in the active group
+                                this.props.features.filter(feature => feature.group_id === this.state.activeGroupId).map((feature, i) => {
+                                    return (
+                                        <div className="feature-row" key={feature.feature_name}>
+                                            <div style={{ backgroundColor: groupcolor(feature.group_id) }} className="feature-colorbar"></div>
+                                            <div className="feature-name">
+
+                                                {feature.feature_name}
+                                            </div>
+                                            <SelectPctAvailGradient featureInfo={feature} height={20} onSelectFeature={() => null} />
+
+                                            <div className="feature-buttons">
+                                                <div className="iconbutton" onClick={() => this.removeFromGroup(feature.feature_name)}><Icons icon="X" /></div>
+                                            </div>
+                                        </div>)
+                                })
+
+                            }
+
+
+
+
+
+                        </div>
+                    </div>
+                    <div className="group-search main-right">
+                        {/* Right column: show title of the search tool */}
+                        {this.props.groups && this.state.activeGroupId !== null &&
+                            // Check if the active group ID is actually in the groups array. Might not be the case if you delete the group
+                            // also if I dont do this, the compiler complains when indexing [0]
+                            this.props.groups.filter(group => group.id === this.state.activeGroupId).length !== 0 &&
+                            <>
+                                <h2> Add elements to Group "{this.props.groups.filter(group => group.id === this.state.activeGroupId)[0].name}"  </h2>
+                                <p>Search:</p>
+
+                            </>
+                        }
+
+                        {/* Right column:  show the search tool */}
+                        {(this.props.features && this.props.groups) && this.state.activeGroupId !== null &&
+                            <FilterFeatures data={this.props.features} groups={this.props.groups}
+                                activeGroup={this.props.groups?.filter(group => (group.id === this.state.activeGroupId))[0]}
+                                setData={this.props.setFeatures} setGroups={this.props.setGroups} addToActiveGroup={this.addToActiveGroup} />}
+
+                        {/* Right column:  Scatterplot */}
+                        <D3Scatterplot/>
+                    </div>
+
+
+                </main>
+
+
+
+
+            </>
+
 
         )
     }
 
-    
+
 }
 
 export default GroupPage;

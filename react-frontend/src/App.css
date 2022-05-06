@@ -87,8 +87,8 @@
 
 .pctAvailGradient svg.gradient{
   width: 200px;
-  height: 80%
-  
+  height: 80%;
+  border: 1px solid gray;
   
 }
 .pctAvailGradient svg.cluster{
@@ -174,25 +174,28 @@
   height: 100%;
   width: 100%;
 } 
-.group-colorbar{
+.main-left,.main-right {
+  padding: 5px;
+}
+.group-colorbar, .feature-colorbar{
   display: inline-block;
   height: 60px;
   width: 30px;
 }
-
-.group-name {
-  padding:10px;
-  
-
-  /* box-shadow: 1px 1px 2px #000000;
-  border-radius: 5px;
-  margin: 10px;
-  width: 200px;
-  border: 1px solid black; */
+.feature-colorbar{
+  width: 7px;
+  height: 40px;
 }
-.group-buttons {
+
+.group-name, .feature-name {
+  padding:10px;
+} 
+.feature-name {
+  width: 30%;
+}
+.group-buttons, .feature-buttons {
   width: 50px;
-  padding-top:10px;
+
 }
 .group-row:hover {
   background-color:#f7f7f7;
@@ -202,12 +205,14 @@
   height: 16px;
   width: 16px;
   padding: 4px;
-  /* border:1px solid black; */
 }
 .iconbutton:hover {
-  background-color: #ffffff;
+  background-color: #ddd;
 }
-.group-row {
+.feature-row .iconbutton:hover {
+  background-color: #ddd;
+}
+.group-row, .feature-row {
   display: flex;
   align-items: center;
   border-bottom: 1px solid #919191;

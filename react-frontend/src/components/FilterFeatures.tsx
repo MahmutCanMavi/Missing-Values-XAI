@@ -2,6 +2,7 @@ import React from "react";
 import { FeatureInfo, FeatureGroup } from '../types/feature_types';
 import '../App.css';
 import Icons from "./icons";
+import SelectPctAvailGradient from "./SelectPctAvailGradient";
 
 function groupcolor(id:number|null){
     if (id==null){
@@ -137,14 +138,15 @@ class FeatureList extends React.Component<{features: FeatureInfo[], addToActiveG
         return (
             <div className="FeatureList">
                 { this.props.features.map(feature => 
-                    <div className="group-row"  key={feature.feature_name}>
-                                <div style={{backgroundColor:groupcolor(feature.group_id)}} className="group-colorbar"></div>
-                                <div className="group-name">
+                    <div className="feature-row"  key={feature.feature_name}>
+                                <div style={{backgroundColor:groupcolor(feature.group_id)}} className="feature-colorbar"></div>
+                                <div className="feature-name">
                                 
                                     {feature.feature_name}    
                                
                                 </div>
-                                <div className="group-buttons">
+                                <SelectPctAvailGradient featureInfo={feature} height={20} onSelectFeature={() => null} />
+                                <div className="feature-buttons">
                                         <div className="iconbutton" onClick={()=>this.props.addToActiveGroup(feature.feature_name)}><Icons icon="plus"/></div>
                                 </div>
                             </div>

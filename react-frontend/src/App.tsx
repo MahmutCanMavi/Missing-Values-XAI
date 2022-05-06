@@ -31,8 +31,8 @@ class App extends React.Component<{}, AppState> {
     this.state = {data: dummydata, groups: dummygroups, pageActive: "viz"};
     this.handleDataUpload=this.handleDataUpload.bind(this);
     this.setPageActive=this.setPageActive.bind(this);
-    this.setGroupSelection=this.setGroupSelection.bind(this);
-    this.setDataChange=this.setDataChange.bind(this);
+    this.setGroups=this.setGroups.bind(this);
+    this.setFeatures=this.setFeatures.bind(this);
   }
   handleDataUpload(data: FeatureInfo[] | null){
     
@@ -45,14 +45,11 @@ class App extends React.Component<{}, AppState> {
   setPageActive(pageActive:"viz" | "group" | "impute"){
     this.setState({pageActive:pageActive})
   }
-  setGroupSelection(newGroups:FeatureGroup[] | null){
-    const allfeatures=this.state.data?.map((featureInfo)=>featureInfo.feature_name).sort();
-    const featuresInGroups = this.state.groups?.map
-    // console.log(allfeatures)
+  setGroups(newGroups:FeatureGroup[] | null){
     this.setState({groups:newGroups})
   }
-  setDataChange(newData:FeatureInfo[] | null){
-    this.setState({data:newData})
+  setFeatures(newFeatures:FeatureInfo[] | null){
+    this.setState({data:newFeatures})
   }
 
   render() {
@@ -70,8 +67,8 @@ class App extends React.Component<{}, AppState> {
     
         {(this.state.pageActive === "viz") && <VizPage data={this.state.data} groups={this.state.groups}
                                                   handleDataUpload={this.handleDataUpload}/>}
-        {(this.state.pageActive === "group") && <GroupPage data={this.state.data} groups={this.state.groups} 
-                                                  handleGroupSelection={this.setGroupSelection} handleDataChange={this.setDataChange}/>}
+        {(this.state.pageActive === "group") && <GroupPage features={this.state.data} groups={this.state.groups} 
+                                                  setGroups={this.setGroups} setFeatures={this.setFeatures}/>}
         {(this.state.pageActive === "impute") && <ImputePage data={this.state.data} groups={this.state.groups} 
                                             handleImputationScore={()=>null} />}
       <footer className="footer">By Yan, Talu, David and Michael</footer>
