@@ -51,7 +51,7 @@ class VizPage extends React.Component<VizPageProps,VizState> {
                 <hr/>
                 {this.state.selectedFeature && <D3Histogram featureInfo={this.state.selectedFeature}/>}
                 <hr/>
-                {this.state.selectedFeature && <D3DetailSquares featureInfo={this.state.selectedFeature}/>}
+                {this.state.selectedFeature && <D3DetailSquares patient_id={this.state.selectedFeature}/>}
             </main>
         </>)
     }

@@ -150,6 +150,22 @@ def get_cluster(feature_name: str):
     returndict= {"values":fullpivot.values,"names":fullpivot.index.values,"years":fullpivot.columns.values}
     return dumps(returndict, cls=NpEncoder)
 
+@app.post("/get-fulldata-patient")
+def get_cluster(patient_id: int):
+
+    
+    data = pd.read_csv(DATA_PATH)
+    pat= data.loc[data["id"]==patient_id,:]
+    pat.index=pat["time"]
+    #make it square. add missing timestamps as na
+    for i in range(0,97):
+        if i not in pat.index:
+            pat.loc[i,:]=np.NaN
+    patna=pat.T
+    
+    returndict= {"values":patna.values,"names":patna.index.values,"years":patna.columns.values}
+    return dumps(returndict, cls=NpEncoder)
+
 
 ############################
 # Previous Implementations

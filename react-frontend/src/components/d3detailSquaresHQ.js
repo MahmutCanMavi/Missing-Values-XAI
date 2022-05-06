@@ -15,17 +15,17 @@ function groupcolor(id) {
 
 
 // Source https://observablehq.com/@mbostock/the-impact-of-vaccines
-function DetailSquares(svg, data) {
+function DetailSquares(svg, data, ylabel) {
 
   // const data = JSON.parse(datastring.replaceAll("NaN","null"));
   // const sumNulls=(row)=>row.map(v=>v===null?1:0).reduce((a,b)=>a+b,0);
   // data.values=data.values.sort((row1,row2)=>sumNulls(row1) > sumNulls(row2));
 
-  const isTextVar = data.values.map(r => r.map(v => typeof (v) == "string").reduce((a, b) => a || b)).reduce((a, b) => a || b);
+  const isTextVar = data.values.map(r => r.map(v => typeof (v) === "string").reduce((a, b) => a || b)).reduce((a, b) => a || b);
   console.log(isTextVar);
 
   let margin = {}
-  margin = { top: 20, right: 1, bottom: 40, left: 40 };
+  margin = { top: 40, right: 1, bottom: 40, left: 50 };
   const height = 10;
   const width = 1000;
   const innerHeight = height * data.names.length;
@@ -43,25 +43,35 @@ function DetailSquares(svg, data) {
   const yAxis = g => g
     .attr("transform", `translate(${margin.left},0)`)
     .call(d3.axisLeft(y).tickSize(0))
-    .call(g => g.select(".domain").remove());
+    .call(g => g.select(".domain").remove())
+    .call(g => g.append("text")
+      .attr("fill", "black")
+      .attr("text-anchor", "center")
+      .attr("transform", `translate(-35,60) rotate(-90)`)
+      .text(ylabel));
 
   const xAxis = g => g
     .call(g => g.append("g")
       .attr("transform", `translate(0,${margin.top})`)
       .call(d3.axisTop(x).ticks(null, "d"))
       .call(g => g.select(".domain").remove()))
-    .call(g => g.append("g")
-      .attr("transform", `translate(0,${innerHeight + margin.top + 4})`)
-      .call(d3.axisBottom(x)
-        .tickValues([data.year])
-        .tickFormat(x => x)
-        .tickSize(-innerHeight - 10))
+      .call(g => g.append("text")
+      .attr("fill", "black")
+      .attr("text-anchor", "center")
+      .attr("transform", `translate(${margin.left + 30},${margin.top-20})`)
+      .text("hours"));
+    // .call(g => g.append("g")
+    //   .attr("transform", `translate(0,${innerHeight + margin.top + 4})`)
+    //   .call(d3.axisBottom(x)
+    //     .tickValues([data.year])
+    //     .tickFormat(x => x)
+    //     .tickSize(-innerHeight - 10))
       // .call(g => g.select(".tick text")
       //     .clone()
       //     .attr("dy", "2em")
       //     .style("font-weight", "bold")
       //     .text("Measles vaccine introduced"))
-      .call(g => g.select(".domain").remove()));
+      // .call(g => g.select(".domain").remove()));
 
   let color = d3.scaleSequential([0, d3.max(data.values, d => d3.max(d))], d3.interpolatePuRd)
   if (isTextVar) {
@@ -85,7 +95,8 @@ function DetailSquares(svg, data) {
     .attr("font-size", 10);
 
   svg.append("g")
-    .call(xAxis);
+    .call(xAxis)
+
 
   svg.append("g")
     .call(yAxis);
@@ -105,6 +116,7 @@ function DetailSquares(svg, data) {
     .append("title")
     .text((d, i) => `${format(d)}`);
 
+  console.log(svg)
   return svg.node();
 
 
