@@ -21,8 +21,28 @@ function DetailSquares(svg, data, ylabel) {
   // const sumNulls=(row)=>row.map(v=>v===null?1:0).reduce((a,b)=>a+b,0);
   // data.values=data.values.sort((row1,row2)=>sumNulls(row1) > sumNulls(row2));
 
+  if (ylabel==="feature name"){
+    // const isTextVar=false;
+    // data.colorvalues= data.values.map(row=>{
+    //   let istextrow= row.map(v => typeof (v) === "string").reduce((a, b) => a || b);
+    //   let rowcolor 
+    //   if (istextrow) {
+        
+    //     rowcolor = d3.scaleOrdinal().domain(row)
+    //     .range(["gold", "blue", "green", "yellow", "black", "grey", "darkgreen", "pink", "brown", "slateblue", "grey1", "orange"])
+        
+    //   }
+    //   else {
+    //     rowcolor = d3.scaleSequential([d3.min(row), d3.max(row)], d3.interpolatePuRd)
+    //   }
+    //   return row.map(v=>rowcolor(v))
+    // })
+  }
+  else{
+    // data.colorvalues=values;
+  }
   const isTextVar = data.values.map(r => r.map(v => typeof (v) === "string").reduce((a, b) => a || b)).reduce((a, b) => a || b);
-  console.log(isTextVar);
+   
 
   let margin = {}
   margin = { top: 40, right: 1, bottom: 40, left: 50 };
@@ -78,7 +98,7 @@ function DetailSquares(svg, data, ylabel) {
     
     color = d3.scaleOrdinal().domain(data.values.reduce((a,b)=>[...a,...b]))
     .range(["gold", "blue", "green", "yellow", "black", "grey", "darkgreen", "pink", "brown", "slateblue", "grey1", "orange"])
-    console.log(data.values.reduce((a,b)=>[...a,...b]),color)
+    
   }
   const y = d3.scaleBand()
     .domain(data.names)
@@ -101,6 +121,7 @@ function DetailSquares(svg, data, ylabel) {
   svg.append("g")
     .call(yAxis);
 
+
   svg.append("g")
     .selectAll("g")
     .data(data.values)
@@ -112,11 +133,11 @@ function DetailSquares(svg, data, ylabel) {
     .attr("x", (d, i) => x(data.years[i]) + 1)
     .attr("width", (d, i) => x(data.years[i] + 1) - x(data.years[i]) - 1)
     .attr("height", y.bandwidth() - 1)
-    .attr("fill", d => d===null? "#000": d === 0 ? "#fff" : color(d))
+    .attr("fill", (d) => d===null? "#000": d === 0 ? "#fff" : color(d))
     .append("title")
-    .text((d, i) => `${format(d)}`);
+    .text((d) => {return `${format(d)}`});
 
-  console.log(svg)
+  
   return svg.node();
 
 

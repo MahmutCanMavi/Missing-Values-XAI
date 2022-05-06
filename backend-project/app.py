@@ -137,16 +137,19 @@ def get_cluster(feature_name: str):
     datana=data.isna()
     # put back the patient ids so we can group by
     datana["id"]=data["id"]
-    # sum all nas
+    # sum all nan's per patient
     naPerPatient=datana.groupby("id").sum().sum(axis=1)
-    sortetPatientIds= naPerPatient.sort_values().keys().values
-
+    # sort patients by total nan's (not per feature), 
+    # such that it is the same order of patients for all features and thus stays comparable
+    sortedPatientIds= naPerPatient.sort_values().keys().values
+    # only keep id, time and the desired feature
     fulldata=data.loc[:,["id","time",feature_name]]
+    # this also creates nans for timestaps that are missing for a patient for all features
     fullpivot = fulldata.pivot(index="id", columns="time", values=feature_name)
-    print(fullpivot)
     
-    fullpivot=fullpivot.loc[sortetPatientIds,:]
-    
+    # sort
+    fullpivot=fullpivot.loc[sortedPatientIds,:]
+    # years is from previous plot, its actually hours
     returndict= {"values":fullpivot.values,"names":fullpivot.index.values,"years":fullpivot.columns.values}
     return dumps(returndict, cls=NpEncoder)
 
@@ -157,7 +160,7 @@ def get_cluster(patient_id: int):
     data = pd.read_csv(DATA_PATH)
     pat= data.loc[data["id"]==patient_id,:]
     pat.index=pat["time"]
-    #make it square. add missing timestamps as na
+    #make it square. add missing timestamps as nan
     for i in range(0,97):
         if i not in pat.index:
             pat.loc[i,:]=np.NaN
