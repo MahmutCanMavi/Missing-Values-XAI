@@ -15,7 +15,7 @@ export interface FeatureGroup {
     id : number;
     name: string; // name of the group, for example "Cluster1"
     filters?: string[];
-    impuration_method: string | null;
+    // imputation_method: string | null;
 }
 
 export interface tsneData { // for plotting the clustered features
