@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import pathlib
 import json
-import pct_avail_pp
+from pct_avail_pp import pct_avail_pp
 import math
 import app
 
@@ -14,7 +14,7 @@ def errors_e2e(features: list, method = "ffill"):
     
     ErrorInfos = []
     for feature in features:
-        pct_avail_dict = pct_avail_pp.pct_avail_pp(feature)
+        pct_avail_dict = pct_avail_pp(feature)
         pct_avail_dict["imputation_error"] = errors[feature]
         ErrorInfos.append(pct_avail_dict)
     
@@ -51,10 +51,25 @@ def impute(features : list, method = "mean", manual_data = pd.DataFrame()):
     for feature in features:
         if method == "ffill": imputed_output[feature] = forward_fill(feature, data)
         elif method == "mean": imputed_output[feature] = mean_fill(feature, data)
+        elif method == "zerofill" : imputed_output[feature] = zero_fill(feature, data)
         # ... future methods to be added
     
     return imputed_output
 
+def zero_fill(feature_name : str, data : pd.DataFrame):
+    """
+    Implements a zero fill on a single feature.
+    
+    Input: Name of the feature to impute in the current dataset (string)
+    
+    Output: The featrue column where zero fill has been applied (list)
+    """
+    
+    # Cursory check whether the feature requested is in the dataset
+    if feature_name not in data.columns:
+        raise ValueError("Feature name not in dataset")
+    
+    return data[feature_name].fillna(0).to_list()
 
 def forward_fill(feature_name : str, data : pd.DataFrame):
     """
@@ -155,5 +170,19 @@ def evaluate_imputation(imputed_outputs : dict, method = "ffill"):
 
 if __name__ == '__main__':
     # feature = "HR"
-    print(errors_e2e(["HR", "PAPs"], method = "mean")[0])
-    # pass
+    featureInfos = [{"group_id": 1, "feature_name" : "HR"}]
+    groups = [{"id": 1, "imputation_method":"zerofill"}]
+    
+    
+    outfeatureInfos = []
+    for featureInfo in featureInfos:
+        for group in groups:
+            # Throw error to frontend
+            if group["imputation_method"] not in ["zerofill", "ffill", "mean"]: 
+                print("Imputation method " + str(group["imputation_method"]) + " is not one of the supported imputation methods")
+            if group["id"] == featureInfo["group_id"]:
+                method = group["imputation_method"]
+        
+        outfeatureInfos.append(errors_e2e([featureInfo["feature_name"]], method)[0])
+    
+    print(outfeatureInfos)

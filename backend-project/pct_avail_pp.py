@@ -1,8 +1,9 @@
 import json
 import pathlib
 import pandas as pd
-import cluster
-import app
+import os
+
+DATA_PATH = os.getcwd() + "/data/tmp/data.csv"
 
 def pct_avail_clusters(n_clusters: int) -> list:
     """
@@ -18,7 +19,7 @@ def pct_avail_clusters(n_clusters: int) -> list:
     # load data
     try:
         # Uploaded Path
-        data = pd.read_csv(app.DATA_PATH)
+        data = pd.read_csv(DATA_PATH)
     except:
         # Hardcoded datapath
         thisfile= str(pathlib.Path(__file__).parent.absolute())
@@ -49,7 +50,7 @@ def pct_avail_pp(feature_name: str) -> dict:
     #f = open(path) readcsv can handle opening the file for us
     try:
         # Uploaded Path
-        data = pd.read_csv(app.DATA_PATH)
+        data = pd.read_csv(DATA_PATH)
     except:
         # Hardcoded datapath
         thisfile= str(pathlib.Path(__file__).parent.absolute())
@@ -122,7 +123,7 @@ def NaN_per_person(df):
 
 
 def pct_avail_all(data_explanations = None, n_clusters = 4):
-    """[]
+    """
     Clusters all of the features and stores them in a list. 
     
     Inputs: data as a pandas DataFrame and the number of clusters requested (int) 
@@ -131,7 +132,7 @@ def pct_avail_all(data_explanations = None, n_clusters = 4):
     """
     try:
         # Uploaded Path
-        df = pd.read_csv(app.DATA_PATH)
+        df = pd.read_csv(DATA_PATH)
     except:
         # Hardcoded datapath
         print("uploaded file not found")
@@ -181,6 +182,39 @@ def pct_avail_all(data_explanations = None, n_clusters = 4):
     clusterinfo = {}
     clusterinfo["FeatureInfos"] = feature_list
     return clusterinfo
+
+def pct_avail_known_groups(data, cluster_groups):
+    NaN_pp = NaN_per_person(data)
+    
+    feature_list = []
+    for col in data.columns:
+        # The data format is dictionary -> dictionary -> string(feature name) + list(pct_avail_pp)
+        # The feature name is also the key to access the value in the dictionary for the values
+        feature_dict = {}
+        feature_dict["feature_name"] = col
+        # feature_dict["cluster_id"] = clusters[col]
+        feature_dict["pct_avail_pp"] = []
+        # feature_dict["explanation"] = data_explanations[col] if col in data_explanations else "n/a"
+        feature_dict["description"] = None
+        feature_dict["imputation_error"] = None
+        feature_dict["group_id"] = cluster_groups[col]
+        
+        
+        for patient in NaN_pp:
+            # check if pid is actually corresponding to the id field in the dataset
+            length = len(data.loc[data["id"] == patient[0]])
+
+            if length == 0:
+                percentage = 0
+            else: 
+                percentage =  1 - patient[1][col] / length
+            
+            # Appending the list within the nested dictionaries
+            feature_dict["pct_avail_pp"].append({"patient_id" : patient[0], "pct_avail" : percentage})
+        
+        feature_list.append(feature_dict)
+        
+    return feature_list
 
 
 if __name__ == "__main__":

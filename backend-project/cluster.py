@@ -2,12 +2,183 @@ import pandas as pd
 import numpy as np
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.metrics import silhouette_samples, silhouette_score
+from sklearn.manifold import TSNE
 #import plotly.graph_objects as go
 import numpy as np
 import json
 import pathlib
 import app
+import warnings
+from pct_avail_pp import pct_avail_known_groups
+warnings.filterwarnings('ignore')
 
+class NpEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, np.integer):
+            return int(obj)
+        if isinstance(obj, np.floating):
+            return float(obj)
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        
+        return super(NpEncoder, self).default(obj)
+
+# Block of functions for feature transformations
+def get_data():
+    try:
+        # Uploaded Path
+        data = pd.read_csv(app.DATA_PATH)
+    except:
+        # Hardcoded datapath
+        thisfile= str(pathlib.Path(__file__).parent.absolute())
+        path = thisfile+"/data/icu_data_with_na_v2.csv"
+        data = pd.read_csv(path)
+    return data
+
+
+def get_run_lengths(data):
+	rowwise_tally = data.isna()
+
+	start_len, length, max_length = [0] * len(rowwise_tally.columns), [0] * len(rowwise_tally.columns), [0] * len(rowwise_tally.columns)
+	sullied = [False] * len(rowwise_tally.columns)
+
+	for feature in range(len(rowwise_tally.columns)):
+		for row in rowwise_tally[rowwise_tally.columns[feature]]:
+			if row == True:
+				if not sullied[feature]: 
+					start_len[feature] += 1
+				length[feature] += 1
+			else:
+				sullied[feature] = True
+				length[feature] = 0
+			max_length[feature] = max(length[feature], max_length[feature])
+
+		max_length[feature] = max(0, max_length[feature] - 1)
+
+	return start_len, length, max_length
+
+
+def transform(data, feature_transform_method = 1):
+    # Method 1 :: replace NaNs with 0 and not NaNs with 1
+    if feature_transform_method == 1:
+        for col in data.columns:
+            data[col].loc[~data[col].isna()] = 1
+        return data.fillna(0)
+    # Method 2 :: take average values available per patient
+    elif feature_transform_method == 2:
+        smaller_data = pd.DataFrame(columns=data.columns)
+
+        for i in data["id"].unique():
+            # Taking a smaller dataframe wherein only the current patient is used
+            sub_df = data.loc[data["id"] == i]
+            curr_len = len(sub_df)
+            
+            # New list is appended by the availability of data
+            new_list = 1 - sub_df.isna().sum() / curr_len
+
+            smaller_data.loc[len(smaller_data)] = new_list
+        
+        return smaller_data
+    # Method 3 :: 
+    elif feature_transform_method == 3:
+        # Dimnesions here will be: 
+        # 1 - pct_avail_pp 
+        # 2 - std_avail_pp 
+        # 3 - mean_missing_run 
+        # 4 - longest_missing_run
+        smaller_data = pd.DataFrame(columns=data.columns)
+
+        for i in data["id"].unique():
+            # Taking a smaller dataframe wherein only the current patient is used
+            sub_df = data.loc[data["id"] == i]
+            curr_len = len(sub_df)            
+            
+            # New list is appended by the availability of data
+            new_list = 1 - sub_df.isna().sum() / curr_len
+            std = np.sqrt(sub_df.isna().sum() - (1 - data.isna().sum() / len(data)) ** 2 / len(sub_df))
+            
+            start, end, maxx = get_run_lengths(sub_df)
+                
+            smaller_data.loc[len(smaller_data)] = new_list
+            smaller_data.loc[len(smaller_data)] = std
+            smaller_data.loc[len(smaller_data)] = start
+            smaller_data.loc[len(smaller_data)] = end
+            smaller_data.loc[len(smaller_data)] = maxx
+        
+        return smaller_data.fillna(0)
+    else:
+        raise ValueError("Feature transform method not present")
+
+
+# Current method for getting the number of clusters automatically
+def auto_cluster_number(data, n_clusters_range = (4,8)):
+    # Assuming data is transformed
+    avg_scores = []
+    
+    scaler = MinMaxScaler()
+    scaler.fit(data)
+    X = scaler.transform(data)
+    
+    for n_clusters in range(n_clusters_range[0], n_clusters_range[1]):
+        model = KMeans(
+            n_clusters=n_clusters, init="k-means++",
+            n_init=10,
+            tol=1e-04, random_state=42
+        )
+        cluster_labels = model.fit_predict(X)
+        silhouette_avg = silhouette_score(X, cluster_labels)
+        avg_scores.append(silhouette_avg)
+        
+        # Compute the silhouette scores for each sample
+        sample_silhouette_values = silhouette_samples(X, cluster_labels)
+        negs = 0
+        max_v_avg_fails = 0
+        for i in range(n_clusters):
+            ith_cluster_silhouette_values = sample_silhouette_values[cluster_labels == i]
+            negs += sum(1 for i in ith_cluster_silhouette_values if i < 0)
+            if max(ith_cluster_silhouette_values) < avg_scores[n_clusters - min(n_clusters_range)]: 
+                max_v_avg_fails += 1
+        negs /= len(sample_silhouette_values) / n_clusters
+        avg_scores[n_clusters - min(n_clusters_range)] = avg_scores[n_clusters - min(n_clusters_range)] * ((n_clusters - max_v_avg_fails) / n_clusters) - negs
+        
+    return np.argmax(avg_scores) + min(n_clusters_range)
+    
+
+def auto_cluster_pipeline(transformation_method = 1):
+
+    data = transform(get_data(), transformation_method)
+    
+    n_clusters = auto_cluster_number(data)
+    FeatureGroups = []
+    for i in range(n_clusters): FeatureGroups.append({"id" : i, 
+                                                      "name" : f"Cluster {i}"})
+    
+    labels = cluster(data, n_clusters)
+    
+    tsne = TSNE(n_components=2, verbose=1, perplexity=20, n_iter=300)
+    tsne_results = tsne.fit_transform(data.T)
+    
+    groups_dict, tsne_list = {}, []
+    for i in range(len(data.columns)):
+        groups_dict[data.columns[i]] = labels[i]
+        tsne_list.append({"feature_name" : data.columns[i],
+                          "x" : tsne_results[:,0][i],
+                          "y" : tsne_results[:,1][i],
+                          "group_id" : labels[i]})
+        
+    clusterResponse = {}
+    # Could add other clustering methods, in that case need to make this variable
+    clusterResponse["clusterMethod"] = "KMeans clustering was used"
+    clusterResponse["featureInfos"] = pct_avail_known_groups(data, groups_dict)
+    clusterResponse["groups"] = FeatureGroups
+    clusterResponse["tsneData"] = tsne_list
+    
+    out_file = open(str(pathlib.Path(__file__).parent.absolute()) + "/data/clusterResponse.json" , 'w')
+    json.dump(json.dumps(clusterResponse, cls = NpEncoder), out_file, indent=4)
+    out_file.close()
+    
+    return clusterResponse
 
 
 def compute_variable_groups(df, number_of_clusters = 4):
@@ -93,24 +264,21 @@ def cluster(df, number_of_clusters = 4):
     Outputs the clusters from the KMeans output.
     """
     # Copying the dataframe
-    T = df
-    # Using a scaler on the data to transform it
-    scaler = MinMaxScaler()
-    scaler.fit(T)
-    T = scaler.transform(df)
+    T = df.T
     
     # KMeans clustering for the shortened
     kmeans = KMeans(
         n_clusters = number_of_clusters, init = "k-means++",
         n_init = 10,
         tol = 1e-04, random_state = 42)
-    kmeans.fit(T)
+    # kmeans.fit(T)
     
-    # Getting clusters
-    clusters = pd.DataFrame(T, columns = df.columns)
-    clusters["label"] = kmeans.labels_
+    # # Getting clusters
+    # clusters = pd.DataFrame(T, columns = df.columns)
+    # clusters["label"] = kmeans.labels_
     
-    return clusters
+    # return clusters
+    return kmeans.fit_predict(T)
 
 
 def clusters_to_list(df, clusters, number_of_clusters = 4):
@@ -188,6 +356,13 @@ def cluster_e2e(df, number_of_clusters = 4):
     
     
 if __name__ == '__main__':
-    thisfile= str(pathlib.Path(__file__).parent.absolute())
-    datafolder = thisfile+"/data/"  
-    print(compute_clusters(pd.read_csv(datafolder+"icu_data_with_na_v2.csv"), number_of_clusters = 5))
+    try:
+        # Uploaded Path
+        data = pd.read_csv(app.DATA_PATH)
+    except:
+        # Hardcoded datapath
+        thisfile= str(pathlib.Path(__file__).parent.absolute())
+        path = thisfile+"/data/icu_data_with_na_v2.csv"
+        data = pd.read_csv(path)
+        
+    print(auto_cluster_pipeline())
