@@ -1,10 +1,7 @@
+import { METHODS } from 'http';
 import React from 'react';
-
-// Type for Feature Group
-export type FeatureGroup = {
-    name: string, // name of the group, for example "Cluster1"
-    features: string[] // features contained in the group
-}
+import { FeatureGroup } from "../types/feature_types";
+import { IMPUTATION_METHODS } from '../types/feature_types';
 
 // ImputationMenu: component to choose imputation method for all feature groups
 class ImputationMenu extends React.Component<{ groups: FeatureGroup[] },{}> {
@@ -15,6 +12,7 @@ class ImputationMenu extends React.Component<{ groups: FeatureGroup[] },{}> {
     render() {
       return (
         <div className="ImputationMenu">
+          <h3>Choose Imputation Methods</h3>
           {
             this.props.groups.map((grp,ind) => <ImputationOptions feature_group={grp}/>)
           }
@@ -25,13 +23,11 @@ class ImputationMenu extends React.Component<{ groups: FeatureGroup[] },{}> {
   
 // ImputationOptions: component to choose imputation method for a single FeatureGroup
 class ImputationOptions extends React.Component<{feature_group: FeatureGroup},{chosen_method: string}> {
-    imputation_methods: string[];
-  
+
     constructor(props: { feature_group: FeatureGroup }) {
       super(props);
-      this.imputation_methods = ["Method1", "Method2", "Method3"];
       this.handleChange = this.handleChange.bind(this);
-      this.state = {chosen_method: this.imputation_methods[0]}; // initialize chosen method to first method
+      this.state = {chosen_method: this.props.feature_group.imputation_method.name}; // initialize chosen method to first method
     }
 
     handleChange(e: React.ChangeEvent<HTMLSelectElement>) {
@@ -42,13 +38,12 @@ class ImputationOptions extends React.Component<{feature_group: FeatureGroup},{c
     render() {
       return(
         <div style={{margin: "10px"}} className="ImputationOptions">
-          <label style={{padding: "10px"}}>Select the Imputation Method for {this.props.feature_group.name}:</label>
+          <label>{this.props.feature_group.name}:  </label>
           <select name="imputation" onChange={this.handleChange}>
             {
-              this.imputation_methods.map((val,ind) => <option value={val}> {val} </option>)
+              IMPUTATION_METHODS.map((method,ind) => <option value={method.name}> {method.name} </option>)
             }
           </select>
-          <label style={{padding: "10px"}}> {this.state.chosen_method} </label>
         </div>
       )
     }

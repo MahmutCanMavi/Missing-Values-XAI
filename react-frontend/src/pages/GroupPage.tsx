@@ -3,8 +3,9 @@ import React from "react";
 import D3Scatterplot from "../components/d3scatterplot";
 import FilterFeatures from "../components/FilterFeatures";
 import Icons from "../components/icons";
+import { ImputationMenu } from "../components/ImputationMenu";
 import SelectPctAvailGradient from "../components/SelectPctAvailGradient";
-import { FeatureInfo, FeatureGroup } from "../types/feature_types";
+import { IMPUTATION_METHODS, FeatureInfo, FeatureGroup, ImputationMethod } from "../types/feature_types";
 
 function groupcolor(id: number | null) {
     if (id == null) {
@@ -151,6 +152,7 @@ interface GroupPageProps {
     setGroups: Function;
     setFeatures: Function;
 }
+
 class GroupPage extends React.Component<GroupPageProps, { activeGroupId: number | null }> {
     constructor(props: GroupPageProps) {
         super(props);
@@ -161,9 +163,12 @@ class GroupPage extends React.Component<GroupPageProps, { activeGroupId: number 
         this.removeFromGroup = this.removeFromGroup.bind(this);
         this.addToActiveGroup = this.addToActiveGroup.bind(this);
         this.addGroup = this.addGroup.bind(this);
+        this.changeGroupAttribute = this.changeGroupAttribute.bind(this);
 
     }
 
+    // obsolete function, 
+    // subsumed by changeGroupAttribute(group_id, attribute_name = "name", new_value = newName)
     changeGroupName(group_id: number, newName: string) {
         // console.log(index,newName)
         if (this.props.groups) {
@@ -178,16 +183,40 @@ class GroupPage extends React.Component<GroupPageProps, { activeGroupId: number 
         else {
             return null
         }
-
-
     }
+
+    changeGroupAttribute(group_id: number | null, attribute_name: string, new_value: any) {
+        if (this.props.groups && (group_id !== null)) {
+            let newGroups = this.props.groups
+            if (newGroups.filter(group => group.id === group_id).length !== 1) {
+                Error("Group not found or duplicates" + group_id)
+            }
+
+            // check if attribute exists, if yes set its new value
+            if (Object.keys(this.props.groups[0]).includes(attribute_name)) {
+                console.log("got here!");
+                (newGroups.filter(group => group.id === group_id)[0])[
+                    attribute_name as "imputation_method" | "name"] = new_value;
+            } else {
+                throw new Error("specified invalid attribute of FeatureGroup");
+            }
+
+            this.props.setGroups(newGroups)
+        }
+        else {
+            return null
+        }
+    }
+
+
     addGroup() {
         const groups = this.props.groups;
         if (groups === null) {
             return;
         }
-        const new_id: number = Math.max(...groups.map(group => group.id)) + 1;
-        const new_group: FeatureGroup = { id: new_id, name: `New Group (${new_id})` };
+        const new_id: number = Math.max(...groups.map(group => group.id), -1) + 1;
+        const new_group: FeatureGroup = { id: new_id, name: `New Group (${new_id})`,
+                                          imputation_method: IMPUTATION_METHODS[0] };
         this.props.setGroups([...groups, new_group]);
     }
 
@@ -263,8 +292,13 @@ class GroupPage extends React.Component<GroupPageProps, { activeGroupId: number 
                     )
                     }
                     </div>
-                    <button onClick={this.addGroup}>Add new group</button>
+                    <button onClick={this.addGroup} className="FullWidthButton">Add New Group</button>
                     <br></br>
+
+                    {/* Visualize the Group Structure -- how good is the choice of groups? */}
+                    <br></br>
+                     <D3Scatterplot/>
+
                     {/* textarea to edit the groups object manually. Can be removed for deployment */}
                     <JsonGroupEditor features={this.props.features} groups={this.props.groups}
                         setFeatures={this.props.setFeatures} setGroups={this.props.setGroups} />
@@ -273,14 +307,32 @@ class GroupPage extends React.Component<GroupPageProps, { activeGroupId: number 
 
                     <div className="main-left">
                         {/* If there is no active group, display only "Choose group" */}
-                        {this.props.groups && this.state.activeGroupId === null && <>Choose Group</>}
+                        {this.props.groups && this.state.activeGroupId === null && 
+                            <div>
+                                <h3>Choose Group</h3>
+                                {"<--"} Click on a group to select it.
+                            </div>}
 
                         {/* Center column: Show name and filters of active group */}
                         {this.props.groups && this.state.activeGroupId !== null &&
                             this.props.groups.filter(group => group.id === this.state.activeGroupId).length !== 0 &&
                             <>
-                                <h2> {this.props.groups.filter(group => group.id === this.state.activeGroupId)[0].name}  </h2>
-                                Filters: {this.props.groups.filter(group => group.id === this.state.activeGroupId)[0].filters?.join(",  ") || "none"}
+                                <h2> Selected Group: <em>{this.props.groups.filter(group => group.id === this.state.activeGroupId)[0].name}</em>  </h2>
+                                <div>Filters: {this.props.groups.filter(group => group.id === this.state.activeGroupId)[0].filters?.join(",  ") || "none"}</div>
+                                <div>Imputation Method: {
+                                        <select value={
+                                            this.props.groups.filter(group => group.id === this.state.activeGroupId)[0].imputation_method.name
+                                        } onChange={
+                                            (e) => this.changeGroupAttribute(this.state.activeGroupId,"imputation_method",
+                                                IMPUTATION_METHODS.filter( (method,ind) => method.name === e.target.value )[0])}>
+                                              {
+                                                IMPUTATION_METHODS.map((method,ind) => <option value={method.name}> 
+                                                    {method.name} </option>)
+                                              }
+                                        </select>
+                                    }
+                                </div>
+                                <br/>
                             </>}
 
 
@@ -306,11 +358,6 @@ class GroupPage extends React.Component<GroupPageProps, { activeGroupId: number 
                                 })
 
                             }
-
-
-
-
-
                         </div>
                     </div>
                     <div className="group-search main-right">
@@ -320,7 +367,7 @@ class GroupPage extends React.Component<GroupPageProps, { activeGroupId: number 
                             // also if I dont do this, the compiler complains when indexing [0]
                             this.props.groups.filter(group => group.id === this.state.activeGroupId).length !== 0 &&
                             <>
-                                <h2> Add elements to Group "{this.props.groups.filter(group => group.id === this.state.activeGroupId)[0].name}"  </h2>
+                                <h2> Add Variables to <em>{this.props.groups.filter(group => group.id === this.state.activeGroupId)[0].name}</em>"</h2>
                                 <p>Search:</p>
 
                             </>
@@ -331,9 +378,6 @@ class GroupPage extends React.Component<GroupPageProps, { activeGroupId: number 
                             <FilterFeatures data={this.props.features} groups={this.props.groups}
                                 activeGroup={this.props.groups?.filter(group => (group.id === this.state.activeGroupId))[0]}
                                 setData={this.props.setFeatures} setGroups={this.props.setGroups} addToActiveGroup={this.addToActiveGroup} />}
-
-                        {/* Right column:  Scatterplot */}
-                        <D3Scatterplot/>
                     </div>
 
 

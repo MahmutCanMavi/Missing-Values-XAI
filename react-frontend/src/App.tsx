@@ -1,5 +1,5 @@
 import React from "react";
-import { FeatureInfo, FeatureGroup } from './types/feature_types';
+import { FeatureInfo, FeatureGroup, IMPUTATION_METHODS } from './types/feature_types';
 import VizPage from './pages/VizPage';
 import './App.css';
 //import 'bootstrap/dist/css/bootstrap.min.css';
@@ -25,8 +25,8 @@ class App extends React.Component<{}, AppState> {
             {"feature_name":"example5","group_id":1,"description":"description 5: lorem ipsum dolores supametrarekdjfnkadn fsdflkajns lkfjadf","imputation_error":null,"pct_avail_pp":[{"patient_id":1,"pct_avail":0.8},{"patient_id":2,"pct_avail":0.9484536082474226},{"patient_id":3,"pct_avail":0.7422680412371134},{"patient_id":4,"pct_avail":0.6185567010309279}]}
           ]
     const dummygroups:FeatureGroup[] = [
-      {"name": "Example Group 1", "id":0},
-      {"name": "Example Group 2", "id":1},
+      {"name": "Example Group 1", "id":0, "imputation_method": IMPUTATION_METHODS[0]},
+      {"name": "Example Group 2", "id":1, "imputation_method": IMPUTATION_METHODS[0]},
     ]
     this.state = {data: dummydata, groups: dummygroups, pageActive: "viz"};
     this.handleDataUpload=this.handleDataUpload.bind(this);

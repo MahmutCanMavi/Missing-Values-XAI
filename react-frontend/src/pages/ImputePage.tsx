@@ -2,6 +2,7 @@ import { range } from "d3";
 import React from "react";
 import  { D3DetailSquaresPatient } from "../components/d3detailSquares";
 import { FeatureInfo, FeatureGroup } from "../types/feature_types";
+import { ImputationMenu } from "../components/ImputationMenu";
 
 interface ImputePageProps {
     data: FeatureInfo[] | null;
@@ -17,11 +18,11 @@ class ImputePage extends React.Component<ImputePageProps,{}> {
     }
     render(){
         return <>
-        <aside className="sidenav"><h1>Scatterplot Test</h1> No Imputing is happening yet. Only for testing the scatterplot viz</aside>
+        <aside className="sidenav">
+            {this.props.groups && <ImputationMenu groups={this.props.groups}/>}
+        </aside>
         <main className="main">
-            {range(40,60).map((i)=><D3DetailSquaresPatient patient_id={i} key={i}/>)}
-        
-        
+            <h3>Visualize Imputation Performance Here!</h3>
         </main>
         
         </>
