@@ -70,7 +70,8 @@ class App extends React.Component<{}, AppState> {
         {(this.state.pageActive === "group") && <GroupPage features={this.state.data} groups={this.state.groups} 
                                                   setGroups={this.setGroups} setFeatures={this.setFeatures}/>}
         {(this.state.pageActive === "impute") && <ImputePage data={this.state.data} groups={this.state.groups} 
-                                            handleImputationScore={()=>null} />}
+                                            handleImputationScore={()=>null}
+                                            setGroups={this.setGroups} setFeatures={this.setFeatures}/> }
       <footer className="footer">By Yan, Talu, David and Michael</footer>
       </div>
       </div>
