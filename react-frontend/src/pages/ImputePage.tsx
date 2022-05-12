@@ -16,6 +16,7 @@ class ImputePage extends React.Component<ImputePageProps,{}> {
     constructor(props: ImputePageProps) {
         super(props);
         this.changeGroupAttribute = this.changeGroupAttribute.bind(this);
+        this.handleImputation = this.handleImputation.bind(this);
     }
 
     changeGroupAttribute(group_id: number | null, attribute_name: string, new_value: any) {
@@ -41,12 +42,17 @@ class ImputePage extends React.Component<ImputePageProps,{}> {
         }
     }
 
+    handleImputation() {
+        console.log("clicked the Impute! button");
+    }
+
     render(){
         return <>
         <aside className="sidenav">
             {this.props.groups && <ImputationMenu groups={this.props.groups} 
                 updateGroupOnChange={(group_id: number, imputation_method: ImputationMethod) => 
                     this.changeGroupAttribute(group_id, "imputation_method", imputation_method)}/>}
+            <button className="FullWidthButton" onClick={this.handleImputation}>Impute!</button>
         </aside>
         <main className="main">
             <h3>Visualize Imputation Performance Here!</h3>
