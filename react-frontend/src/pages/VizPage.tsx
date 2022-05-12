@@ -1,5 +1,5 @@
 import React from "react";
-import D3DetailSquares from "../components/d3detailSquares";
+import D3DetailSquares, { D3DetailSquaresPatient } from "../components/d3detailSquares";
 import D3Histogram from "../components/d3histogram";
 import DataUploadPane from "../components/DataUploadPane";
 import StackedGradients from "../components/StackedGradients";
@@ -14,15 +14,16 @@ interface VizPageProps {
 interface VizState {
     isLoading: boolean, 
     selectedFeature:FeatureInfo | null
+    selectedPatient: number | null
 }
   
 class VizPage extends React.Component<VizPageProps,VizState> {
     constructor(props: VizPageProps) {
         super(props);
-        this.state={isLoading:false, selectedFeature:null}
+        this.state={isLoading:false, selectedFeature:null, selectedPatient:null}
     }
     setSelectedFeature(selectedFeature: FeatureInfo){
-        this.setState({selectedFeature: selectedFeature}, () => {
+        this.setState({selectedFeature: selectedFeature, selectedPatient:null}, () => {
          
         });
     }
@@ -51,7 +52,9 @@ class VizPage extends React.Component<VizPageProps,VizState> {
                 <hr/>
                 {this.state.selectedFeature && <D3Histogram featureInfo={this.state.selectedFeature}/>}
                 <hr/>
-                {this.state.selectedFeature && <D3DetailSquares patient_id={this.state.selectedFeature}/>}
+                {this.state.selectedFeature && <D3DetailSquares featureInfo={this.state.selectedFeature} 
+                    setSelectedPatient={((patient_id:number)=>this.setState({selectedPatient:patient_id})).bind(this)}/>}
+                {this.state.selectedPatient && <D3DetailSquaresPatient patient_id={this.state.selectedPatient}/>}
             </main>
         </>)
     }

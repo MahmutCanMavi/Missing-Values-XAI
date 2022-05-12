@@ -15,8 +15,7 @@ function groupcolor(id) {
 
 
 // Source https://observablehq.com/@mbostock/the-impact-of-vaccines
-function DetailSquares(svg, data, ylabel) {
-
+function DetailSquares(svg, data, ylabel,setSelectedPatient) {
   // const data = JSON.parse(datastring.replaceAll("NaN","null"));
   // const sumNulls=(row)=>row.map(v=>v===null?1:0).reduce((a,b)=>a+b,0);
   // data.values=data.values.sort((row1,row2)=>sumNulls(row1) > sumNulls(row2));
@@ -62,6 +61,7 @@ function DetailSquares(svg, data, ylabel) {
 
   const yAxis = g => g
     .attr("transform", `translate(${margin.left},0)`)
+    .attr("id","yAxis")
     .call(d3.axisLeft(y).tickSize(0))
     .call(g => g.select(".domain").remove())
     .call(g => g.append("text")
@@ -136,8 +136,10 @@ function DetailSquares(svg, data, ylabel) {
     .attr("fill", (d) => d===null? "#000": d === 0 ? "#fff" : color(d))
     .append("title")
     .text((d) => {return `${format(d)}`});
-
   
+    if (ylabel==="patient_id"){
+      svg.select("#yAxis").selectAll(".tick").on("click",(d)=>{setSelectedPatient(d.srcElement.__data__)})
+    }
   return svg.node();
 
 
