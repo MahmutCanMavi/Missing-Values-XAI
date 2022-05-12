@@ -33,7 +33,7 @@ class VizPage extends React.Component<VizPageProps,VizState> {
         //const featureInfosSorted= this.props.data.sort((a, b) => (a.cluster_id > b.cluster_id) ? 1 : -1);
         
         // sorting by avg pct avail
-        // console.log(this.props.data)
+        //  console.log(this.props.data)
          let feature_names = (this.props.data) ? (this.props.data).map( (val: FeatureInfo,idx: number) => val.feature_name ) : [];
          if (feature_names.length > 5) {
              feature_names = feature_names.slice(0,5)
@@ -53,12 +53,13 @@ class VizPage extends React.Component<VizPageProps,VizState> {
                 {this.state.selectedFeature && <D3Histogram featureInfo={this.state.selectedFeature}/>}
                 <hr/>
                 {this.state.selectedFeature && <D3DetailSquares featureInfo={this.state.selectedFeature} 
-                    setSelectedPatient={((patient_id:number)=>this.setState({selectedPatient:patient_id})).bind(this)}/>}
+                    setSelectedPatient={((patient_id:number)=>{window.scrollTo({top:4100}); this.setState({selectedPatient:patient_id})}).bind(this)} />}
                 {this.state.selectedPatient && <D3DetailSquaresPatient patient_id={this.state.selectedPatient}/>}
             </main>
         </>)
     }
 }
+let a: ScrollToOptions 
 
 export default VizPage;
 

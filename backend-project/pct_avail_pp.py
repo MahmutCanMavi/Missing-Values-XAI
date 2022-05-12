@@ -157,7 +157,7 @@ def pct_avail_all(data_explanations = None, n_clusters = 4):
         # The feature name is also the key to access the value in the dictionary for the values
         feature_dict = {}
         feature_dict["feature_name"] = col
-        # feature_dict["cluster_id"] = clusters[col]
+        feature_dict["group_id"] = None
         feature_dict["pct_avail_pp"] = []
         # feature_dict["explanation"] = data_explanations[col] if col in data_explanations else "n/a"
         feature_dict["description"] = None

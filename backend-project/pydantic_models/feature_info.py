@@ -18,9 +18,12 @@ class FeatureInfo(TypedDict):
 class FeatureGroup(TypedDict):
     name: str
     id: int
-    features: List[str]
+    # features: List[str]
     imputation_method: Union[str, None]
 
+class ImputationInputs(BaseModel):
+    featureInfos: List[FeatureInfo]
+    groups: List[FeatureGroup]
 
 class FeatureInfoList(BaseModel):
     FeatureInfos: List[FeatureInfo]

@@ -49,7 +49,7 @@ class D3DetailSquares extends React.Component<D3ComponentProps,{}> {
     let ylabel= "patient_id" 
     // const data = this.featureInfo.pct_avail_pp.map(o=>o.pct_avail).sort()
     DetailSquares(svg,data,ylabel,this.props.setSelectedPatient);
-    console.log(this.props.setSelectedPatient)
+
 
   }
 
@@ -62,6 +62,7 @@ class D3DetailSquares extends React.Component<D3ComponentProps,{}> {
     return (
       <div className="detailView d3detailSquares d3detailSquares-feature">
         <h3>Feature: {this.featureInfo.feature_name}</h3>
+        <p>Hover over the square to see the value. Black means missing</p>
         <svg ref={this.mySVG}/>
       </div>
     );

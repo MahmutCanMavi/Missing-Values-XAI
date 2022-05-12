@@ -7,6 +7,7 @@ import Navbar from './components/Navbar';
 import GroupPage from "./pages/GroupPage";
 import Icons from "./components/icons";
 import ImputePage from "./pages/ImputePage";
+import queryBackend from "./backend/BackendQueryEngine";
 
 interface AppState {
   data: FeatureInfo[] | null;
@@ -34,10 +35,14 @@ class App extends React.Component<{}, AppState> {
     this.setGroups=this.setGroups.bind(this);
     this.setFeatures=this.setFeatures.bind(this);
   }
-  handleDataUpload(data: FeatureInfo[] | null){
+  async handleDataUpload(data: FeatureInfo[] | null){
     
     if (data) {
       this.setState({data: data})
+      // example for receiving cluster data without slowing down upload. 
+      //      but it does not work yet because the backend does not send the imputation method attribute. frontend should set a default when receiving
+      // let response = await queryBackend("get-clusters?transformation_method=2") as any
+      // this.setState({data:response.featureInfos,groups:response.groups.map((g: FeatureGroup)=>{return {...g, imputation_method:null}})})
     } else {
       console.log("don't have any data!");
     }
@@ -69,7 +74,7 @@ class App extends React.Component<{}, AppState> {
                                                   handleDataUpload={this.handleDataUpload}/>}
         {(this.state.pageActive === "group") && <GroupPage features={this.state.data} groups={this.state.groups} 
                                                   setGroups={this.setGroups} setFeatures={this.setFeatures}/>}
-        {(this.state.pageActive === "impute") && <ImputePage data={this.state.data} groups={this.state.groups} 
+        {(this.state.pageActive === "impute") && <ImputePage features={this.state.data} groups={this.state.groups} 
                                             handleImputationScore={()=>null}
                                             setGroups={this.setGroups} setFeatures={this.setFeatures}/> }
       <footer className="footer">By Yan, Talu, David and Michael</footer>

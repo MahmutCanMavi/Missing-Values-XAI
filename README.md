@@ -50,6 +50,8 @@ Specify here the structure of you code and comment what the most important files
 │   │   ├── components/
 │   │   ├── ...
 └── requirements.txt
+├── example-data #contains the csv's that can be used to test the app
+
 ```
 
 ## Requirements
@@ -68,13 +70,16 @@ Run **frontend**: go inside the folder `./react-frontend`, then enter the comman
  
 
 #### Once it's running...
-###### (_For a quick overview, check out our demo video under release notes for the most recent tag!_)
+###### (_For a quick overview, check out our demo video under release notes for the  Milestone1_MidApril tag!_)
 
 Choose a .csv file from within the folder `./example-data`. These files all contain the same data, but the variables names differ. In this way, you can see that the data changes when you upload a new file, as it should. 
 
 After the data is loaded, you can play around with our visualization. The gradients on the left visualize the percentage of missing data per patient. Each gradient is made up of thin rectangles colored in grayscale. The brightness of each rectangle represents the percentage of missing data for a specific patient. These rectangles are ordered by their brightness. Thus, a gradient with mostly dark rectangles represents lots of missing data, and a gradient with mostly bright rectangles indicates little missing data. 
 
 Each gradient refers to one of the features in the data set. Clicking on a gradient reveals, for the chosen feature, the distribution of the percentage of missing values over all patients in the data set. We visualize this distribution as a histogram.
+It also showing a visualization of the actual data with colored squares, and black squares which reveal the missing values. (Experimental: clicking on a patient id shows the same view for a single patient and all features)
+
+On the grouping tab, you can put features in a group and choose the desired imputation method for this group.
 
 _You're looking at the beginnings of a very special tool for visualizing and imputing missing values. Savor the moment!_
 
@@ -94,6 +99,11 @@ Major milestones of our code + future planned steps.\
   - [x] Make features filterable by pre- and suffix (Michael)
   - [x] Groups: add, remove, bulk add features, change group name, add, remove. Color coding of groups (David)
   - [x] Backend: cluster features by missing value pattern. make tsne plot (on a jupyter notebook) (Yan, Talu)
+
+- [x] Week 12.05.2022
+  - [x] Bonus: add a new detail view with colored squares to explore the data in full, for each feature or patient
+  - [x] prepare imputation code
+
 
 - [ ] Week 19.05.2022
   - [ ] connect clustering with frontend as group suggestions & tsne plot 

@@ -12,7 +12,7 @@ import csv
 
 import pct_avail_pp
 # from io import StringIO
-from pydantic_models.feature_info import FeatureInfoList, FeatureGroup
+from pydantic_models.feature_info import FeatureInfoList, FeatureGroup, ImputationInputs
 from pydantic import ValidationError
 
 # from sklearn.cluster import KMeans
@@ -119,18 +119,24 @@ def get_cluster(transformation_method : str = 1):
     return dumps(cluster.auto_cluster_pipeline(int(transformation_method)), cls=NpEncoder)
 
 @app.post("/impute")
-def get_imputation(featureInfos: FeatureInfoList, groups: FeatureGroup):
+def get_imputation(inputs:ImputationInputs):
     """
     Inputs: - features as a list of featureInfos to be imputed
             - groups declaring the imputation methods for each group
             
     Output: FeatureInfos with imputation methods according to the feature of each group
     """
+   
     outfeatureInfos = []
-    for featureInfo in featureInfos:
-        for group in groups:
+    for featureInfo in inputs.featureInfos:
+        # if featureInfo["group_id"]==None:
+        #     continue
+
+        for group in inputs.groups:
             # Throw error to frontend
             if group["imputation_method"] not in ["zerofill", "ffill", "mean"]: 
+                # TODO: the error is not visible in the response. It just says server error with no message. can you show the message, or at least print it to the console
+                print("Error: Imputation method " + str(group["imputation_method"]) + " is not one of the supported imputation methods")
                 return Response("Imputation method " + str(group["imputation_method"]) + " is not one of the supported imputation methods", status_code = 500)
             if group["id"] == featureInfo["group_id"]:
                 method = group["imputation_method"]

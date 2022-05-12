@@ -5,7 +5,7 @@ import { FeatureInfo, FeatureGroup, ImputationMethod } from "../types/feature_ty
 import { ImputationMenu } from "../components/ImputationMenu";
 
 interface ImputePageProps {
-    data: FeatureInfo[] | null;
+    features: FeatureInfo[] | null;
     groups: FeatureGroup[] | null;
     handleImputationScore: Function;
     setGroups: Function;
@@ -43,6 +43,18 @@ class ImputePage extends React.Component<ImputePageProps,{}> {
     }
 
     handleImputation() {
+        
+        // Example of how to prepare the data to send it to the backend
+        // if (this.props.features && this.props.groups){
+        //     let request = {featureInfos: this.props.features.filter(f=>f.group_id!==null).map((f)=>{return {...f,pct_avail_pp:[]}}), 
+        //        // groups differ in format: string (name) or object?
+        //         groups: this.props.groups.map(g=>{return {...g,imputation_method:g.imputation_method.name}})}
+        //     console.log(JSON.stringify(request))
+        // }
+        // else {
+        //     console.log("cannot impute, props are null")
+        // }
+        
         console.log("clicked the Impute! button");
     }
 
@@ -56,6 +68,7 @@ class ImputePage extends React.Component<ImputePageProps,{}> {
         </aside>
         <main className="main">
             <h3>Visualize Imputation Performance Here!</h3>
+            <p>Imputation is not implemented yet</p>
         </main>
         
         </>

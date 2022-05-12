@@ -37,7 +37,7 @@ class FilterFeatures extends React.Component<FilterFeaturesProps,FilterFeaturesS
         this.handleAddAll = this.handleAddAll.bind(this);
         this.updateSelectedFeatures = this.updateSelectedFeatures.bind(this);
         this.toggleMode = this.toggleMode.bind(this);
-        this.state = {textInput: "", selectedFeatures: [], mode: "normal"};
+        this.state = {textInput: "", selectedFeatures: this.props.data, mode: "normal"};
     }
 
     updateSelectedFeatures(input: string, mode: "normal" | "startsWith" | "endsWith") {
