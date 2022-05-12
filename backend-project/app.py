@@ -78,7 +78,9 @@ async def receive_data(file: UploadFile):
         # path to temp folder within backend-project
 
         # TODO: check if folder tmp exists and create it if not
-
+        if not os.path.exists(os.getcwd() + "/data/tmp"):
+            os.makedirs(os.getcwd() + "/data/tmp")
+        
         dest_path = os.getcwd() + "/data/tmp/data.csv"
         
         # No updating available for static dashboard
