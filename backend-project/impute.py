@@ -1,188 +1,133 @@
 import numpy as np
 import pandas as pd
 import pathlib
-import json
 from pct_avail_pp import pct_avail_pp
-import math
+from math import sqrt
 import app
+from sklearn.experimental import enable_iterative_imputer 
+from sklearn.impute import KNNImputer, IterativeImputer
+from random import sample, seed
 
+class Imputation_Mehtod():
+    def __init__(self, features: list[str]):
+        self.features = features
+        # keeping things consistent
+        self.random_seed = seed(10)
+        
+    def impute(self, data):
+        return None, None
+    
+    def check_features(self, data: pd.DataFrame):
+        for feature in self.features:
+            if feature not in data.columns:
+                raise ValueError("Feature \"" + feature + "\" not in data")
+    
+    def evaluate_imputation(self, data: pd.DataFrame):
+        # copy data, so nothing happens to it
+        # maybe not necessary in hindsight
+        new_df = data[self.features].copy(deep=True)
+        # list is for holding the random samples
+        # dict is for holding errors
+        to_be_nand, error = [], {}
+        for feature in self.features:
+            # samples 10% of the non NaN data at random (barring seed)
+            to_be_nand.append(sample([i for i, x in enumerate(~data[feature].isna()) if x], 
+                                     int(len([i for i, x in enumerate(~data[feature].isna()) if x]) * 0.1)))
+            # those random data are NaNd
+            for bye in to_be_nand[-1]:
+                new_df[feature].loc[bye] = np.NaN
+        # impute the data
+        imputed, _ = self.impute(new_df)
+        for i in range(len(self.features)):
+            error[self.features[i]] = 0
+            for gone in to_be_nand[i]:
+                error[self.features[i]] += (imputed[self.features[i]].loc[gone] - data[self.features[i]].loc[gone]) ** 2
+            
+            error[self.features[i]] = sqrt(error[self.features[i]] / len(to_be_nand[i]))
+        return error
+                
+class Forward_Fill(Imputation_Mehtod):
+    def __init__(self, features: list[str]):
+        super().__init__(features)
+        
+    def impute(self, data : pd.DataFrame):
+        self.check_features(data)
+        return data[self.features].ffill(), self.features
 
+class Value_Fill(Imputation_Mehtod):
+    def __init__(self, features: list[str], value: int or float = 0):
+        super().__init__(features)
+        self.value = value
+    
+    def impute(self, data : pd.DataFrame):
+        self.check_features(data)
+        return data[self.features].fillna(self.value), self.features
+    
+class Mean_Fill(Imputation_Mehtod):
+    def __init__(self, features: list[str]):
+        super().__init__(features)
+        
+    def impute(self, data: pd.DataFrame):
+        self.check_features(data)
+        data_filled = {}
+        for feature_name in self.features:
+            data_filled[feature_name] = data[feature_name].fillna(data[feature_name].mean()).to_list()
+        return pd.DataFrame(data_filled), self.features
+        
+class KNN_Impute(Imputation_Mehtod):
+    def __init__(self, features: list[str]):
+        super().__init__(features)
+        self.imputer = KNNImputer()
+        
+    def impute(self, data: pd.DataFrame):
+        self.check_features(data)
+        # Gets imputable features i.e. numbers
+        self.imputable_features = [s for s in self.features if s in [data.columns[i] for i in range(len(data.dtypes)) if [data.dtypes != object][0].to_list()[i]]]
+        imputed_data = self.imputer.fit_transform(data[self.imputable_features])
+        return pd.DataFrame(imputed_data, columns = self.imputable_features), self.imputable_features
+    
+class Iterative_Impute(Imputation_Mehtod):
+    def __init__(self, features: list[str]):
+        super().__init__(features)
+        self.imputer = IterativeImputer(random_state=0)
+    
+    def impute(self, data: pd.DataFrame):
+        self.check_features(data)
+        self.imputable_features = [s for s in self.features if s in [data.columns[i] for i in range(len(data.dtypes)) if [data.dtypes != object][0].to_list()[i]]]
+        # Two ways of doing this: 
+        # 1) impute a smaller version of the data only comprising of the selected features 
+        imputed_data = self.imputer.fit_transform(data[self.imputable_features])
+        # 2) impute all of the data and return only the selected features
+        # (doing (1) for time efficiency)
+        return pd.DataFrame(imputed_data, columns = self.imputable_features), self.imputable_features
+        
 
 # Function to call from the outside
-def errors_e2e(features: list, method = "ffill"):
-    errors = evaluate_imputation(impute(features), method = method)
+def errors_e2e(features: list[str], method : str):
+    # Error selector
+    if method == "value" : imputer = Value_Fill(features)
+    elif method == "ffill" : imputer = Forward_Fill(features)
+    elif method == "mean" : imputer = Mean_Fill(features)
+    elif method == "knn" : imputer = KNN_Impute(features)
+    elif method == "iterative": imputer = Iterative_Impute(features)
     
+    errors = imputer.evaluate_imputation(pd.read_csv(app.DATA_PATH))
     ErrorInfos = []
     for feature in features:
         pct_avail_dict = pct_avail_pp(feature)
         pct_avail_dict["imputation_error"] = errors[feature]
         ErrorInfos.append(pct_avail_dict)
-    
     return ErrorInfos
-
-
-def impute(features : list, method = "mean", manual_data = pd.DataFrame()):
-    """
-    Implements a filling procedure on all features with requested method
     
-    Input: Name of the features to imput and method to do so (list, string)
-    
-    Output: Dictionary of imputed features (dict)
-    """
-    
-    if not manual_data.empty:
-        if type(manual_data) == pd.DataFrame:
-            data = manual_data
-        else:
-            raise ValueError("manual data not a pd series")
-    else:
-        # thisfile= str(pathlib.Path(__file__).parent.absolute())
-        # path = thisfile+"/data/icu_data_with_na_v2.csv"
-        try:
-            # Uploaded Path
-            data = pd.read_csv(app.DATA_PATH)
-        except:
-            # Hardcoded datapath
-            thisfile= str(pathlib.Path(__file__).parent.absolute())
-            path = thisfile+"/data/icu_data_with_na_v2.csv"
-            data = pd.read_csv(path)
-        
-    imputed_output = {}
-    for feature in features:
-        if method == "ffill": imputed_output[feature] = forward_fill(feature, data)
-        elif method == "mean": imputed_output[feature] = mean_fill(feature, data)
-        elif method == "zerofill" : imputed_output[feature] = zero_fill(feature, data)
-        # ... future methods to be added
-    
-    return imputed_output
-
-def zero_fill(feature_name : str, data : pd.DataFrame):
-    """
-    Implements a zero fill on a single feature.
-    
-    Input: Name of the feature to impute in the current dataset (string)
-    
-    Output: The featrue column where zero fill has been applied (list)
-    """
-    
-    # Cursory check whether the feature requested is in the dataset
-    if feature_name not in data.columns:
-        raise ValueError("Feature name not in dataset")
-    
-    return data[feature_name].fillna(0).to_list()
-
-def forward_fill(feature_name : str, data : pd.DataFrame):
-    """
-    Implements a forward fill on a single feature.
-    
-    Input: Name of the feature to impute in the current dataset (string)
-    
-    Output: The featrue column where forward fill has been applied (list)
-    """
-    
-    # Cursory check whether the feature requested is in the dataset
-    if feature_name not in data.columns:
-        raise ValueError("Feature name not in dataset")
-    
-    return data[feature_name].ffill().to_list()
-
-
-
-def mean_fill(feature_name : str, data : pd.DataFrame):
-    """
-    Implements a mean fill on a single feature.
-    
-    Input: Name of the feature to impute in the current dataset (string)
-    
-    Output: The featrue column where forward fill has been applied (list)
-    """
-    
-    # Cursory check whether the feature requested is in the dataset
-    if feature_name not in data.columns:
-        raise ValueError("Feature name not in dataset")
-    
-    return data[feature_name].fillna(data[feature_name].mean()).to_list()
-
-
-# Other impuatation methods...
-
-def get_longest_consecutive_run(data: pd.DataFrame, feature: str):
-    
-    tally_per_row = data[feature].isna()
-    group = tally_per_row.diff().cumsum().fillna(0)
-    na_counts = tally_per_row.groupby(group).sum()
-    
-    positions = pd.Series(np.arange(len(data))).groupby(group).agg([np.min, np.max])
-    
-    max_consecutive = positions.loc[np.argmax(positions.amax - positions.amin)]
-    
-    return (int(max_consecutive.amin), int(max_consecutive.amax))
-
-
-def get_comp(data: pd.DataFrame, feature: str, run: tuple, method = str):
-    # Main aim is to duplicate the dataset, but remove the longest run of available features 
-    # to measure some sort of error. Very illogical and nonsensical !!
-    local_data = data.copy(deep=True)
-    local_data[feature].loc[run[0] : run[1]] = np.NaN
-    
-    return pd.Series(impute([feature], manual_data = local_data, method = method)[feature])
-
-
-def evaluate_imputation(imputed_outputs : dict, method = "ffill"):
-    """
-    // Admittedly very shoddy version of finding a notion of error in the imputation strategies.
-    
-    Input: the imputed outputs from the impute function (dict)
-    
-    Output: Errors as integers in a dictionary (dict)
-    """
-    # thisfile= str(pathlib.Path(__file__).parent.absolute())
-    # path = thisfile+"/data/icu_data_with_na_v2.csv"
-    
-    try:
-        # Uploaded Path
-        data = pd.read_csv(app.DATA_PATH)
-    except:
-        # Hardcoded datapath
-        thisfile= str(pathlib.Path(__file__).parent.absolute())
-        path = thisfile+"/data/icu_data_with_na_v2.csv"
-        data = pd.read_csv(path)
-    
-    
-    error = {}
-    # Error (RMSE) calculation per feature
-    for feature in imputed_outputs:
-        run = get_longest_consecutive_run(data, feature)
-        comparison = get_comp(data, feature, run, method)
-        
-        error[feature] = 0
-        # std = data[feature].loc[run[0] : run[1]].std()
-        # mean = data[feature].loc[run[0] : run[1]].mean()
-        
-        for i in range(run[0], run[1]):
-            error[feature] += (imputed_outputs[feature][i] - comparison[i])**2
-        
-        error[feature] = math.sqrt(error[feature] / (run[1] - run[0]))
-        
-    return error
-    
-
 
 if __name__ == '__main__':
-    # feature = "HR"
-    featureInfos = [{"group_id": 1, "feature_name" : "HR"}]
-    groups = [{"id": 1, "imputation_method":"zerofill"}]
+    thisfile= str(pathlib.Path(__file__).parent.absolute())
+    path = thisfile+"/data/icu_data_with_na_v2.csv"
+    data = pd.read_csv(path)
     
+    features = ["HR", "theo_bol"]
     
-    outfeatureInfos = []
-    for featureInfo in featureInfos:
-        for group in groups:
-            # Throw error to frontend
-            if group["imputation_method"] not in ["zerofill", "ffill", "mean"]: 
-                print("Imputation method " + str(group["imputation_method"]) + " is not one of the supported imputation methods")
-            if group["id"] == featureInfo["group_id"]:
-                method = group["imputation_method"]
-        
-        outfeatureInfos.append(errors_e2e([featureInfo["feature_name"]], method)[0])
-    
-    print(outfeatureInfos)
+    # imputer = Iterative_Impute(features)
+    # print(imputer.impute(data))
+    # print(imputer.evaluate_imputation(data))
+    print(errors_e2e(features, "mean")[0])

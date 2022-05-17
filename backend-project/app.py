@@ -134,7 +134,7 @@ def get_imputation(inputs:ImputationInputs):
 
         for group in inputs.groups:
             # Throw error to frontend
-            if group["imputation_method"] not in ["zerofill", "ffill", "mean"]: 
+            if group["imputation_method"] not in ["value", "ffill", "mean", "knn", "iterative"]: 
                 # TODO: the error is not visible in the response. It just says server error with no message. can you show the message, or at least print it to the console
                 print("Error: Imputation method " + str(group["imputation_method"]) + " is not one of the supported imputation methods")
                 return Response("Imputation method " + str(group["imputation_method"]) + " is not one of the supported imputation methods", status_code = 500)
