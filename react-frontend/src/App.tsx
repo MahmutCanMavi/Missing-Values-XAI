@@ -12,6 +12,7 @@ import queryBackend from "./backend/BackendQueryEngine";
 interface AppState {
   data: FeatureInfo[] | null;
   groups: FeatureGroup[] | null;
+  scatterdata: any;
   pageActive: "viz" | "group" | "impute";
 }
 
@@ -29,23 +30,31 @@ class App extends React.Component<{}, AppState> {
       {"name": "Example Group 1", "id":0, "imputation_method": IMPUTATION_METHODS[0]},
       {"name": "Example Group 2", "id":1, "imputation_method": IMPUTATION_METHODS[0]},
     ]
-    this.state = {data: dummydata, groups: dummygroups, pageActive: "viz"};
+    this.state = {data: dummydata, groups: dummygroups, pageActive: "viz", scatterdata:null};
     this.handleDataUpload=this.handleDataUpload.bind(this);
     this.setPageActive=this.setPageActive.bind(this);
     this.setGroups=this.setGroups.bind(this);
     this.setFeatures=this.setFeatures.bind(this);
+    this.getClusterData=this.getClusterData.bind(this);
   }
   async handleDataUpload(data: FeatureInfo[] | null){
     
     if (data) {
       this.setState({data: data})
-      // example for receiving cluster data without slowing down upload. 
-      //      but it does not work yet because the backend does not send the imputation method attribute. frontend should set a default when receiving
-      // let response = await queryBackend("get-clusters?transformation_method=2") as any
-      // this.setState({data:response.featureInfos,groups:response.groups.map((g: FeatureGroup)=>{return {...g, imputation_method:null}})})
-    } else {
+      this.getClusterData();
+      } else {
       console.log("don't have any data!");
     }
+  }
+  async getClusterData(){
+      // example for receiving cluster data without slowing down upload. 
+      //      but it does not work yet because the backend does not send the imputation method attribute. frontend should set a default when receiving
+      let response = await queryBackend("get-clusters?transformation_method=2") as any
+      this.setState({ data: response.featureInfos,
+                      groups: response.groups.map((g: FeatureGroup)=>{return {...g, imputation_method:"none"}}),
+                      scatterdata: response.tsneData
+                    })
+ 
   }
   setPageActive(pageActive:"viz" | "group" | "impute"){
     this.setState({pageActive:pageActive})
@@ -73,6 +82,7 @@ class App extends React.Component<{}, AppState> {
         {(this.state.pageActive === "viz") && <VizPage data={this.state.data} groups={this.state.groups}
                                                   handleDataUpload={this.handleDataUpload}/>}
         {(this.state.pageActive === "group") && <GroupPage features={this.state.data} groups={this.state.groups} 
+                                                  scatterdata={this.state.scatterdata}
                                                   setGroups={this.setGroups} setFeatures={this.setFeatures}/>}
         {(this.state.pageActive === "impute") && <ImputePage features={this.state.data} groups={this.state.groups} 
                                             handleImputationScore={()=>null}

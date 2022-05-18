@@ -11,13 +11,15 @@ interface D3ComponentProps {
     featureInfo: FeatureInfo;
 
 }
-export default class D3Scatterplot extends React.Component<{},{}> {
+export default class D3Scatterplot extends React.Component<{scatterdata:any},{}> {
   mySVG: React.MutableRefObject<SVGSVGElement | null>;
   featureInfo: FeatureInfo;
   cars:any;
-  constructor(props:D3ComponentProps) {
+  scatterdata:any;
+  constructor(props:any) {
 
     super(props);
+    this.scatterdata=this.props.scatterdata;
     this.mySVG = React.createRef();
     this.featureInfo={"feature_name":"Cars","group_id":0,"description":"description 1: lorem ipsum dolores supametrarekdjfnkadn fsdflkajns lkfjadf","imputation_error":null,"pct_avail_pp":[{"patient_id":1,"pct_avail":0.2},{"patient_id":2,"pct_avail":0.9484536082474226},{"patient_id":3,"pct_avail":0.7422680412371134},{"patient_id":4,"pct_avail":0.6185567010309279}]};
     this.cars =  [ {name: "Mazda RX4", mpg: 30, cyl: 6, disp: 160, hp: 150, drat: 3.9, wt: 2.62, qsec: 16.46, vs: 0, am: 1, group_id: 1, carb: 4},
@@ -48,7 +50,7 @@ export default class D3Scatterplot extends React.Component<{},{}> {
 
 
     const data = this.featureInfo.pct_avail_pp.map(o=>o.pct_avail).sort()
-    Scatterplot2(svg,this.cars);
+    Scatterplot2(svg,this.scatterdata);
 
   }
 

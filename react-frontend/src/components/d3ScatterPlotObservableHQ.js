@@ -12,13 +12,13 @@ function groupcolor(id){
 }
 
 
-function Scatterplot2(svg, cars){
-  return Scatterplot(svg, cars,{
-    x: d => d.mpg,
-    y: d => d.hp,
-    title: d => d.name,
-    xLabel: "Miles per gallon →",
-    yLabel: "↑ Horsepower",
+function Scatterplot2(svg, scatterdata){
+  return Scatterplot(svg, scatterdata,{
+    x: d => d.x,
+    y: d => d.y,
+    title: d => d.feature_name,
+    xLabel: "tsne x →",
+    yLabel: "↑ tsne y",
     fill: d => groupcolor(d?.group_id),
     width:400,
     height:300,

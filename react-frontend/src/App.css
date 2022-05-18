@@ -144,7 +144,7 @@
 .sidenav {
   grid-area: sidenav;
   background-color: #c9dfcb;
-  overflow-y: scroll;
+  /* overflow-y: scroll; */
   overflow-x: hidden;
   
 }

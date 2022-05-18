@@ -151,6 +151,7 @@ interface GroupPageProps {
     groups: FeatureGroup[] | null;
     setGroups: Function;
     setFeatures: Function;
+    scatterdata:any;
 }
 
 class GroupPage extends React.Component<GroupPageProps, { activeGroupId: number | null }> {
@@ -298,11 +299,11 @@ class GroupPage extends React.Component<GroupPageProps, { activeGroupId: number 
                     {/* Visualize the Group Structure -- how good is the choice of groups? */}
                     <br></br>
                     Not yet implemented: scatterplot of feature clustering &amp; tsne to vizualize groups. Right now its only a copied scatterplot
-                     <D3Scatterplot/>
+                     <D3Scatterplot scatterdata={this.props.scatterdata}/>
 
-                    {/* textarea to edit the groups object manually. Can be removed for deployment */}
+                    {/* textarea to edit the groups object manually. Can be removed for deployment 
                     <JsonGroupEditor features={this.props.features} groups={this.props.groups}
-                        setFeatures={this.props.setFeatures} setGroups={this.props.setGroups} />
+                        setFeatures={this.props.setFeatures} setGroups={this.props.setGroups} />*/}
                 </aside>
                 <main className="main maingrid">
 
