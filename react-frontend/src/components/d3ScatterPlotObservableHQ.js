@@ -22,7 +22,7 @@ function Scatterplot2(svg, scatterdata){
     fill: d => groupcolor(d?.group_id),
     width:400,
     height:300,
-    r:7,
+    r:3,
     stroke:"none"
   })
 } 
