@@ -64,6 +64,8 @@ class D3DetailSquares extends React.Component<D3ComponentProps,{}> {
         <h3>Feature: {this.featureInfo.feature_name}</h3>
         <p>Hover over the square to see the value. Black means missing</p>
         <svg ref={this.mySVG}/>
+        <h3>Experimental feature: click on the patient ID to get the tiny squares viz for the selcted patient</h3>
+                
       </div>
     );
 
