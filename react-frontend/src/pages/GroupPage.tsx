@@ -1,12 +1,13 @@
 
 import React from "react";
+import ClusterViz from "../components/ClusterViz";
 import D3Scatterplot from "../components/d3scatterplot";
 import FilterFeatures from "../components/FilterFeatures";
 import Icons from "../components/icons";
 import { ImputationMenu } from "../components/ImputationMenu";
 import SelectPctAvailGradient from "../components/SelectPctAvailGradient";
-import { IMPUTATION_METHODS, FeatureInfo, FeatureGroup, ImputationMethod } from "../types/feature_types";
-
+import { IMPUTATION_METHODS, FeatureInfo, FeatureGroup, ImputationMethod, tsneDataPoint } from "../types/feature_types";
+import ClusterMenu from "../components/ClusterMenu"
 function groupcolor(id: number | null) {
     if (id == null) {
         return "#fff";
@@ -151,7 +152,7 @@ interface GroupPageProps {
     groups: FeatureGroup[] | null;
     setGroups: Function;
     setFeatures: Function;
-    scatterdata:any;
+    tsnedata:tsneDataPoint[];
 }
 
 class GroupPage extends React.Component<GroupPageProps, { activeGroupId: number | null }> {
@@ -298,12 +299,12 @@ class GroupPage extends React.Component<GroupPageProps, { activeGroupId: number 
 
                     {/* Visualize the Group Structure -- how good is the choice of groups? */}
                     <br></br>
-                    Not yet implemented: scatterplot of feature clustering &amp; tsne to vizualize groups. Right now its only a copied scatterplot
-                     <D3Scatterplot scatterdata={this.props.scatterdata}/>
-
+                    
+                    <ClusterViz tsnedata={this.props.tsnedata}/>
                     {/* textarea to edit the groups object manually. Can be removed for deployment 
                     <JsonGroupEditor features={this.props.features} groups={this.props.groups}
                         setFeatures={this.props.setFeatures} setGroups={this.props.setGroups} />*/}
+                    <ClusterMenu/>
                 </aside>
                 <main className="main maingrid">
 

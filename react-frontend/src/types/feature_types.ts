@@ -35,7 +35,7 @@ export interface FeatureGroup {
     imputation_method: ImputationMethod;
 }
 
-export interface tsneData { // for plotting the clustered features
+export interface tsneDataPoint { // for plotting the clustered features
     feature_name : string;
     x : number;
     y : number;
@@ -46,5 +46,5 @@ export interface ClusterResponse {
     cluster_method : string;
     FeatureInfos : FeatureInfo[];
     groups : FeatureGroup[];
-    tsneData : tsneData[];
+    tsneData : tsneDataPoint[];
 }

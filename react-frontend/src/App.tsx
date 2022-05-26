@@ -1,5 +1,5 @@
 import React from "react";
-import { FeatureInfo, FeatureGroup, IMPUTATION_METHODS } from './types/feature_types';
+import { FeatureInfo, FeatureGroup, IMPUTATION_METHODS, tsneDataPoint, ClusterResponse } from './types/feature_types';
 import VizPage from './pages/VizPage';
 import './App.css';
 //import 'bootstrap/dist/css/bootstrap.min.css';
@@ -12,7 +12,7 @@ import queryBackend from "./backend/BackendQueryEngine";
 interface AppState {
   data: FeatureInfo[] | null;
   groups: FeatureGroup[] | null;
-  scatterdata: any;
+  tsneData: tsneDataPoint[];
   pageActive: "viz" | "group" | "impute";
 }
 
@@ -30,7 +30,7 @@ class App extends React.Component<{}, AppState> {
       {"name": "Example Group 1", "id":0, "imputation_method": IMPUTATION_METHODS[0]},
       {"name": "Example Group 2", "id":1, "imputation_method": IMPUTATION_METHODS[0]},
     ]
-    this.state = {data: dummydata, groups: dummygroups, pageActive: "viz", scatterdata:null};
+    this.state = {data: dummydata, groups: dummygroups, pageActive: "viz", tsneData:[]};
     this.handleDataUpload=this.handleDataUpload.bind(this);
     this.setPageActive=this.setPageActive.bind(this);
     this.setGroups=this.setGroups.bind(this);
@@ -42,17 +42,16 @@ class App extends React.Component<{}, AppState> {
     if (data) {
       this.setState({data: data})
       this.getClusterData();
-      } else {
-      console.log("don't have any data!");
+      } else {      console.log("don't have any data!");
     }
   }
   async getClusterData(){
       // example for receiving cluster data without slowing down upload. 
-      //      but it does not work yet because the backend does not send the imputation method attribute. frontend should set a default when receiving
       let response = await queryBackend("get-clusters?transformation_method=2") as any
-      this.setState({ data: response.featureInfos,
+      // data: response.featureInfos,
+      this.setState({ 
                       groups: response.groups.map((g: FeatureGroup)=>{return {...g, imputation_method:"none"}}),
-                      scatterdata: response.tsneData
+                      tsneData: response.tsneData
                     })
  
   }
@@ -63,6 +62,7 @@ class App extends React.Component<{}, AppState> {
     this.setState({groups:newGroups})
   }
   setFeatures(newFeatures:FeatureInfo[] | null){
+    console.log(newFeatures)
     this.setState({data:newFeatures})
   }
 
@@ -82,7 +82,7 @@ class App extends React.Component<{}, AppState> {
         {(this.state.pageActive === "viz") && <VizPage data={this.state.data} groups={this.state.groups}
                                                   handleDataUpload={this.handleDataUpload}/>}
         {(this.state.pageActive === "group") && <GroupPage features={this.state.data} groups={this.state.groups} 
-                                                  scatterdata={this.state.scatterdata}
+                                                  tsnedata={this.state.tsneData}
                                                   setGroups={this.setGroups} setFeatures={this.setFeatures}/>}
         {(this.state.pageActive === "impute") && <ImputePage features={this.state.data} groups={this.state.groups} 
                                             handleImputationScore={()=>null}

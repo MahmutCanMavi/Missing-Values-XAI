@@ -148,7 +148,7 @@ def auto_cluster_number(data, n_clusters_range = (4,8)):
 def auto_cluster_pipeline(transformation_method = 1):
 
     data = transform(get_data(), transformation_method)
-    
+    print(data.head(200))
     n_clusters = auto_cluster_number(data)
     FeatureGroups = []
     for i in range(n_clusters): FeatureGroups.append({"id" : i, 
