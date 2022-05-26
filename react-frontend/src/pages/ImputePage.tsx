@@ -54,6 +54,7 @@ class ImputePage extends React.Component<ImputePageProps,{}> {
         // else {
         //     console.log("cannot impute, props are null")
         // }
+        this.props.handleImputationScore();
         
         console.log("clicked the Impute! button");
     }

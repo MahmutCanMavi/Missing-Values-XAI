@@ -51,7 +51,7 @@ class DataUploadPane extends React.Component<{features: string[], onChange: Func
 
         // as usual, to upload file we create a form
         const form = new FormData();
-        form.append('file', file, file.name);
+        form.append('file', file, file.name); 
         const headers={'Content-Type': file.type};
         
         // console.log("sending request")

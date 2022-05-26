@@ -119,27 +119,28 @@ def get_cluster(transformation_method : str = 1):
     return dumps(cluster.auto_cluster_pipeline(int(transformation_method)), cls=NpEncoder)
 
 @app.post("/impute")
-def get_imputation(inputs:ImputationInputs):
+def get_imputation(inputs: dict):
     """
     Inputs: - features as a list of featureInfos to be imputed
             - groups declaring the imputation methods for each group
             
     Output: FeatureInfos with imputation methods according to the feature of each group
     """
-   
+    print(inputs["featureInfos"])
+    print(inputs["groups"])
     outfeatureInfos = []
-    for featureInfo in inputs.featureInfos:
+    for featureInfo in inputs['featureInfos']:
         # if featureInfo["group_id"]==None:
         #     continue
-
-        for group in inputs.groups:
+        method = "value"
+        for group in inputs['groups']:
             # Throw error to frontend
-            if group["imputation_method"] not in ["value", "ffill", "mean", "knn", "iterative"]: 
+            if group["imputation_method"]["name"] not in ["value", "ffill", "mean", "knn", "iterative"]: 
                 # TODO: the error is not visible in the response. It just says server error with no message. can you show the message, or at least print it to the console
                 print("Error: Imputation method " + str(group["imputation_method"]) + " is not one of the supported imputation methods")
                 return Response("Imputation method " + str(group["imputation_method"]) + " is not one of the supported imputation methods", status_code = 500)
             if group["id"] == featureInfo["group_id"]:
-                method = group["imputation_method"]
+                method = group["imputation_method"]["name"]
         
         outfeatureInfos.append(impute.errors_e2e([featureInfo["feature_name"]], method)[0])
     

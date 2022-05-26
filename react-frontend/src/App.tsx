@@ -8,6 +8,8 @@ import GroupPage from "./pages/GroupPage";
 import Icons from "./components/icons";
 import ImputePage from "./pages/ImputePage";
 import queryBackend from "./backend/BackendQueryEngine";
+import queryImputationError from "./backend/QueryImputationError";
+import axios from 'axios';
 
 interface AppState {
   data: FeatureInfo[] | null;
@@ -36,6 +38,8 @@ class App extends React.Component<{}, AppState> {
     this.setGroups=this.setGroups.bind(this);
     this.setFeatures=this.setFeatures.bind(this);
     this.getClusterData=this.getClusterData.bind(this);
+
+    this.handleImputationScore=this.handleImputationScore.bind(this);
   }
   async handleDataUpload(data: FeatureInfo[] | null){
     
@@ -55,6 +59,13 @@ class App extends React.Component<{}, AppState> {
                     })
  
   }
+
+  async handleImputationScore(){
+    console.log("get imputation score")
+    let result = await queryImputationError(this.state.data, this.state.groups) as any;
+    this.setState({data: result})
+  }
+
   setPageActive(pageActive:"viz" | "group" | "impute"){
     this.setState({pageActive:pageActive})
   }
@@ -85,7 +96,7 @@ class App extends React.Component<{}, AppState> {
                                                   tsnedata={this.state.tsneData}
                                                   setGroups={this.setGroups} setFeatures={this.setFeatures}/>}
         {(this.state.pageActive === "impute") && <ImputePage features={this.state.data} groups={this.state.groups} 
-                                            handleImputationScore={()=>null}
+                                            handleImputationScore={this.handleImputationScore}
                                             setGroups={this.setGroups} setFeatures={this.setFeatures}/> }
       <footer className="footer">By Yan, Talu, David and Michael</footer>
       </div>

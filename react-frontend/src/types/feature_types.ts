@@ -9,11 +9,15 @@ export interface ImputationMethod {
     parameters: Parameter[] | null;
 }
 
+// "value", "ffill", "mean", "knn", "iterative"
 export const IMPUTATION_METHODS: ImputationMethod[] = 
     [{name: "None", parameters: null},
-     {name: "Zero Fill", parameters: null},
-     {name: "Forward Fill", parameters: null},
-     {name: "Median Fill", parameters: null}];
+     {name: "value", parameters: null},
+     {name: "ffill", parameters: null},
+     {name: "mean", parameters: null},
+     {name: "knn", parameters: null},
+     {name: "iterative", parameters: null}
+    ];
 
 export interface PctAvail {
     patient_id: number; // patient ID as an integer

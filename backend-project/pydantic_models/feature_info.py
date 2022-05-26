@@ -22,7 +22,7 @@ class FeatureGroup(TypedDict):
     imputation_method: Union[str, None]
 
 class ImputationInputs(BaseModel):
-    featureInfos: List[FeatureInfo]
+    featureInfos: List[FeatureInfo] 
     groups: List[FeatureGroup]
 
 class FeatureInfoList(BaseModel):
