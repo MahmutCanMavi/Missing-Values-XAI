@@ -41,7 +41,15 @@ class Imputation_Mehtod():
         for i in range(len(self.features)):
             error[self.features[i]] = 0
             for gone in to_be_nand[i]:
-                error[self.features[i]] += (imputed[self.features[i]].loc[gone] - data[self.features[i]].loc[gone]) ** 2
+                try :
+                    gonedata = float(data[self.features[i]].loc[gone])
+                    error[self.features[i]] += (imputed[self.features[i]].loc[gone] - gonedata) ** 2
+                except ValueError:
+                    print("is strynggg "+self.features[i],data[self.features[i]].loc[gone])
+                    error[self.features[i]] += np.NaN
+                    continue
+                
+                
             
             error[self.features[i]] = sqrt(error[self.features[i]] / len(to_be_nand[i]))
         return error
@@ -103,18 +111,22 @@ class Iterative_Impute(Imputation_Mehtod):
         
 
 # Function to call from the outside
-def errors_e2e(features: list[str], method : str):
+def errors_e2e(features: list[str], method_name : str, method_parameters):
     # Error selector
-    if method == "value" : imputer = Value_Fill(features)
-    elif method == "ffill" : imputer = Forward_Fill(features)
-    elif method == "mean" : imputer = Mean_Fill(features)
-    elif method == "knn" : imputer = KNN_Impute(features)
-    elif method == "iterative": imputer = Iterative_Impute(features)
+    if method_name == "value" : imputer = Value_Fill(features)
+    elif method_name == "ffill" : imputer = Forward_Fill(features)
+    elif method_name == "mean" : imputer = Mean_Fill(features)
+    elif method_name == "knn" : imputer = KNN_Impute(features)
+    elif method_name == "iterative": imputer = Iterative_Impute(features)
+    elif method_name == "None": return None
+    else:
+        print("Error: Imputation method " + str(method_name) + " is not one of the supported imputation methods")
     
     errors = imputer.evaluate_imputation(pd.read_csv(app.DATA_PATH))
     ErrorInfos = []
     for feature in features:
-        pct_avail_dict = pct_avail_pp(feature)
+        # comment david: I extract it in the front-end anyway, we dont neet the pct_avail data here
+        pct_avail_dict = {"feature_name":feature} #pct_avail_pp(feature) 
         pct_avail_dict["imputation_error"] = errors[feature]
         ErrorInfos.append(pct_avail_dict)
     return ErrorInfos

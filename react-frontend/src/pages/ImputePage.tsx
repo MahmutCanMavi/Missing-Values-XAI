@@ -3,6 +3,7 @@ import React from "react";
 import  { D3DetailSquaresPatient } from "../components/d3detailSquares";
 import { FeatureInfo, FeatureGroup, ImputationMethod } from "../types/feature_types";
 import { ImputationMenu } from "../components/ImputationMenu";
+import ErrorFeatureList from "../components/ErrorFeatureList";
 
 interface ImputePageProps {
     features: FeatureInfo[] | null;
@@ -70,6 +71,9 @@ class ImputePage extends React.Component<ImputePageProps,{}> {
         <main className="main">
             <h3>Visualize Imputation Performance Here!</h3>
             <p>Imputation is not implemented yet</p>
+            {this.props.features && <ErrorFeatureList 
+                    data={this.props.features} 
+                    />}
         </main>
         
         </>

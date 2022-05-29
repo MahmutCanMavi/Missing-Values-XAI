@@ -12,7 +12,7 @@ import queryImputationError from "./backend/QueryImputationError";
 import axios from 'axios';
 
 interface AppState {
-  data: FeatureInfo[] | null;
+  features: FeatureInfo[] | null;
   groups: FeatureGroup[] | null;
   tsneData: tsneDataPoint[];
   pageActive: "viz" | "group" | "impute";
@@ -32,7 +32,7 @@ class App extends React.Component<{}, AppState> {
       {"name": "Example Group 1", "id":0, "imputation_method": IMPUTATION_METHODS[0]},
       {"name": "Example Group 2", "id":1, "imputation_method": IMPUTATION_METHODS[0]},
     ]
-    this.state = {data: dummydata, groups: dummygroups, pageActive: "viz", tsneData:[]};
+    this.state = {features: dummydata, groups: dummygroups, pageActive: "viz", tsneData:[]};
     this.handleDataUpload=this.handleDataUpload.bind(this);
     this.setPageActive=this.setPageActive.bind(this);
     this.setGroups=this.setGroups.bind(this);
@@ -41,29 +41,73 @@ class App extends React.Component<{}, AppState> {
 
     this.handleImputationScore=this.handleImputationScore.bind(this);
   }
-  async handleDataUpload(data: FeatureInfo[] | null){
+  async handleDataUpload(features: FeatureInfo[] | null){
     
-    if (data) {
-      this.setState({data: data})
+    if (features) {
+      this.setState({features: features})
       this.getClusterData();
       } else {      console.log("don't have any data!");
     }
   }
-  async getClusterData(){
-      // example for receiving cluster data without slowing down upload. 
-      let response = await queryBackend("get-clusters?transformation_method=2") as any
-      // data: response.featureInfos,
-      this.setState({ 
-                      groups: response.groups.map((g: FeatureGroup)=>{return {...g, imputation_method:"none"}}),
-                      tsneData: response.tsneData
-                    })
- 
+  async getClusterData() {
+    // example for receiving cluster data without slowing down upload. 
+    let response = await queryBackend("get-clusters?transformation_method=2") as any
+    // data: response.featureInfos,
+    // update/left-join features with the new group id
+    let features = null;
+
+    if (this.state.features) {
+      features = this.state.features.map((f_state: FeatureInfo) => {
+        const f_in_response = response.featureInfos.filter((f_response: FeatureInfo) => f_response.feature_name === f_state.feature_name) as FeatureInfo[];
+        let g_id = null;
+        if (f_in_response.length === 1) {
+          g_id = f_in_response[0].group_id;
+        }
+        else {
+          Error("feature '" + f_state.feature_name + "' not found in response")
+        }
+        
+        return { ...f_state, group_id: g_id }
+      })
+    }
+    else {
+      features = response.featureInfos
+    }
+    this.setState({
+      features: features,
+      groups: response.groups.map((g: FeatureGroup) => { return { ...g, imputation_method: "none" } }),
+      tsneData: response.tsneData
+    })
+    
+
+
+
   }
 
   async handleImputationScore(){
     console.log("get imputation score")
-    let result = await queryImputationError(this.state.data, this.state.groups) as any;
-    this.setState({data: result})
+    let result = await queryImputationError(this.state.features, this.state.groups) as any;
+    let featureInfos = null;
+
+    // update/left-join features with the new group id
+    if (this.state.features) {
+      featureInfos = this.state.features.map((f_state: FeatureInfo) => {
+        const f_in_response = result.filter((f_response: FeatureInfo) => f_response.feature_name === f_state.feature_name) as FeatureInfo[];
+        let imputation_error = null;
+        if (f_in_response.length === 1) {
+          imputation_error = f_in_response[0].imputation_error;
+        }
+        else {
+          Error("feature '" + f_state.feature_name + "' not found in response")
+        }
+        console.log(f_state,imputation_error)
+        return { ...f_state, imputation_error: imputation_error }
+      })
+    }
+    else {
+      featureInfos = result
+    }
+    this.setState({features: featureInfos})
   }
 
   setPageActive(pageActive:"viz" | "group" | "impute"){
@@ -74,7 +118,7 @@ class App extends React.Component<{}, AppState> {
   }
   setFeatures(newFeatures:FeatureInfo[] | null){
     console.log(newFeatures)
-    this.setState({data:newFeatures})
+    this.setState({features:newFeatures})
   }
 
   render() {
@@ -90,12 +134,12 @@ class App extends React.Component<{}, AppState> {
       </header>
         
     
-        {(this.state.pageActive === "viz") && <VizPage data={this.state.data} groups={this.state.groups}
+        {(this.state.pageActive === "viz") && <VizPage data={this.state.features} groups={this.state.groups}
                                                   handleDataUpload={this.handleDataUpload}/>}
-        {(this.state.pageActive === "group") && <GroupPage features={this.state.data} groups={this.state.groups} 
+        {(this.state.pageActive === "group") && <GroupPage features={this.state.features} groups={this.state.groups} 
                                                   tsnedata={this.state.tsneData}
                                                   setGroups={this.setGroups} setFeatures={this.setFeatures}/>}
-        {(this.state.pageActive === "impute") && <ImputePage features={this.state.data} groups={this.state.groups} 
+        {(this.state.pageActive === "impute") && <ImputePage features={this.state.features} groups={this.state.groups} 
                                             handleImputationScore={this.handleImputationScore}
                                             setGroups={this.setGroups} setFeatures={this.setFeatures}/> }
       <footer className="footer">By Yan, Talu, David and Michael</footer>

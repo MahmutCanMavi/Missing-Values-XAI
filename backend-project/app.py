@@ -126,23 +126,38 @@ def get_imputation(inputs: dict):
             
     Output: FeatureInfos with imputation methods according to the feature of each group
     """
-    print(inputs["featureInfos"])
-    print(inputs["groups"])
+    # print(inputs["featureInfos"])
+    # print(inputs["groups"])
+    groups = {}
+    for group in inputs["groups"]:
+        groups[group["id"]]=group
+    
     outfeatureInfos = []
     for featureInfo in inputs['featureInfos']:
-        # if featureInfo["group_id"]==None:
-        #     continue
-        method = "value"
-        for group in inputs['groups']:
-            # Throw error to frontend
-            if group["imputation_method"]["name"] not in ["value", "ffill", "mean", "knn", "iterative"]: 
-                # TODO: the error is not visible in the response. It just says server error with no message. can you show the message, or at least print it to the console
-                print("Error: Imputation method " + str(group["imputation_method"]) + " is not one of the supported imputation methods")
-                return Response("Imputation method " + str(group["imputation_method"]) + " is not one of the supported imputation methods", status_code = 500)
-            if group["id"] == featureInfo["group_id"]:
-                method = group["imputation_method"]["name"]
+        if "group_id" not in featureInfo:
+            print("Has no group_id attribute",featureInfo)
+        if featureInfo["group_id"]==None:
+            continue
         
-        outfeatureInfos.append(impute.errors_e2e([featureInfo["feature_name"]], method)[0])
+        method = "value"
+        if featureInfo["group_id"] not in groups:
+            print("Error: invalid group_id.",featureInfo,groups)
+        imputation_method= groups[featureInfo["group_id"]]["imputation_method"]
+        if not imputation_method or imputation_method=="none" or imputation_method["name"]=="None":
+            print("Error: invalid imputation method.",imputation_method)
+            continue
+        print(imputation_method)
+        # for group in inputs['groups']:
+        #     print(group)
+        #     # Throw error to frontend
+        #     if group["imputation_method"]["name"] not in ["value", "ffill", "mean", "knn", "iterative"]: 
+        #         # TODO: the error is not visible in the response. It just says server error with no message. can you show the message, or at least print it to the console
+        #         print("Error: Imputation method " + str(group["imputation_method"]) + " is not one of the supported imputation methods")
+        #         return Response("Imputation method " + str(group["imputation_method"]) + " is not one of the supported imputation methods", status_code = 500)
+        #     if group["id"] == featureInfo["group_id"]:
+        #         method = group["imputation_method"]["name"]
+        
+        outfeatureInfos.append(impute.errors_e2e([featureInfo["feature_name"]], imputation_method["name"],imputation_method["parameters"])[0])
     
     return dumps(outfeatureInfos, cls= NpEncoder)
 

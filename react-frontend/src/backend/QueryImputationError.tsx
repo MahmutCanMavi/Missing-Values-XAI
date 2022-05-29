@@ -10,9 +10,12 @@ export const BASE_URL = 'http://127.0.0.1:8000';
 
 export const queryImputationError = async (featureInfos:FeatureInfo[] | null, groups:FeatureGroup[] | null): Promise<FeatureInfo[]> => {
     let route = 'impute';
+    
     const requestURL = `${BASE_URL}/${route}`;
     // const formData = new FormData();
-    console.log({'featureInfos': featureInfos, 'groups': groups});
+    // console.log({'featureInfos': featureInfos, 'groups': groups});
+    const featureInfosLight = featureInfos?.map(f=>{ return {...f,pct_avail_pp:[]}})
+    // console.log(JSON.stringify({'featureInfos': featureInfosLight, 'groups': groups}))
     const data = await fetch(requestURL,
         {
             method: 'POST', // or 'PUT'
@@ -20,7 +23,7 @@ export const queryImputationError = async (featureInfos:FeatureInfo[] | null, gr
                     'Access-Control-Allow-Origin': 'http://127.0.0.1:8000',
                     'Content-Type': 'application/json',
             },
-            body: JSON.stringify({'featureInfos': featureInfos, 'groups': groups}),
+            body: JSON.stringify({'featureInfos': featureInfosLight, 'groups': groups}),
         }
     )
     .then(response =>  { return response.json()})

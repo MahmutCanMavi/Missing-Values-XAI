@@ -1,7 +1,7 @@
 import * as d3 from 'd3'
 
 function groupcolor(id){
-  console.log(id)
+ 
   if (id==null){
       return "#000";
   }
