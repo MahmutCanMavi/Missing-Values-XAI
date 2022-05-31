@@ -148,7 +148,6 @@ def auto_cluster_number(data, n_clusters_range = (4,8)):
 def auto_cluster_pipeline(transformation_method = 1):
 
     data = transform(get_data(), transformation_method)
-    print(data.head(200))
     n_clusters = auto_cluster_number(data)
     FeatureGroups = []
     for i in range(n_clusters): FeatureGroups.append({"id" : i, 
@@ -170,11 +169,11 @@ def auto_cluster_pipeline(transformation_method = 1):
     clusterResponse = {}
     # Could add other clustering methods, in that case need to make this variable
     clusterResponse["clusterMethod"] = "KMeans clustering was used"
-    clusterResponse["featureInfos"] = pct_avail_known_groups(data, groups_dict)
+    clusterResponse["featureInfos"] = pct_avail_known_groups(get_data(), groups_dict)
     clusterResponse["groups"] = FeatureGroups
     clusterResponse["tsneData"] = tsne_list
     
-    out_file = open(str(pathlib.Path(__file__).parent.absolute()) + "/data/clusterResponse.json" , 'w')
+    out_file = open(str(pathlib.Path(__file__).parent.absolute()) + "/data/tmp/clusterResponse.json" , 'w')
     json.dump(json.dumps(clusterResponse, cls = NpEncoder), out_file, indent=4)
     out_file.close()
     

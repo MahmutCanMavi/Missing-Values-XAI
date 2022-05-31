@@ -9,10 +9,11 @@ from sklearn.impute import KNNImputer, IterativeImputer
 from random import sample, seed
 
 class Imputation_Mehtod():
-    def __init__(self, features: list[str]):
+    def __init__(self, features: list[str], need_ids : bool = False):
         self.features = features
         # keeping things consistent
         self.random_seed = seed(10)
+        self.need_ids = need_ids
         
     def impute(self, data):
         return None, None
@@ -26,6 +27,7 @@ class Imputation_Mehtod():
         # copy data, so nothing happens to it
         # maybe not necessary in hindsight
         new_df = data[self.features].copy(deep=True)
+        if self.need_ids: new_df["id"] = data.id
         # list is for holding the random samples
         # dict is for holding errors
         to_be_nand, error = [], {}
@@ -41,26 +43,22 @@ class Imputation_Mehtod():
         for i in range(len(self.features)):
             error[self.features[i]] = 0
             for gone in to_be_nand[i]:
-                try :
-                    gonedata = float(data[self.features[i]].loc[gone])
-                    error[self.features[i]] += (imputed[self.features[i]].loc[gone] - gonedata) ** 2
-                except ValueError:
-                    print("is strynggg "+self.features[i],data[self.features[i]].loc[gone])
-                    error[self.features[i]] += np.NaN
-                    continue
-                
-                
+                error[self.features[i]] += (imputed[self.features[i]].loc[gone] - float(data[self.features[i]].loc[gone])) ** 2
             
-            error[self.features[i]] = sqrt(error[self.features[i]] / len(to_be_nand[i]))
-        return error
+            error[self.features[i]] = sqrt(error[self.features[i]] / len(to_be_nand[i])) / data[self.features[i]].mean()
+        return error, imputed
                 
 class Forward_Fill(Imputation_Mehtod):
     def __init__(self, features: list[str]):
-        super().__init__(features)
+        super().__init__(features, True)
         
     def impute(self, data : pd.DataFrame):
         self.check_features(data)
-        return data[self.features].ffill(), self.features
+        out = pd.DataFrame(columns=self.features)
+        for patient in data["id"].unique(): 
+            out = pd.concat([out, data.loc[data.id == patient][self.features].ffill().fillna(data[self.features].mean())])
+        print(out)
+        return out, self.features
 
 class Value_Fill(Imputation_Mehtod):
     def __init__(self, features: list[str], value: int or float = 0):
@@ -113,7 +111,7 @@ class Iterative_Impute(Imputation_Mehtod):
 # Function to call from the outside
 def errors_e2e(features: list[str], method_name : str, method_parameters):
     # Error selector
-    if method_name == "value" : imputer = Value_Fill(features)
+    if method_name == "value" : imputer = Value_Fill(features, method_parameters["value"])
     elif method_name == "ffill" : imputer = Forward_Fill(features)
     elif method_name == "mean" : imputer = Mean_Fill(features)
     elif method_name == "knn" : imputer = KNN_Impute(features)
@@ -122,14 +120,14 @@ def errors_e2e(features: list[str], method_name : str, method_parameters):
     else:
         print("Error: Imputation method " + str(method_name) + " is not one of the supported imputation methods")
     
-    errors = imputer.evaluate_imputation(pd.read_csv(app.DATA_PATH))
+    errors, imputed = imputer.evaluate_imputation(pd.read_csv(app.DATA_PATH))
     ErrorInfos = []
     for feature in features:
         # comment david: I extract it in the front-end anyway, we dont neet the pct_avail data here
         pct_avail_dict = {"feature_name":feature} #pct_avail_pp(feature) 
         pct_avail_dict["imputation_error"] = errors[feature]
         ErrorInfos.append(pct_avail_dict)
-    return ErrorInfos
+    return ErrorInfos, imputed
     
 
 if __name__ == '__main__':

@@ -2,6 +2,7 @@ export interface Parameter {
     mode: "int" | "float" | "string";
     name: string; // name of the parameter, for example "Fill Value"
     description: string; // explain the meaning of the parameter, for example "Choose value for filling in missing data points"
+    value: number; // value of the parameter to fill
 }
 
 export interface ImputationMethod {

@@ -19,7 +19,7 @@ from pydantic import ValidationError
 import impute
 import cluster
 
-from json import JSONEncoder, dumps
+from json import JSONEncoder, dumps, dump
 import numpy as np
 
 global DATA_PATH
@@ -126,6 +126,7 @@ def get_imputation(inputs: dict):
             
     Output: FeatureInfos with imputation methods according to the feature of each group
     """
+    data = pd.read_csv(DATA_PATH)
     # print(inputs["featureInfos"])
     # print(inputs["groups"])
     groups = {}
@@ -157,7 +158,21 @@ def get_imputation(inputs: dict):
         #     if group["id"] == featureInfo["group_id"]:
         #         method = group["imputation_method"]["name"]
         
-        outfeatureInfos.append(impute.errors_e2e([featureInfo["feature_name"]], imputation_method["name"],imputation_method["parameters"])[0])
+        error, imputation = impute.errors_e2e([featureInfo["feature_name"]], imputation_method["name"],imputation_method["parameters"])
+        outfeatureInfos.extend(error)
+        
+        data[featureInfo["feature_name"]] = imputation
+        
+    
+    print(outfeatureInfos)
+    # Store imputed data to disk
+    dest_path = os.getcwd() + "/data/tmp/imputed_data.csv"
+    data.to_csv(dest_path)
+    
+    # Store json response to disk
+    out_file = open(os.getcwd() + "/data/tmp/imputeResponse.json" , 'w')
+    dump(dumps(outfeatureInfos, cls = NpEncoder), out_file, indent=4)
+    out_file.close()
     
     return dumps(outfeatureInfos, cls= NpEncoder)
 
