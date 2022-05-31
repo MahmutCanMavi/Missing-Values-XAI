@@ -370,7 +370,7 @@ class GroupPage extends React.Component<GroupPageProps, { activeGroupId: number 
                             // also if I dont do this, the compiler complains when indexing [0]
                             this.props.groups.filter(group => group.id === this.state.activeGroupId).length !== 0 &&
                             <>
-                                <h2> Add Variables to <em>{this.props.groups.filter(group => group.id === this.state.activeGroupId)[0].name}</em></h2>
+                                <h2> Add Features to <em>{this.props.groups.filter(group => group.id === this.state.activeGroupId)[0].name}</em></h2>
                                 <p>Search:</p>
 
                             </>

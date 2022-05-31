@@ -85,11 +85,11 @@ class App extends React.Component<{}, AppState> {
   }
 
   async handleImputationScore(){
-    console.log("get imputation score")
+    console.log("get imputation and score")
     let result = await queryImputationError(this.state.features, this.state.groups) as any;
     let featureInfos = null;
 
-    // update/left-join features with the new group id
+    // update/left-join features with the imputaion error
     if (this.state.features) {
       featureInfos = this.state.features.map((f_state: FeatureInfo) => {
         const f_in_response = result.filter((f_response: FeatureInfo) => f_response.feature_name === f_state.feature_name) as FeatureInfo[];
@@ -100,7 +100,6 @@ class App extends React.Component<{}, AppState> {
         else {
           Error("feature '" + f_state.feature_name + "' not found in response")
         }
-        console.log(f_state,imputation_error)
         return { ...f_state, imputation_error: imputation_error }
       })
     }
@@ -108,6 +107,7 @@ class App extends React.Component<{}, AppState> {
       featureInfos = result
     }
     this.setState({features: featureInfos})
+    return true;
   }
 
   setPageActive(pageActive:"viz" | "group" | "impute"){

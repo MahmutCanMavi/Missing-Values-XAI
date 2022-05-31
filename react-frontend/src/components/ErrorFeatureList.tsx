@@ -1,5 +1,6 @@
 import React from 'react';
-import  {FeatureInfo} from '../types/feature_types';
+import  {FeatureGroup, FeatureInfo} from '../types/feature_types';
+import ErrorGradient from './ErrorGradient';
 //import * as d3 from 'd3' // can create problems with types! if so use the one below
 //var d3: any = require('d3')
 
@@ -7,17 +8,18 @@ import  {FeatureInfo} from '../types/feature_types';
 import SelectPctAvailGradient from './SelectPctAvailGradient';
 
 
-type Gradients = {
+type ErrorListProps = {
     data: FeatureInfo[];
     showTitle?: boolean;
+    groups:FeatureGroup[];
     
   }
 
 
-class ErrorFeatureList extends React.Component<Gradients, {}> {
+class ErrorFeatureList extends React.Component<ErrorListProps, {}> {
 
     current_number : number;
-    constructor(props: Gradients) {
+    constructor(props: ErrorListProps) {
         super(props);
         this.current_number = 0;
         //this.onSelectFeature = this.onSelectFeature.bind(this)
@@ -29,7 +31,8 @@ class ErrorFeatureList extends React.Component<Gradients, {}> {
 
         //console.log("props",typeof(this.props.clusteredFeatures));
         //console.log("infos",this.props.clusteredFeatures.FeatureInfos);
-         // sorting by cluster
+        
+        // sorting by cluster
         const featureInfosSorted= this.props.data.sort((a, b) => {
             if (a.group_id==null || b.group_id == null){
                 return 1; // this might not make sense
@@ -47,12 +50,23 @@ class ErrorFeatureList extends React.Component<Gradients, {}> {
        
         return (<>
              <div className='gradients'>
-                {featureInfosSorted.map((featureInfo,i)=>
+             {this.props.groups.map( (group) =>{
+                    
+                    return <>
+                    {group.name}
+                    <ErrorGradient featureInfos={this.props.data.filter(f=>f.group_id===group.id)} group={group} height={30}/>
+                    
+                    {featureInfosSorted.filter(f=>f.group_id===group.id).map((featureInfo,i)=>
 
                     <div key={featureInfo.feature_name}> {featureInfo.feature_name} : {featureInfo.imputation_error}  </div>           
                     
-                    )
-                }
+                    )}
+
+
+                    </>
+                })
+
+            }
             </div>
         </>)
     }

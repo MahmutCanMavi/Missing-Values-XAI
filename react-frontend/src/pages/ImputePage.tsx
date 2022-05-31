@@ -13,11 +13,12 @@ interface ImputePageProps {
     setFeatures: Function;
 }
 
-class ImputePage extends React.Component<ImputePageProps,{}> {
+class ImputePage extends React.Component<ImputePageProps,{loading:boolean}> {
     constructor(props: ImputePageProps) {
         super(props);
         this.changeGroupAttribute = this.changeGroupAttribute.bind(this);
         this.handleImputation = this.handleImputation.bind(this);
+        this.state= {loading:false};
     }
 
     changeGroupAttribute(group_id: number | null, attribute_name: string, new_value: any) {
@@ -55,9 +56,12 @@ class ImputePage extends React.Component<ImputePageProps,{}> {
         // else {
         //     console.log("cannot impute, props are null")
         // }
-        this.props.handleImputationScore();
+        this.setState({loading:true})
+        const done=this.props.handleImputationScore();
         
-        console.log("clicked the Impute! button");
+        this.setState({loading:false})
+        
+        
     }
 
     render(){
@@ -66,13 +70,15 @@ class ImputePage extends React.Component<ImputePageProps,{}> {
             {this.props.groups && <ImputationMenu groups={this.props.groups} 
                 updateGroupOnChange={(group_id: number, imputation_method: ImputationMethod) => 
                     this.changeGroupAttribute(group_id, "imputation_method", imputation_method)}/>}
-            <button className="FullWidthButton" onClick={this.handleImputation}>Impute!</button>
+            {this.state.loading===false && <button className="FullWidthButton" onClick={this.handleImputation}>Impute!</button>}
+            {this.state.loading===true && <h3>Imputing... please wait</h3>}
         </aside>
         <main className="main">
             <h3>Visualize Imputation Performance Here!</h3>
-            <p>Imputation is not implemented yet</p>
-            {this.props.features && <ErrorFeatureList 
+            
+            {this.props.features && this.props.groups && <ErrorFeatureList 
                     data={this.props.features} 
+                    groups={this.props.groups}
                     />}
         </main>
         
