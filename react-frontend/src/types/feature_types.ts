@@ -13,7 +13,7 @@ export interface ImputationMethod {
 // "value", "ffill", "mean", "knn", "iterative"
 export const IMPUTATION_METHODS: ImputationMethod[] = 
     [{name: "None", parameters: null},
-     {name: "value", parameters: null},
+     {name: "value", parameters:[{mode:"float",name:"replacementValue", description:"Choose value for filling in missing data points", value:0}]},
      {name: "ffill", parameters: null},
      {name: "mean", parameters: null},
      {name: "knn", parameters: null},

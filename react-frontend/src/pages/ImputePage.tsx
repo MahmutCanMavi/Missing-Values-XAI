@@ -85,7 +85,7 @@ class ImputePage extends React.Component<ImputePageProps,{loading:boolean,appErr
             {this.state.appError && <span className="uploadError">{this.state.appError}</span>}
         </aside>
         <main className="main">
-            <h3>Visualize Imputation Performance Here!</h3>
+            <h2>Estimated imputation performance</h2>
             
             {this.props.features && this.props.groups && <ErrorFeatureList 
                     data={this.props.features} 

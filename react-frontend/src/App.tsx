@@ -11,6 +11,8 @@ import queryBackend from "./backend/BackendQueryEngine";
 import queryImputationError from "./backend/QueryImputationError";
 import axios from 'axios';
 
+
+
 interface AppState {
   features: FeatureInfo[] | null;
   groups: FeatureGroup[] | null;
@@ -78,7 +80,7 @@ class App extends React.Component<{}, AppState> {
     }
     this.setState({
       features: features,
-      groups: response.groups.map((g: FeatureGroup) => { return { ...g, imputation_method: "none" } }),
+      groups: response.groups.map((g: FeatureGroup) => { return { ...g, imputation_method:IMPUTATION_METHODS[0] } }),
       tsneData: response.tsneData
     })
     

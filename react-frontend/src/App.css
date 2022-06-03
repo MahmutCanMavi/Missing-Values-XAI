@@ -223,7 +223,9 @@
   border-bottom: 1px solid #919191;
   background-color: white;
 }
-
+.sidenav .group-row {
+  cursor: pointer;
+}
 .group-row.active {
   font-weight: bold;
 }

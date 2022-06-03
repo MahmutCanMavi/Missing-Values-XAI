@@ -93,7 +93,7 @@ class ErrorFeatureList extends React.Component<ErrorListProps, {}> {
                  }
                  else {
                     return <div key={group.id} className="group-row" onClick={()=>{}}>
-                    <div style={{ backgroundColor: groupcolor(group.id) }} className="group-colorbar"></div>
+                    {/* <div style={{ backgroundColor: groupcolor(group.id) }} className="group-colorbar"></div> */}
                     <div className='group-name'> {group.name} </div>
                     {/* <ErrorGradient featureInfos={groupdata} group={group} height={30}/> */}
                     <div className='group-features'>
@@ -102,7 +102,7 @@ class ErrorFeatureList extends React.Component<ErrorListProps, {}> {
                             return 1
                         }
                         else{
-                            return (a.imputation_error>b.imputation_error)?1:-1;
+                            return (a.imputation_error>b.imputation_error)?-1:1;
                         }
                     }
                         ).map((featureInfo,i)=>

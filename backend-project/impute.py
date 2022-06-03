@@ -1,6 +1,8 @@
 import numpy as np
 import pandas as pd
 import pathlib
+
+from sqlalchemy import null
 from pct_avail_pp import pct_avail_pp
 from math import sqrt
 import app
@@ -8,7 +10,7 @@ from sklearn.experimental import enable_iterative_imputer
 from sklearn.impute import KNNImputer, IterativeImputer
 from random import sample, seed
 
-class Imputation_Mehtod():
+class Imputation_Method():
     def __init__(self, features: list[str], need_ids : bool = False):
         self.features = features
         # keeping things consistent
@@ -43,12 +45,19 @@ class Imputation_Mehtod():
         for i in range(len(self.features)):
             error[self.features[i]] = 0
             for gone in to_be_nand[i]:
-                error[self.features[i]] += (imputed[self.features[i]].loc[gone] - float(data[self.features[i]].loc[gone])) ** 2
+                try :
+                    gonedata = float(data[self.features[i]].loc[gone])
+                    error[self.features[i]] += (imputed[self.features[i]].loc[gone] - gonedata) ** 2
+                except ValueError:
+                    print("is strynggg ",self.features[i],imputed[self.features[i]].loc[gone])
+                    error[self.features[i]] += np.NaN
+                    continue
+
             
             error[self.features[i]] = sqrt(error[self.features[i]] / len(to_be_nand[i])) / data[self.features[i]].mean()
         return error, imputed
                 
-class Forward_Fill(Imputation_Mehtod):
+class Forward_Fill(Imputation_Method):
     def __init__(self, features: list[str]):
         super().__init__(features, True)
         
@@ -60,7 +69,7 @@ class Forward_Fill(Imputation_Mehtod):
         print(out)
         return out, self.features
 
-class Value_Fill(Imputation_Mehtod):
+class Value_Fill(Imputation_Method):
     def __init__(self, features: list[str], value: int or float = 0):
         super().__init__(features)
         self.value = value
@@ -69,7 +78,7 @@ class Value_Fill(Imputation_Mehtod):
         self.check_features(data)
         return data[self.features].fillna(self.value), self.features
     
-class Mean_Fill(Imputation_Mehtod):
+class Mean_Fill(Imputation_Method):
     def __init__(self, features: list[str]):
         super().__init__(features)
         
@@ -80,7 +89,7 @@ class Mean_Fill(Imputation_Mehtod):
             data_filled[feature_name] = data[feature_name].fillna(data[feature_name].mean()).to_list()
         return pd.DataFrame(data_filled), self.features
         
-class KNN_Impute(Imputation_Mehtod):
+class KNN_Impute(Imputation_Method):
     def __init__(self, features: list[str]):
         super().__init__(features)
         self.imputer = KNNImputer()
@@ -92,7 +101,7 @@ class KNN_Impute(Imputation_Mehtod):
         imputed_data = self.imputer.fit_transform(data[self.imputable_features])
         return pd.DataFrame(imputed_data, columns = self.imputable_features), self.imputable_features
     
-class Iterative_Impute(Imputation_Mehtod):
+class Iterative_Impute(Imputation_Method):
     def __init__(self, features: list[str]):
         super().__init__(features)
         self.imputer = IterativeImputer(random_state=0)
@@ -111,7 +120,16 @@ class Iterative_Impute(Imputation_Mehtod):
 # Function to call from the outside
 def errors_e2e(features: list[str], method_name : str, method_parameters):
     # Error selector
-    if method_name == "value" : imputer = Value_Fill(features, method_parameters["value"])
+    if method_name == "value":
+        repValParam=[param for param in method_parameters if param["name"]=="replacementValue"]
+        if not method_parameters or len(repValParam)!=1:
+            repVal=0
+        elif type(repValParam[0]["value"])==str and not repValParam[0]["value"].isnumeric():
+            repVal=0
+        else:
+            repVal=float(repValParam[0]["value"])
+        imputer = Value_Fill(features,repVal) #
+
     elif method_name == "ffill" : imputer = Forward_Fill(features)
     elif method_name == "mean" : imputer = Mean_Fill(features)
     elif method_name == "knn" : imputer = KNN_Impute(features)
