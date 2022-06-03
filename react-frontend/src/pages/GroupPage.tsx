@@ -8,21 +8,22 @@ import { ImputationMenu } from "../components/ImputationMenu";
 import SelectPctAvailGradient from "../components/SelectPctAvailGradient";
 import { IMPUTATION_METHODS, FeatureInfo, FeatureGroup, ImputationMethod, tsneDataPoint } from "../types/feature_types";
 import ClusterMenu from "../components/ClusterMenu"
-function groupcolor(id: number | null) {
-    if (id == null) {
-        return "#fff";
-    }
-    else {
-        const colors = ["#07c4b2", "#6f5ed3", "#ce3665", "#ffcd1c", "#3896e3", "#db61db", "#929a9b", "#59cb59", "#fc8943", "#db3e3e"];
-        return colors[id % 10];
-    }
+
+import {groupcolor} from '../components/groupcolor'
+
+interface GrouGroupNameEditorProps {
+    group: FeatureGroup, 
+    N: number, 
+    onConfirmNewName: Function, 
+    onClickGroup: any, 
+    onRemoveGroup: any, 
+    isActive: boolean
 }
 
 
+class GroupNameEditorComponent extends React.Component<GrouGroupNameEditorProps, { text: string, isEditing: boolean }>{
 
-class GroupNameEditorComponent extends React.Component<{ group: FeatureGroup, N: number, onConfirmNewName: any, onClickGroup: any, onRemoveGroup: Function }, { text: string, isEditing: boolean }>{
-
-    constructor(props: any) {
+    constructor(props: GrouGroupNameEditorProps) {
         super(props);
         this.state = { text: this.props.group.name, isEditing: false };
         this.handleChange = this.handleChange.bind(this);
@@ -39,7 +40,7 @@ class GroupNameEditorComponent extends React.Component<{ group: FeatureGroup, N:
     render() { // Old Text: Which feature do you want to use? (adre_bol, adre_iv, PAPs, HR, CVPm, PVR, urine, Na, temp, pH, pO2)
         // console.log("name choice component rendered")    
         return (
-            <div className="group-row" onClick={this.props.onClickGroup}>
+            <div className={this.props.isActive?"group-row active":"group-row"} onClick={this.props.onClickGroup}>
                 <div style={{ backgroundColor: groupcolor(this.props.group.id) }} className="group-colorbar"></div>
 
 
@@ -285,6 +286,7 @@ class GroupPage extends React.Component<GroupPageProps, { activeGroupId: number 
                         (featureGroup, i) => <GroupNameEditorComponent
                             key={featureGroup.id}
                             group={featureGroup}
+                            isActive={featureGroup.id===this.state.activeGroupId}
                             // Number of members (features in the group)
                             N={this.props.features?.filter(feature => feature.group_id === featureGroup.id).length || 0}
                             onConfirmNewName={(newName: string) => this.changeGroupName(featureGroup.id, newName)}
@@ -304,17 +306,19 @@ class GroupPage extends React.Component<GroupPageProps, { activeGroupId: number 
                     {/* textarea to edit the groups object manually. Can be removed for deployment 
                     <JsonGroupEditor features={this.props.features} groups={this.props.groups}
                         setFeatures={this.props.setFeatures} setGroups={this.props.setGroups} />*/}
-                    <ClusterMenu/>
+                    {/* <ClusterMenu/> */}
                 </aside>
-                <main className="main maingrid">
-
-                    <div className="main-left">
-                        {/* If there is no active group, display only "Choose group" */}
-                        {this.props.groups && this.state.activeGroupId === null && 
+                <main className={(this.state.activeGroupId !== null)?"main maingrid":"main"}>
+                    {/* If there is no active group, display only "Choose group" */}
+                    {this.props.groups && this.state.activeGroupId === null && 
                             <div>
                                 <h3>Choose Group</h3>
                                 {"<--"} Click on a group to select it.
+                                {/* <ClusterViz tsnedata={this.props.tsnedata} /> */}
                             </div>}
+
+                    <div className="main-left">
+                        
 
                         {/* Center column: Show name and filters of active group */}
                         {this.props.groups && this.state.activeGroupId !== null &&
@@ -340,7 +344,7 @@ class GroupPage extends React.Component<GroupPageProps, { activeGroupId: number 
 
 
                         {/* Show list of member features of active group in the center column */}
-                        <div>
+                        <div className="feature-list">
                             {this.props.groups && this.props.features && this.state.activeGroupId !== null &&
                                 this.props.groups.filter(group => group.id === this.state.activeGroupId).length !== 0 &&
                                 // for each feature that is in the active group

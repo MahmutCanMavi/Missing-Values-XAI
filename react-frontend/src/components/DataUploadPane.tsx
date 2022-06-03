@@ -7,7 +7,7 @@ import axios from 'axios';
 import { isLabeledStatement } from "typescript";
 import { FeatureInfo } from "../types/feature_types";
 import { stratify } from "d3";
-
+import loading from "../../public/loading.gif"
 
 function delay(n:number){
     return new Promise(function(resolve){
@@ -98,7 +98,7 @@ class DataUploadPane extends React.Component<{features: string[], onChange: Func
             i= i+1;
         }
         if(result && result.data){
-            this.setState({isLoading: false, uploadError:null})
+            // this.setState({isLoading: false, uploadError:null})
         }
         else{
             this.setState({isLoading: false, uploadError:"Upload failed, try again"})
@@ -121,8 +121,8 @@ class DataUploadPane extends React.Component<{features: string[], onChange: Func
         // careful, the statement "data as FeatureInfo[]" does not actually check in runtime if it conforms to the interface
         // we have no guarantees, if we want to be sure, it might be easier to implement it server-side in pydantic
         const data = await this.uploadAndReceiveData(file); // as FeatureInfo[]
-        this.props.onChange(data);
-        
+        await this.props.onChange(data);
+        this.setState({isLoading: false, uploadError:null})
         
         }
 
@@ -145,7 +145,7 @@ class DataUploadPane extends React.Component<{features: string[], onChange: Func
                     {" " + this.props.features.join(', ')}
                 </label>
                 <br></br>
-                {this.state.isLoading && <span className="isLoading">Uploading...</span>}
+                {this.state.isLoading && <span className="isLoading"><img src="/loading.gif" width={20}></img>Uploading and Clustering...</span>}
                 {this.state.uploadError && <span className="uploadError">{this.state.uploadError}</span>}
             </div>
         )

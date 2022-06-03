@@ -5,6 +5,9 @@ import { FeatureInfo, FeatureGroup, ImputationMethod } from "../types/feature_ty
 import { ImputationMenu } from "../components/ImputationMenu";
 import ErrorFeatureList from "../components/ErrorFeatureList";
 
+
+
+
 interface ImputePageProps {
     features: FeatureInfo[] | null;
     groups: FeatureGroup[] | null;
@@ -13,12 +16,12 @@ interface ImputePageProps {
     setFeatures: Function;
 }
 
-class ImputePage extends React.Component<ImputePageProps,{loading:boolean}> {
+class ImputePage extends React.Component<ImputePageProps,{loading:boolean,appError:string}> {
     constructor(props: ImputePageProps) {
         super(props);
         this.changeGroupAttribute = this.changeGroupAttribute.bind(this);
         this.handleImputation = this.handleImputation.bind(this);
-        this.state= {loading:false};
+        this.state= {loading:false,appError:""};
     }
 
     changeGroupAttribute(group_id: number | null, attribute_name: string, new_value: any) {
@@ -44,7 +47,7 @@ class ImputePage extends React.Component<ImputePageProps,{loading:boolean}> {
         }
     }
 
-    handleImputation() {
+    async handleImputation() {
         
         // Example of how to prepare the data to send it to the backend
         // if (this.props.features && this.props.groups){
@@ -57,8 +60,15 @@ class ImputePage extends React.Component<ImputePageProps,{loading:boolean}> {
         //     console.log("cannot impute, props are null")
         // }
         this.setState({loading:true})
-        const done=this.props.handleImputationScore();
+        try{
+        const done= await this.props.handleImputationScore();
         
+        if (!done){
+            this.setState({loading:false,appError:"Error: imputation failed"})
+        }}
+        catch {
+            this.setState({loading:false,appError:"Error: imputation failed"})
+        }
         this.setState({loading:false})
         
         
@@ -66,12 +76,13 @@ class ImputePage extends React.Component<ImputePageProps,{loading:boolean}> {
 
     render(){
         return <>
-        <aside className="sidenav">
+        <aside className="sidenav with-padding">
             {this.props.groups && <ImputationMenu groups={this.props.groups} 
                 updateGroupOnChange={(group_id: number, imputation_method: ImputationMethod) => 
                     this.changeGroupAttribute(group_id, "imputation_method", imputation_method)}/>}
-            {this.state.loading===false && <button className="FullWidthButton" onClick={this.handleImputation}>Impute!</button>}
-            {this.state.loading===true && <h3>Imputing... please wait</h3>}
+            <button className="FullWidthButton" disabled={this.state.loading===false?undefined:true} onClick={this.handleImputation}>Impute!</button>
+            {this.state.loading===true && <h3><img src="/loading.gif" width={20}></img>Imputing... please wait</h3>}
+            {this.state.appError && <span className="uploadError">{this.state.appError}</span>}
         </aside>
         <main className="main">
             <h3>Visualize Imputation Performance Here!</h3>

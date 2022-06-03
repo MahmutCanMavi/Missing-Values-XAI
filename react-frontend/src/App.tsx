@@ -44,13 +44,16 @@ class App extends React.Component<{}, AppState> {
   async handleDataUpload(features: FeatureInfo[] | null){
     
     if (features) {
-      this.setState({features: features})
-      this.getClusterData();
+      this.setState({features: features, groups:null})
+      const response = await this.getClusterData();
+      return response
       } else {      console.log("don't have any data!");
     }
+    
   }
   async getClusterData() {
     // example for receiving cluster data without slowing down upload. 
+    
     let response = await queryBackend("get-clusters?transformation_method=2") as any
     // data: response.featureInfos,
     // update/left-join features with the new group id
@@ -122,7 +125,7 @@ class App extends React.Component<{}, AppState> {
   }
 
   render() {
-    console.log("app rendered")
+    // console.log("app rendered")
     return (
       <div className="App">
       <div className="grid-container">

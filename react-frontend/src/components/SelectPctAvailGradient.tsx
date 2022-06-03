@@ -31,7 +31,7 @@ class SelectPctAvailGradient extends React.Component<SingleBar,{}> {
     }
 
     onSelectFeature(){
-        console.log(this.featureInfo);
+        // console.log(this.featureInfo);
         this.props.onSelectFeature(this.featureInfo);
     }
 
@@ -56,7 +56,7 @@ class SelectPctAvailGradient extends React.Component<SingleBar,{}> {
         const string_height = String(this.height)
         const clearStyle = { height: 20, bottom: 5, }
         
-        return (<div className="pctAvailGradient" style={{height: string_height+"px"}} onClick={this.onSelectFeature.bind(this)}  > {/* containing div with css class for styling */}
+        return (<div className="pctAvailGradient selectable" style={{height: string_height+"px"}} onClick={this.onSelectFeature.bind(this)}  > {/* containing div with css class for styling */}
             <svg className='gradient'  viewBox={"0 0 " + data.length + " 10"} preserveAspectRatio="none">${
                 data.map((val, idx, arr) => (<rect x={idx} key={idx} width="2" height="10" fill={color(val)}></rect> 
                 

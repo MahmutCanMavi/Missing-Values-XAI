@@ -39,8 +39,6 @@ class StackedGradients extends React.Component<Gradients, {}> {
         
        
         return (<>
-            <div className="gradientLegend"><svg height={40}><rect height={30} width={30} fill="black"></rect><text height={130} width={130} x={40} y={20}>100% Missing</text>
-                   <rect height={30} width={30} x={150} fill="white"></rect><text height={130} width={130} x={190} y={20}>100% Available</text></svg></div>
             <div className='gradients'>
                 {featureInfosSorted.map((featureInfo,i)=>
 

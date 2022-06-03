@@ -40,10 +40,26 @@ class VizPage extends React.Component<VizPageProps,VizState> {
              feature_names.push("...");
          }
         return (<>
-            <aside className="sidenav">  
-                {this.props.data && <StackedGradients 
+            <aside className="sidenav with-padding">  
+            <div className="gradientLegend"><svg height={40}><rect height={30} width={30} fill="black"></rect><text height={130} width={130} x={40} y={20}>100% Missing</text>
+                   <rect height={30} width={30} x={150} fill="white"></rect><text height={130} width={130} x={190} y={20}>100% Available</text></svg></div>
+            
+                {this.props.data && this.props.groups===null &&  <StackedGradients 
                     data={this.props.data} 
                     onSelectFeature={this.setSelectedFeature.bind(this)}/>}
+                
+                {this.props.data && this.props.groups && this.props.groups.map( (group) =>{
+                    
+                    return <div key={group.id}>
+                      <h4>{group.name}</h4>
+                      {this.props.data && <StackedGradients 
+                          data={this.props.data.filter(f=>f.group_id===group.id)}  
+                          onSelectFeature={this.setSelectedFeature.bind(this)}/>}
+
+                    </div>
+                })
+
+                }
             </aside>
 
             <main className="main">   
