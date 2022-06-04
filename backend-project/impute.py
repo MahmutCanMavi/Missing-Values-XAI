@@ -47,6 +47,7 @@ class Imputation_Method():
             for gone in to_be_nand[i]:
                 try :
                     gonedata = float(data[self.features[i]].loc[gone])
+                    print()
                     error[self.features[i]] += (imputed[self.features[i]].loc[gone] - gonedata) ** 2
                 except ValueError:
                     print("is strynggg ",self.features[i],imputed[self.features[i]].loc[gone])

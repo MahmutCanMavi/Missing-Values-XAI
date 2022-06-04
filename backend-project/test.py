@@ -5,7 +5,7 @@ imp_method_ffill = {"name": "ffill", "parameters": None}
 imp_method_mean = {"name": "mean", "parameters": None}
 imp_method_value = {"name": "value", "parameters": val_fill_params}
 
-featureInfos = [{"group_id": 1, "feature_name" : "mvent"}, {"group_id": 1, "feature_name" : "surgery"}, {"group_id": 2, "feature_name" : "Na"}]
+featureInfos = [{"group_id": 1, "feature_name" : "cancer"}, {"group_id": 1, "feature_name" : "surgery"}, {"group_id": 2, "feature_name" : "Na"}]
 groups = [{"id": 1, "imputation_method":imp_method_ffill}, {"id": 2, "imputation_method":imp_method_ffill}]
 
 d = {"featureInfos": featureInfos, "groups": groups}

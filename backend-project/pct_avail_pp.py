@@ -2,6 +2,7 @@ import json
 import pathlib
 import pandas as pd
 import os
+import app
 
 DATA_PATH = os.getcwd() + "/data/tmp/data.csv"
 
@@ -188,6 +189,7 @@ def pct_avail_known_groups(data, cluster_groups):
     
     feature_list = []
     for col in data.columns:
+        if col in app.UNTOUCHABLE: continue
         # The data format is dictionary -> dictionary -> string(feature name) + list(pct_avail_pp)
         # The feature name is also the key to access the value in the dictionary for the values
         feature_dict = {}
