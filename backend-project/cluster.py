@@ -32,7 +32,7 @@ def get_data():
     except:
         # Hardcoded datapath
         thisfile= str(pathlib.Path(__file__).parent.absolute())
-        path = thisfile+"/data/icu_data_with_na_v2.csv"
+        path = thisfile+"/data/new_data_filled_legacy.csv"
         data = pd.read_csv(path)
     return data
 
@@ -361,7 +361,7 @@ if __name__ == '__main__':
     except:
         # Hardcoded datapath
         thisfile= str(pathlib.Path(__file__).parent.absolute())
-        path = thisfile+"/data/icu_data_with_na_v2.csv"
+        path = thisfile+"/data/new_data_filled_legacy.csv"
         data = pd.read_csv(path)
         
     print(auto_cluster_pipeline())

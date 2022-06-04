@@ -147,7 +147,7 @@ def get_imputation(inputs: dict):
         if not imputation_method or imputation_method=="none" or imputation_method["name"]=="None":
             # print("Warning: no imputation method for : ",groups[featureInfo["group_id"]]["name"])
             continue
-        print(imputation_method)
+        # print(imputation_method)
         # for group in inputs['groups']:
         #     print(group)
         #     # Throw error to frontend
@@ -166,9 +166,9 @@ def get_imputation(inputs: dict):
         outfeatureInfos.extend(error)
         
         data[featureInfo["feature_name"]] = imputation
+        print(data[featureInfo["feature_name"]].isna().sum())
         
     
-    print(outfeatureInfos)
     # Store imputed data to disk
     dest_path = os.getcwd() + "/data/tmp/imputed_data.csv"
     data.to_csv(dest_path)

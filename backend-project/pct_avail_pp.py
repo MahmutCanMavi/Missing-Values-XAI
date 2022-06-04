@@ -23,7 +23,7 @@ def pct_avail_clusters(n_clusters: int) -> list:
     except:
         # Hardcoded datapath
         thisfile= str(pathlib.Path(__file__).parent.absolute())
-        path = thisfile+"/data/icu_data_with_na_v2.csv"
+        path = thisfile+"/data/new_data_filled_legacy.csv"
         data = pd.read_csv(path)
     
     # Code to add data explanations, if requested
@@ -54,7 +54,7 @@ def pct_avail_pp(feature_name: str) -> dict:
     except:
         # Hardcoded datapath
         thisfile= str(pathlib.Path(__file__).parent.absolute())
-        path = thisfile+"/data/icu_data_with_na_v2.csv"
+        path = thisfile+"/data/new_data_filled_legacy.csv"
         data = pd.read_csv(path)
     # data_explanations = json.load(open(thisfile + "/data/explanations.json"))
     
@@ -137,7 +137,7 @@ def pct_avail_all(data_explanations = None, n_clusters = 4):
         # Hardcoded datapath
         print("uploaded file not found")
         thisfile= str(pathlib.Path(__file__).parent.absolute())
-        path = thisfile+"/data/icu_data_with_na_v2.csv"
+        path = thisfile+"/data/new_data_filled_legacy.csv"
         df = pd.read_csv(path)
     
     # Gets individual NaNs from the dataset per patient
