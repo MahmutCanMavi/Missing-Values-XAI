@@ -84,7 +84,7 @@ class ErrorFeatureList extends React.Component<ErrorListProps, {}> {
        
         return (<>
                 <h3>Overall loss score avg: {arrayAverage(this.props.data.filter(f=>f.imputation_error!==null).map(f=>f.imputation_error)).toFixed(3)}</h3>
-             <div className='imputation-gradients'>
+             <div className='imp-err-wrapper'>
              {this.props.groups.map( (group) =>{
                     
                  const groupdata = this.props.data.filter(f => f.group_id === group.id);

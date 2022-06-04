@@ -90,9 +90,9 @@ class Mean_Fill(Imputation_Method):
         return pd.DataFrame(data_filled), self.features
         
 class KNN_Impute(Imputation_Method):
-    def __init__(self, features: list[str]):
+    def __init__(self, features: list[str], K:int):
         super().__init__(features)
-        self.imputer = KNNImputer()
+        self.imputer = KNNImputer(n_neighbors=K)
         
     def impute(self, data: pd.DataFrame):
         self.check_features(data)
@@ -121,18 +121,37 @@ class Iterative_Impute(Imputation_Method):
 def errors_e2e(features: list[str], method_name : str, method_parameters):
     # Error selector
     if method_name == "value":
-        repValParam=[param for param in method_parameters if param["name"]=="replacementValue"]
-        if not method_parameters or len(repValParam)!=1:
-            repVal=0
-        elif type(repValParam[0]["value"])==str and not repValParam[0]["value"].isnumeric():
-            repVal=0
+        # Check Parameters
+        # method_parameters is an array. filter out "replacementValue"
+        repValParam=method_parameters["replacementValue"]
+
+        # check if the replacementValue is numeric.
+        if type(repValParam["value"])==str:
+            try:
+                repVal=float(repValParam["value"])
+            except ValueError:
+                repVal=0
+                print("Warning: replacementValue not a number:", repValParam["value"])
         else:
-            repVal=float(repValParam[0]["value"])
-        imputer = Value_Fill(features,repVal) #
+            repVal=float(repValParam["value"])
+        imputer = Value_Fill(features,repVal) 
 
     elif method_name == "ffill" : imputer = Forward_Fill(features)
     elif method_name == "mean" : imputer = Mean_Fill(features)
-    elif method_name == "knn" : imputer = KNN_Impute(features)
+    elif method_name == "knn" : 
+        # Check Parameters
+        # method_parameters is an array. filter out "replacementValue"
+        K_param=method_parameters["K"]
+        # check if the replacementValue is numeric in case its a string.
+        if type(K_param["value"])==str and not K_param["value"].isnumeric():
+            K=5
+            print("Warning: K not a positive int:", K_param["value"])
+        elif int(K_param["value"])<1:
+            K=5
+            print("Warning: K too small:", K_param["value"], "using default K=5")
+        else:
+            K=int(K_param["value"])
+        imputer = KNN_Impute(features,K)
     elif method_name == "iterative": imputer = Iterative_Impute(features)
     elif method_name == "None": return None
     else:

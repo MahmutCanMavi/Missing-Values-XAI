@@ -76,7 +76,7 @@ class ImputePage extends React.Component<ImputePageProps,{loading:boolean,appErr
 
     render(){
         return <>
-        <aside className="sidenav with-padding">
+        <aside className="sidenav">
             {this.props.groups && <ImputationMenu groups={this.props.groups} 
                 updateGroupOnChange={(group_id: number, imputation_method: ImputationMethod) => 
                     this.changeGroupAttribute(group_id, "imputation_method", imputation_method)}/>}
@@ -85,7 +85,7 @@ class ImputePage extends React.Component<ImputePageProps,{loading:boolean,appErr
             {this.state.appError && <span className="uploadError">{this.state.appError}</span>}
         </aside>
         <main className="main">
-            <h2>Estimated imputation performance</h2>
+            <h2>Estimated imputation performance </h2>
             
             {this.props.features && this.props.groups && <ErrorFeatureList 
                     data={this.props.features} 

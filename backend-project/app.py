@@ -145,7 +145,7 @@ def get_imputation(inputs: dict):
             print("Error: invalid group_id.",featureInfo,groups)
         imputation_method= groups[featureInfo["group_id"]]["imputation_method"]
         if not imputation_method or imputation_method=="none" or imputation_method["name"]=="None":
-            print("Warning: no imputation method for : ",groups[featureInfo["group_id"]]["name"])
+            # print("Warning: no imputation method for : ",groups[featureInfo["group_id"]]["name"])
             continue
         print(imputation_method)
         # for group in inputs['groups']:
@@ -157,9 +157,12 @@ def get_imputation(inputs: dict):
         #         return Response("Imputation method " + str(group["imputation_method"]) + " is not one of the supported imputation methods", status_code = 500)
         #     if group["id"] == featureInfo["group_id"]:
         #         method = group["imputation_method"]["name"]
-    
-        
-        error, imputation = impute.errors_e2e([featureInfo["feature_name"]], imputation_method["name"],imputation_method["parameters"])
+        parameters={}
+        if imputation_method["parameters"]:
+            for p in imputation_method["parameters"]:
+                parameters[p["name"]]=p
+                
+        error, imputation = impute.errors_e2e([featureInfo["feature_name"]], imputation_method["name"],parameters)
         outfeatureInfos.extend(error)
         
         data[featureInfo["feature_name"]] = imputation

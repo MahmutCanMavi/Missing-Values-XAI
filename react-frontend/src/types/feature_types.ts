@@ -1,6 +1,7 @@
 export interface Parameter {
     mode: "int" | "float" | "string";
     name: string; // name of the parameter, for example "Fill Value"
+   
     description: string; // explain the meaning of the parameter, for example "Choose value for filling in missing data points"
     value: number; // value of the parameter to fill
 }
@@ -8,16 +9,17 @@ export interface Parameter {
 export interface ImputationMethod {
     name: string;
     parameters: Parameter[] | null;
+    display_name: string;
 }
 
 // "value", "ffill", "mean", "knn", "iterative"
 export const IMPUTATION_METHODS: ImputationMethod[] = 
-    [{name: "None", parameters: null},
-     {name: "value", parameters:[{mode:"float",name:"replacementValue", description:"Choose value for filling in missing data points", value:0}]},
-     {name: "ffill", parameters: null},
-     {name: "mean", parameters: null},
-     {name: "knn", parameters: null},
-     {name: "iterative", parameters: null}
+    [{name: "None", display_name:"Do nothing", parameters: null},
+     {name: "value",display_name:"Fill by constant", parameters:[{mode:"float",name:"replacementValue", description:"Choose value for filling in missing data points. Only numbers allowed, strings will be replaced with 0", value:0}]},
+     {name: "ffill",display_name:"Forward fill", parameters: null},
+     {name: "mean",display_name:"Mean", parameters: null},
+     {name: "knn", display_name:"K-nearest-neighbours",parameters: [{mode:"int",name:"K", description:"Choose K, number of nearest neighbours to consider", value:0}]},
+     {name: "iterative", display_name:"Iterative", parameters: null}
     ];
 
 export interface PctAvail {
