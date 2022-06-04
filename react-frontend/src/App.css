@@ -292,6 +292,21 @@ ul.feature-list > li {
 .imp-err-wrapper .group-row:hover {
   background-color: white;
 } 
+.imp-error-legend{
+  display: flex;
+  align-items: center;
+  justify-content: start;
+}
+.imp-error-legend div{
+  flex-shrink: 0;
+  margin: 10px;
+}
+.imp-error-legend .colorsquare{
+  width: 30px;
+  height: 30px;
+  
+}
+
 
 .gradient-group-title {
   display: flex;

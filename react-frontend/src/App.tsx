@@ -69,7 +69,7 @@ class App extends React.Component<{}, AppState> {
           g_id = f_in_response[0].group_id;
         }
         else {
-          Error("feature '" + f_state.feature_name + "' not found in response")
+          console.log("feature '" + f_state.feature_name + "' not found in response")
         }
         
         return { ...f_state, group_id: g_id }
@@ -98,14 +98,24 @@ class App extends React.Component<{}, AppState> {
     if (this.state.features) {
       featureInfos = this.state.features.map((f_state: FeatureInfo) => {
         const f_in_response = result.filter((f_response: FeatureInfo) => f_response.feature_name === f_state.feature_name) as FeatureInfo[];
-        let imputation_error = null;
+        let new_feature=null;
+        // If the f_state is in response
         if (f_in_response.length === 1) {
-          imputation_error = f_in_response[0].imputation_error;
+
+          const imputation_error = f_in_response[0].imputation_error;
+          // add imputation error to that feature (but keep the other attributes from before)
+          new_feature={ ...f_state, imputation_error: imputation_error }
+          
+          // if it is a string type feature, add a new attribute is_string
+          if (f_in_response[0].is_string){
+            new_feature={...new_feature,is_string:true}
+          }
         }
         else {
-          Error("feature '" + f_state.feature_name + "' not found in response")
+          // if the feature is not in the response, use the old one
+          new_feature=f_state;
         }
-        return { ...f_state, imputation_error: imputation_error }
+        return new_feature
       })
     }
     else {

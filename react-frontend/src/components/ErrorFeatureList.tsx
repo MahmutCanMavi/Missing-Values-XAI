@@ -107,7 +107,11 @@ class ErrorFeatureList extends React.Component<ErrorListProps, {}> {
                     }
                         ).map((featureInfo,i)=>
 
-                    <div key={featureInfo.feature_name} className="feature-imp-error"> <span className='imp-error-colorbox' style={{backgroundColor:imputationColor(featureInfo.imputation_error)}}></span> {featureInfo.feature_name} : {featureInfo.imputation_error?.toFixed(2)}  </div>           
+                    <div key={featureInfo.feature_name} className="feature-imp-error"> 
+                        <span className='imp-error-colorbox' style={{backgroundColor:imputationColor(featureInfo.imputation_error)}}></span> 
+                        {featureInfo.feature_name} : {featureInfo.imputation_error?.toFixed(2)} 
+                        <div className='is-string-box'>{featureInfo.is_string && <>String</>}</div> 
+                    </div>           
                     
                     )}
 </div>

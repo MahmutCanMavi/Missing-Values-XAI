@@ -4,6 +4,7 @@ import  { D3DetailSquaresPatient } from "../components/d3detailSquares";
 import { FeatureInfo, FeatureGroup, ImputationMethod } from "../types/feature_types";
 import { ImputationMenu } from "../components/ImputationMenu";
 import ErrorFeatureList from "../components/ErrorFeatureList";
+import Icons from "../components/icons";
 
 
 
@@ -34,7 +35,7 @@ class ImputePage extends React.Component<ImputePageProps,{loading:boolean,appErr
 
             // check if attribute exists, if yes set its new value
             if (Object.keys(this.props.groups[0]).includes(attribute_name)) {
-                console.log("got here!");
+                // console.log("got here!");
                 (newGroups.filter(group => group.id === group_id)[0])[
                     attribute_name as "imputation_method" | "name"] = new_value;
             } else {
@@ -67,8 +68,9 @@ class ImputePage extends React.Component<ImputePageProps,{loading:boolean,appErr
         if (!done){
             this.setState({loading:false,appError:"Error: imputation failed"})
         }}
-        catch {
+        catch(err) {
             this.setState({loading:false,appError:"Error: imputation failed"})
+            throw err
         }
         this.setState({loading:false})
     }
@@ -115,12 +117,26 @@ class ImputePage extends React.Component<ImputePageProps,{loading:boolean,appErr
             {this.state.appError && <span className="uploadError">{this.state.appError}</span>}
         </aside>
         <main className="main">
-            <div>
-            <button onClick={this.handleDownload}>download imputed scores</button>
-            </div>
+           
             <h2>Estimated imputation performance </h2>
-            Imputation error is calculated as follows: take 10% of the avilable data, remove them with NaNs, impute using chosen imputation method, calculate the L2 loss for each imputed value
+            <div className="infobox">
+            The imputation score is calculated as follows: 10% of the avilable data is removed and then imputed using the chosen imputation method. To compare these imputations with the baseline, we chose the following formula, a root-mean-squared-error divided by the absolute of the mean: 
+            {/*Latex formula, https://latexeditor.lagrida.com/.  \sqrt{\frac{\sum^{N_{10\%}}_{i=1}(\bar{y_i}-y_i)^2}{N_{10\%}}} \cdot\frac{1}{\text{abs(mean(y))}}  */}
+            <img src="/imputation-score-formula.png" height={60}></img>
+            </div>
+            <div className="imp-error-legend">
+                <div className="colorsquare" style={{backgroundColor:"#006837"}}></div>
+                <div >Perfect imputation</div>
+                <div>{/*spacer*/} </div>
+                <div className="colorsquare" style={{backgroundColor:"#a50026"}}></div>
+                <div >Very imprecise imputation</div>
+            </div>
             
+            {this.props.features && this.props.features.filter(f=> f.imputation_error!==null).length!==0  &&
+            <div>   
+            <button onClick={this.handleDownload}><Icons icon="cloud-download"/>  download imputed dataset</button>
+            </div>
+            }
             {this.props.features && this.props.groups && <ErrorFeatureList 
                     data={this.props.features} 
                     groups={this.props.groups}

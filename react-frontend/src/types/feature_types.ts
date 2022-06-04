@@ -1,5 +1,5 @@
 export interface Parameter {
-    mode: "int" | "float" | "string";
+   
     name: string; // name of the parameter, for example "Fill Value"
    
     description: string; // explain the meaning of the parameter, for example "Choose value for filling in missing data points"
@@ -15,10 +15,10 @@ export interface ImputationMethod {
 // "value", "ffill", "mean", "knn", "iterative"
 export const IMPUTATION_METHODS: ImputationMethod[] = 
     [{name: "None", display_name:"Do nothing", parameters: null},
-     {name: "value",display_name:"Fill by constant", parameters:[{mode:"float",name:"replacementValue", description:"Choose value for filling in missing data points. Only numbers allowed, strings will be replaced with 0", value:0}]},
+     {name: "value",display_name:"Fill by constant", parameters:[{name:"replacementValue", description:"Choose value for filling in missing data points. Only numbers allowed, strings will be replaced with 0", value:0}]},
      {name: "ffill",display_name:"Forward fill", parameters: null},
      {name: "mean",display_name:"Mean", parameters: null},
-     {name: "knn", display_name:"K-nearest-neighbours",parameters: [{mode:"int",name:"K", description:"Choose K, number of nearest neighbours to consider", value:0}]},
+     {name: "knn", display_name:"K-nearest-neighbours",parameters: [{name:"K", description:"Choose K, number of nearest neighbours to consider", value:0}]},
      {name: "iterative", display_name:"Iterative", parameters: null}
     ];
 
@@ -33,6 +33,7 @@ export interface FeatureInfo {
     description: string | null; // description the meaning of the variable
     imputation_error: number | null;
     group_id: number | null;
+    is_string?:boolean;
 }
 
 export interface FeatureGroup {

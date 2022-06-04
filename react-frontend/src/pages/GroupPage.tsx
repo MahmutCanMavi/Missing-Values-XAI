@@ -300,8 +300,10 @@ class GroupPage extends React.Component<GroupPageProps, { activeGroupId: number 
                     <br></br>
 
                     {/* Visualize the Group Structure -- how good is the choice of groups? */}
+                    <div className="infobox">
+                    By clustering features into different groups according to their missing value patterns, we can choose different imputation method suitable for different missing value patterns.
+                    </div>
                     <br></br>
-                    By clustering features into different groups according to their missing patterns, we can choose different imputation method suitable for different missing patterns.
                     <ClusterViz tsnedata={this.props.tsnedata}/>
                     {/* textarea to edit the groups object manually. Can be removed for deployment 
                     <JsonGroupEditor features={this.props.features} groups={this.props.groups}
@@ -313,7 +315,7 @@ class GroupPage extends React.Component<GroupPageProps, { activeGroupId: number 
                     {this.props.groups && this.state.activeGroupId === null && 
                             <div>
                                 <h3>Choose Group</h3>
-                                {"<--"} Click on a group to select it.
+                                {"<--"} Click on a group to choose its features.
                                 {/* <ClusterViz tsnedata={this.props.tsnedata} /> */}
                             </div>}
 

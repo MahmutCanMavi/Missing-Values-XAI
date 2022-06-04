@@ -80,7 +80,6 @@ class ImputationOptions extends React.Component<{feature_group: FeatureGroup, on
 
           {this.props.feature_group.imputation_method.parameters?.map(p=>{
             // shows why selection does not work
-            console.log(JSON.stringify(this.props.feature_group.imputation_method),JSON.stringify(IMPUTATION_METHODS[1]))
             return <div className='imp-parameter'><label title={p.description}>{p.name}: </label><input type="text" name={p.name} defaultValue={p.value} size={1}
             onChange={(e)=>this.handleChangeParameter(e,p)}/>
             </div>
