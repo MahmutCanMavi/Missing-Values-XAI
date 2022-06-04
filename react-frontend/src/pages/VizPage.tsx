@@ -2,6 +2,7 @@ import React from "react";
 import D3DetailSquares, { D3DetailSquaresPatient } from "../components/d3detailSquares";
 import D3Histogram from "../components/d3histogram";
 import DataUploadPane from "../components/DataUploadPane";
+import { groupcolor } from "../components/groupcolor";
 import StackedGradients from "../components/StackedGradients";
 import { FeatureInfo, FeatureGroup } from "../types/feature_types";
 
@@ -51,7 +52,7 @@ class VizPage extends React.Component<VizPageProps,VizState> {
                 {this.props.data && this.props.groups && this.props.groups.map( (group) =>{
                     
                     return <div key={group.id}>
-                      <h4>{group.name}</h4>
+                      <div className="gradient-group-title"><div className="group-colorbar" style={{ backgroundColor: groupcolor(group.id) }}></div><h4>{group.name}</h4></div>
                       {this.props.data && <StackedGradients 
                           data={this.props.data.filter(f=>f.group_id===group.id)}  
                           onSelectFeature={this.setSelectedFeature.bind(this)}/>}

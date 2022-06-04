@@ -292,10 +292,22 @@ ul.feature-list > li {
 .imp-err-wrapper .group-row:hover {
   background-color: white;
 } 
-.visualize-page .group-colorbar {
-  width: 100%;
-  height: 8px;
+
+.gradient-group-title {
+  display: flex;
+  background-color: white;
+  cursor: default;
+  margin-top:20px;
+  align-items: center;
 }
+.gradient-group-title .group-colorbar {
+  margin-right: 20px;
+}
+.gradient-group-title h4 {
+  margin: 0;
+}
+
+
 .imp-err-wrapper .group-name {
   padding: 5px;
   font-weight: bold;
