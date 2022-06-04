@@ -67,6 +67,7 @@ class ImputePage extends React.Component<ImputePageProps,{loading:boolean,appErr
         
         if (!done){
             this.setState({loading:false,appError:"Error: imputation failed"})
+            console.log(done)
         }}
         catch(err) {
             this.setState({loading:false,appError:"Error: imputation failed"})
@@ -122,14 +123,17 @@ class ImputePage extends React.Component<ImputePageProps,{loading:boolean,appErr
             <div className="infobox">
             The imputation score is calculated as follows: 10% of the avilable data is removed and then imputed using the chosen imputation method. To compare these imputations with the baseline, we chose the following formula, a root-mean-squared-error divided by the absolute of the mean: 
             {/*Latex formula, https://latexeditor.lagrida.com/.  \sqrt{\frac{\sum^{N_{10\%}}_{i=1}(\bar{y_i}-y_i)^2}{N_{10\%}}} \cdot\frac{1}{\text{abs(mean(y))}}  */}
-            <img src="/imputation-score-formula.png" height={60}></img>
-            </div>
+            <br></br><img alt="formula:  \sqrt{\frac{\sum^{N_{10\%}}_{i=1}(\bar{y_i}-y_i)^2}{N_{10\%}}} \cdot\frac{1}{\text{abs(mean(y))}} " src="/imputation-score-formula.png" height={60}></img>
+            <br/> 
+                        </div>
+            <p>Legend:</p>
             <div className="imp-error-legend">
                 <div className="colorsquare" style={{backgroundColor:"#006837"}}></div>
                 <div >Perfect imputation</div>
                 <div>{/*spacer*/} </div>
                 <div className="colorsquare" style={{backgroundColor:"#a50026"}}></div>
                 <div >Very imprecise imputation</div>
+                <div className="is-string-box">S</div> feature contains string values*
             </div>
             
             {this.props.features && this.props.features.filter(f=> f.imputation_error!==null).length!==0  &&
@@ -141,6 +145,10 @@ class ImputePage extends React.Component<ImputePageProps,{loading:boolean,appErr
                     data={this.props.features} 
                     groups={this.props.groups}
                     />}
+            <p>* Features with string values or categorical values are always imputed with forward fill</p>
+            <p>Important note: This measure of imputation score is not applicable to features where a missing value actually means it is zero. This is the case for example for dosages of drugs: if a value is present, it means that in that timestep the drug was given to the patient. If it is missing, it simply means that this drug was not given in that timestep.  
+            These features can be grouped together manually and the missing values can be filled with zeros, but choosing these features needs domain-specific knowledge.
+            </p>
         </main>
         
         </>

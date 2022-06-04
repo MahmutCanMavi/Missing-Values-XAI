@@ -276,7 +276,8 @@ ul.feature-list > li {
   height: 20px;
   background-color: red;
   position: relative;
-  top:5px
+  top:5px;
+  margin-right: 5px;
 }
 
 .imp-err-wrapper{
@@ -306,13 +307,20 @@ ul.feature-list > li {
   height: 30px;
   
 }
-
+.is-string-box{
+  background:#444;
+  color: white;
+  border-radius: 2px;
+  padding: 1px 4px;
+  margin-left: 5px;
+}
 
 .gradient-group-title {
   display: flex;
   background-color: white;
   cursor: default;
   margin-top:20px;
+  margin-bottom: 3px;
   align-items: center;
 }
 .gradient-group-title .group-colorbar {

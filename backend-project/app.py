@@ -140,7 +140,7 @@ def get_imputation(inputs: dict):
         if featureInfo["group_id"]==None:
             continue
         
-        method = "value"
+        method = "value" 
         if featureInfo["group_id"] not in groups:
             print("Error: invalid group_id.",featureInfo,groups)
         imputation_method= groups[featureInfo["group_id"]]["imputation_method"]

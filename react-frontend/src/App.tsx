@@ -87,7 +87,7 @@ class App extends React.Component<{}, AppState> {
 
 
 
-  }
+  } 
 
   async handleImputationScore(){
     console.log("get imputation and score")
@@ -113,7 +113,7 @@ class App extends React.Component<{}, AppState> {
         }
         else {
           // if the feature is not in the response, use the old one
-          new_feature=f_state;
+          new_feature={ ...f_state, imputation_error: null };
         }
         return new_feature
       })

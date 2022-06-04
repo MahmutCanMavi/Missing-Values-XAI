@@ -55,6 +55,8 @@ class Imputation_Method():
 
             
             error[self.features[i]] = sqrt(error[self.features[i]] / len(to_be_nand[i])) / abs(data[self.features[i]].mean())
+            # alternative measure with standard deviation
+            # error[self.features[i]] = sqrt(error[self.features[i]] / len(to_be_nand[i])) / sqrt(data[self.features[i]].var()+0.0001)
         return error, imputed
                 
 class Forward_Fill(Imputation_Method):
