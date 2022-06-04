@@ -1,3 +1,4 @@
+from http.client import UNAUTHORIZED
 from fastapi import FastAPI, UploadFile, File, HTTPException, Response
 from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -23,7 +24,9 @@ from json import JSONEncoder, dumps, dump
 import numpy as np
 
 global DATA_PATH
+global UNTOUCHABLE
 DATA_PATH = os.getcwd() + "/data/tmp/data.csv"
+UNTOUCHABLE = ["id", "time"]
 
 # error for serialization
 class NpEncoder(JSONEncoder):
@@ -106,6 +109,12 @@ async def receive_data(file: UploadFile):
             FeatureInfoList(**clusterinfo)
         except ValidationError as e:
             print("Validation error",e.json()[0:500])
+        
+        # Guaranteeing that data is as expected
+        """from Talu- idk idf this works with async"""
+        # data = pd.read_csv(DATA_PATH)
+        # for feature in UNTOUCHABLE:
+        #     if data[feature].isna().sum() > 0: return Response("Imputation method " + str(group["imputation_method"]) + " is not one of the supported imputation methods", status_code = 500)
 
         return dumps(clusterinfo, cls = NpEncoder)
     
@@ -138,6 +147,8 @@ def get_imputation(inputs: dict):
         if "group_id" not in featureInfo:
             print("Has no group_id attribute",featureInfo)
         if featureInfo["group_id"]==None:
+            continue
+        if featureInfo["feature_name"] in UNTOUCHABLE:
             continue
         
         method = "value"

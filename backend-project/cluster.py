@@ -160,6 +160,7 @@ def auto_cluster_pipeline(transformation_method = 1):
     
     groups_dict, tsne_list = {}, []
     for i in range(len(data.columns)):
+        if data.columns[i] in app.UNTOUCHABLE: continue
         groups_dict[data.columns[i]] = labels[i]
         tsne_list.append({"feature_name" : data.columns[i],
                           "x" : tsne_results[:,0][i],
