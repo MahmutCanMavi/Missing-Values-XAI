@@ -21,6 +21,7 @@ class ImputePage extends React.Component<ImputePageProps,{loading:boolean,appErr
         super(props);
         this.changeGroupAttribute = this.changeGroupAttribute.bind(this);
         this.handleImputation = this.handleImputation.bind(this);
+        this.handleDownload = this.handleDownload.bind(this);
         this.state= {loading:false,appError:""};
     }
 
@@ -70,8 +71,37 @@ class ImputePage extends React.Component<ImputePageProps,{loading:boolean,appErr
             this.setState({loading:false,appError:"Error: imputation failed"})
         }
         this.setState({loading:false})
-        
-        
+    }
+
+    handleDownload(){
+        // Create blob link to download
+        if (this.props.features == null){
+            // TO DO 
+            // Throw error message!
+            let a = null;
+        }
+        else{
+            var featureDownload = this.props.features;
+            var b = new Blob([JSON.stringify(featureDownload)], {type : "application/json"})
+            const url = window.URL.createObjectURL(
+            new Blob([b]),
+            );
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute(
+                'download',
+                `FileName.json`,
+            );
+  
+            // Append to html link element page
+            document.body.appendChild(link);
+  
+            // Start download
+            link.click();
+  
+            // Clean up and remove the link
+            //link.parentNode.removeChild(link);}
+        }
     }
 
     render(){
@@ -85,7 +115,11 @@ class ImputePage extends React.Component<ImputePageProps,{loading:boolean,appErr
             {this.state.appError && <span className="uploadError">{this.state.appError}</span>}
         </aside>
         <main className="main">
+            <div>
+            <button onClick={this.handleDownload}>download imputed scores</button>
+            </div>
             <h2>Estimated imputation performance </h2>
+            Imputation error is calculated as follows: take 10% of the avilable data, remove them with NaNs, impute using chosen imputation method, calculate the L2 loss for each imputed value
             
             {this.props.features && this.props.groups && <ErrorFeatureList 
                     data={this.props.features} 

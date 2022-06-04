@@ -42,6 +42,7 @@ class VizPage extends React.Component<VizPageProps,VizState> {
          }
         return (<>
             <aside className="sidenav with-padding">  
+            The following gradient legends illustrate the percentage of missing data for each patient. In each feature bar, each patient is represented by one narrow vertical bar. If the data of this patient for this specific feature is completely missing, the narrow vertical bar will be black, elsewise it will be white. 
             <div className="gradientLegend"><svg height={40}><rect height={30} width={30} fill="black"></rect><text height={130} width={130} x={40} y={20}>100% Missing</text>
                    <rect height={30} width={30} x={150} fill="white"></rect><text height={130} width={130} x={190} y={20}>100% Available</text></svg></div>
             

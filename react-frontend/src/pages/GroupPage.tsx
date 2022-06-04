@@ -301,7 +301,7 @@ class GroupPage extends React.Component<GroupPageProps, { activeGroupId: number 
 
                     {/* Visualize the Group Structure -- how good is the choice of groups? */}
                     <br></br>
-                    
+                    By clustering features into different groups according to their missing patterns, we can choose different imputation method suitable for different missing patterns.
                     <ClusterViz tsnedata={this.props.tsnedata}/>
                     {/* textarea to edit the groups object manually. Can be removed for deployment 
                     <JsonGroupEditor features={this.props.features} groups={this.props.groups}
