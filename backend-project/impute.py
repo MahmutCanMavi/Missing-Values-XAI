@@ -175,18 +175,19 @@ class String_Impute(Imputation_Method):
             # samples 10% of the non NaN data at random (barring seed)
             to_be_nand.append(sample([i for i, x in enumerate(~data[feature].isna()) if x], 
                                      int(len([i for i, x in enumerate(~data[feature].isna()) if x]) * 0.01)))
+            # print(feature, len(~data[feature].isna()))
             # those random data are NaNd
             for bye in to_be_nand[-1]:
                 new_df[feature].loc[bye] = np.NaN
+        # print(to_be_nand)
         # impute the data
         imputed, _ = self.impute(new_df, no_decode = True)
         data = self.encode(data)
         for i in range(len(self.features)):
-            print("%s: %d, imp: %d" % (self.features[i], data[self.features[i]].isna().sum(), imputed[self.features[i]].isna().sum()))
+            # print("%s: %d, imp: %d" % (self.features[i], data[self.features[i]].isna().sum(), imputed[self.features[i]].isna().sum()))
             error[self.features[i]] = 0
             for gone in to_be_nand[i]:
                 error[self.features[i]] += abs(data[self.features[i]].loc[gone] - imputed[self.features[i]].loc[gone])
-            
             error[self.features[i]] = sqrt(error[self.features[i]] / len(to_be_nand[i]))
         return error, self.decode(imputed)
 

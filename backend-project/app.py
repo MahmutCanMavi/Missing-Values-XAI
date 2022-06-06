@@ -27,7 +27,7 @@ import numpy as np
 global DATA_PATH
 global UNTOUCHABLE
 DATA_PATH = os.getcwd() + "/data/tmp/data.csv"
-UNTOUCHABLE = ["id", "time"]
+UNTOUCHABLE = ["id", "time", "rowid"]
 
 # error for serialization
 class NpEncoder(JSONEncoder):
@@ -129,7 +129,7 @@ def get_cluster(transformation_method : str = 1):
     return dumps(cluster.auto_cluster_pipeline(int(transformation_method)), cls=NpEncoder)
 
 @app.post("/impute")
-def get_imputation(inputs: dict):
+def get_imputations(inputs: dict):
     """
     Inputs: - features as a list of featureInfos to be imputed
             - groups declaring the imputation methods for each group
@@ -137,49 +137,49 @@ def get_imputation(inputs: dict):
     Output: FeatureInfos with imputation methods according to the feature of each group
     """
     data = pd.read_csv(DATA_PATH)
-    # print(inputs["featureInfos"])
-    # print(inputs["groups"])
+    string_features = data.select_dtypes(object).columns.to_list()
+    
     groups = {}
+    group_ids = [x["id"] for x in inputs["groups"]]
+    
     for group in inputs["groups"]:
-        groups[group["id"]]=group
+        groups[group["id"]] = group
+        features = []
+        for featureInfo in inputs["featureInfos"]:
+            if "group_id" not in featureInfo:
+                print("Has no group_id attribute",featureInfo)
+            if featureInfo["group_id"]==None:
+                continue
+            if featureInfo["group_id"] not in group_ids:
+                continue
+            if featureInfo["feature_name"] in UNTOUCHABLE:
+                continue
+            if featureInfo["feature_name"] in string_features:
+                continue
+            if len(data) == data[featureInfo["feature_name"]].isna().sum():
+                continue
+            if featureInfo["group_id"] == group["id"]: 
+                features.append(featureInfo)
+        groups[group["id"]]["features"] = features
+    
+    group_ids.append(max(group_ids) + 1)
+    groups[max(group_ids)] = {"id": max(group_ids),
+                  "imputation_method" : {"name" : "string",
+                                         "parameters" : None}, 
+                  "features" : [{"group_id": max(group_ids), "feature_name" : x} for x in string_features]
+                  }
+
     
     outfeatureInfos = []
-    for featureInfo in inputs['featureInfos']:
-        if "group_id" not in featureInfo:
-            print("Has no group_id attribute",featureInfo)
-        if featureInfo["group_id"]==None:
-            continue
-        if featureInfo["feature_name"] in UNTOUCHABLE:
-            continue
+    for idx in group_ids:
+        imputation_method = groups[idx]["imputation_method"]
+        imputable_features = [feat["feature_name"] for feat in groups[idx]["features"]]
+        parameters = imputation_method["parameters"]
+        print(idx, imputable_features)
+        error, imputation = impute.errors_e2e(imputable_features, imputation_method["name"], parameters)
         
-        method = "value" 
-        if featureInfo["group_id"] not in groups:
-            print("Error: invalid group_id.",featureInfo,groups)
-        imputation_method= groups[featureInfo["group_id"]]["imputation_method"]
-        if not imputation_method or imputation_method=="none" or imputation_method["name"]=="None":
-            # print("Warning: no imputation method for : ",groups[featureInfo["group_id"]]["name"])
-            continue
-        # print(imputation_method)
-        # for group in inputs['groups']:
-        #     print(group)
-        #     # Throw error to frontend
-        #     if group["imputation_method"]["name"] not in ["value", "ffill", "mean", "knn", "iterative"]: 
-        #         # TODO: the error is not visible in the response. It just says server error with no message. can you show the message, or at least print it to the console
-        #         print("Error: Imputation method " + str(group["imputation_method"]) + " is not one of the supported imputation methods")
-        #         return Response("Imputation method " + str(group["imputation_method"]) + " is not one of the supported imputation methods", status_code = 500)
-        #     if group["id"] == featureInfo["group_id"]:
-        #         method = group["imputation_method"]["name"]
-        parameters={}
-        if imputation_method["parameters"]:
-            for p in imputation_method["parameters"]:
-                parameters[p["name"]]=p
-                
-        error, imputation = impute.errors_e2e([featureInfo["feature_name"]], imputation_method["name"],parameters)
+        data[imputable_features] = imputation
         outfeatureInfos.extend(error)
-        
-        data[featureInfo["feature_name"]] = imputation
-        print("featurename isna %d" % data[featureInfo["feature_name"]].isna().sum())
-        
     
     # Store imputed data to disk
     dest_path = os.getcwd() + "/data/tmp/imputed_data.csv"
