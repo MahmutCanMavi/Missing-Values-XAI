@@ -10,6 +10,7 @@ import { IMPUTATION_METHODS, FeatureInfo, FeatureGroup, ImputationMethod, tsneDa
 import ClusterMenu from "../components/ClusterMenu"
 
 import {groupcolor} from '../components/groupcolor'
+import { feature_descriptions } from "../components/feature_descriptions";
 
 interface GrouGroupNameEditorProps {
     group: FeatureGroup, 
@@ -352,7 +353,7 @@ class GroupPage extends React.Component<GroupPageProps, { activeGroupId: number 
                                 // for each feature that is in the active group
                                 this.props.features.filter(feature => feature.group_id === this.state.activeGroupId).map((feature, i) => {
                                     return (
-                                        <div className="feature-row" key={feature.feature_name}>
+                                        <div className="feature-row" key={feature.feature_name} title={feature_descriptions(feature.feature_name)} >
                                             <div style={{ backgroundColor: groupcolor(feature.group_id) }} className="feature-colorbar"></div>
                                             <div className="feature-name">
 
