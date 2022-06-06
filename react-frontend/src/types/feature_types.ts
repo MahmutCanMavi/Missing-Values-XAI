@@ -18,7 +18,7 @@ export const IMPUTATION_METHODS: ImputationMethod[] =
      {name: "value",display_name:"Fill by constant", parameters:[{name:"replacementValue", description:"Choose value for filling in missing data points. Only numbers allowed, strings will be replaced with 0", value:0}]},
      {name: "ffill",display_name:"Forward fill", parameters: null},
      {name: "mean",display_name:"Mean", parameters: null},
-     {name: "knn", display_name:"K-nearest-neighbours",parameters: [{name:"K", description:"Choose K, number of nearest neighbours to consider", value:5}]},
+     {name: "knn", display_name:"K-nearest-neighbours (slow!)",parameters: [{name:"K", description:"Choose K, number of nearest neighbours to consider", value:5}]},
      {name: "iterative", display_name:"Iterative", parameters: null}
     ];
 

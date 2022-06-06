@@ -34,7 +34,7 @@ class App extends React.Component<{}, AppState> {
       {"name": "Example Group 1", "id":0, "imputation_method": IMPUTATION_METHODS[0]},
       {"name": "Example Group 2", "id":1, "imputation_method": IMPUTATION_METHODS[0]},
     ]
-    this.state = {features: dummydata, groups: dummygroups, pageActive: "viz", tsneData:[]};
+    this.state = {features: [], groups: [], pageActive: "viz", tsneData:[]};
     this.handleDataUpload=this.handleDataUpload.bind(this);
     this.setPageActive=this.setPageActive.bind(this);
     this.setGroups=this.setGroups.bind(this);

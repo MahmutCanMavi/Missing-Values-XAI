@@ -178,7 +178,7 @@ def get_imputation(inputs: dict):
         outfeatureInfos.extend(error)
         
         data[featureInfo["feature_name"]] = imputation
-        print(data[featureInfo["feature_name"]].isna().sum())
+        print("featurename isna %d" % data[featureInfo["feature_name"]].isna().sum())
         
     
     # Store imputed data to disk

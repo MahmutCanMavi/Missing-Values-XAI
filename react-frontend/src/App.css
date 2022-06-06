@@ -287,12 +287,22 @@ ul.feature-list > li {
 .imp-err-wrapper .group-row {
   display: block;
   padding: 0;
+  padding-bottom: 5px;
   margin: 10px;
   flex-shrink: 0;
 }
 .imp-err-wrapper .group-row:hover {
   background-color: white;
 } 
+.imp-err-wrapper .group-name {
+  padding: 5px;
+  font-weight: bold;
+
+}
+.imp-err-wrapper .group-features {
+  padding-left: 5px;
+  padding-right: 5px;
+}
 .imp-error-legend{
   display: flex;
   align-items: center;
@@ -331,12 +341,3 @@ ul.feature-list > li {
 }
 
 
-.imp-err-wrapper .group-name {
-  padding: 5px;
-  font-weight: bold;
-
-}
-.imp-err-wrapper .group-features {
-  padding-left: 5px;
-  padding-right: 5px;
-}

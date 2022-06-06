@@ -3,7 +3,7 @@ import pandas as pd
 import pathlib
 
 from sqlalchemy import null
-from pct_avail_pp import pct_avail_pp
+# from pct_avail_pp import pct_avail_pp
 from math import sqrt
 import app
 from sklearn.experimental import enable_iterative_imputer 
@@ -47,7 +47,7 @@ class Imputation_Method():
             for gone in to_be_nand[i]:
                 try :
                     gonedata = float(data[self.features[i]].loc[gone])
-                    print()
+                    
                     error[self.features[i]] += (imputed[self.features[i]].loc[gone] - gonedata) ** 2
                 except ValueError:
                     print("is strynggg ",self.features[i],imputed[self.features[i]].loc[gone])
@@ -55,7 +55,7 @@ class Imputation_Method():
                     continue
 
             
-            error[self.features[i]] = sqrt(error[self.features[i]] / len(to_be_nand[i])) / abs(data[self.features[i]].mean())
+            error[self.features[i]] = sqrt(error[self.features[i]] / len(to_be_nand[i])) / abs(data[self.features[i]].mean()+0.001)
             # alternative measure with standard deviation
             # error[self.features[i]] = sqrt(error[self.features[i]] / len(to_be_nand[i])) / sqrt(data[self.features[i]].var()+0.0001)
         return error, imputed
@@ -100,7 +100,11 @@ class KNN_Impute(Imputation_Method):
         self.check_features(data)
         # Gets imputable features i.e. numbers
         self.imputable_features = [s for s in self.features if s in [data.columns[i] for i in range(len(data.dtypes)) if [data.dtypes != object][0].to_list()[i]]]
+        # print("imputable features",self.imputable_features)
         imputed_data = self.imputer.fit_transform(data[self.imputable_features])
+        # print("imputed data", imputed_data)
+        if imputed_data.size==0:
+            return pd.DataFrame(), self.imputable_features
         return pd.DataFrame(imputed_data, columns = self.imputable_features), self.imputable_features
     
 class Iterative_Impute(Imputation_Method):
@@ -178,7 +182,7 @@ class String_Impute(Imputation_Method):
         imputed, _ = self.impute(new_df, no_decode = True)
         data = self.encode(data)
         for i in range(len(self.features)):
-            print(data[self.features[i]].isna().sum(), imputed[self.features[i]].isna().sum())
+            print("%s: %d, imp: %d" % (self.features[i], data[self.features[i]].isna().sum(), imputed[self.features[i]].isna().sum()))
             error[self.features[i]] = 0
             for gone in to_be_nand[i]:
                 error[self.features[i]] += abs(data[self.features[i]].loc[gone] - imputed[self.features[i]].loc[gone])
@@ -258,4 +262,4 @@ if __name__ == '__main__':
     # imputer = Iterative_Impute(features)
     # print(imputer.impute(data))
     # print(imputer.evaluate_imputation(data))
-    print(errors_e2e(features, "mean")[0])
+    print("e2e mean? %d" % errors_e2e(features, "mean")[0])

@@ -201,7 +201,7 @@ def pct_avail_known_groups(data, cluster_groups):
         feature_dict["imputation_error"] = None
         feature_dict["group_id"] = cluster_groups[col]
         
-        print(len(NaN_pp))
+        print("len nan %d" % len(NaN_pp))
         for patient in NaN_pp:
             # check if pid is actually corresponding to the id field in the dataset
             length = len(data.loc[data["id"] == patient[0]])
