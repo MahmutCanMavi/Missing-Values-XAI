@@ -3,6 +3,7 @@ import D3DetailSquares, { D3DetailSquaresPatient } from "../components/d3detailS
 import D3Histogram from "../components/d3histogram";
 import DataUploadPane from "../components/DataUploadPane";
 import { groupcolor } from "../components/groupcolor";
+import Icons from "../components/icons";
 import StackedGradients from "../components/StackedGradients";
 import { FeatureInfo, FeatureGroup } from "../types/feature_types";
 
@@ -42,7 +43,7 @@ class VizPage extends React.Component<VizPageProps,VizState> {
          }
         return (<>
             <aside className="sidenav with-padding">  
-            <div className="infobox">For each of the features (medical variables), the following gradients illustrate the percentage of missing data over patients. 
+            <div className="infobox"><Icons icon="info-circle"/> &nbsp;For each of the features (medical variables), the following gradients illustrate the percentage of missing data over patients. 
               <br></br>In every <em>feature gradient</em>, each patient is represented by one narrow vertical bar. If the data of this patient for this specific feature is completely missing, the narrow vertical bar will be black, if is is available for the entire timespan, it will be white. </div>
             <div className="gradientLegend"><svg height={40}><rect height={30} width={30} fill="black"></rect><text height={130} width={130} x={40} y={20}>100% Missing</text>
                    <rect height={30} width={30} x={150} fill="white"></rect><text height={130} width={130} x={190} y={20}>100% Available</text></svg></div>
@@ -66,7 +67,8 @@ class VizPage extends React.Component<VizPageProps,VizState> {
             </aside>
 
             <main className="main">   
-            Choose a csv file from the folder example-data.        
+            Choose a csv file from the folder example-data. 
+            <div className="infobox small"><Icons icon="info-circle"/> &nbsp;If you use your own data, it must have a column "id" which designates the patient ID, and the column "time", containing consecutive integers starting at 0 for each timestep, with no gaps between timesteps.   </div> 
                 <DataUploadPane features={feature_names} onChange={this.props.handleDataUpload}/>
                 <hr/>
                 {this.state.selectedFeature && <D3Histogram featureInfo={this.state.selectedFeature}/>}

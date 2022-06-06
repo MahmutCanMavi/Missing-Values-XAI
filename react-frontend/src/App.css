@@ -339,5 +339,18 @@ ul.feature-list > li {
 .gradient-group-title h4 {
   margin: 0;
 }
+.infobox {
+  display: block;
+  max-width: 500px;
+  background-color: #fff;
+  font-size: 0.9em;
+  color: #444;
+  padding: 10px;
+  margin-top: 5px;
+}
+.infobox.small {
+  font-size: 0.7em;
+}
+
 
 

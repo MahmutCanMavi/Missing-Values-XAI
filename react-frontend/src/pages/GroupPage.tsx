@@ -300,7 +300,7 @@ class GroupPage extends React.Component<GroupPageProps, { activeGroupId: number 
                     <br></br>
 
                     {/* Visualize the Group Structure -- how good is the choice of groups? */}
-                    <div className="infobox">
+                    <div className="infobox"><Icons icon="info-circle"/> &nbsp;
                     By clustering features into different groups according to their missing value patterns, we can choose different imputation method suitable for different missing value patterns.
                     </div>
                     <br></br>
