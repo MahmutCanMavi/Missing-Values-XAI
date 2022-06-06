@@ -2,12 +2,12 @@ from http.client import UNAUTHORIZED
 from fastapi import FastAPI, UploadFile, File, HTTPException, Response
 from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 
 import uvicorn
 import pandas as pd
 import os
 
-#todo: add aiofiles to requirements if we want to use it
 import aiofiles
 import csv
 import json
@@ -213,6 +213,10 @@ def get_imputation():
     file.close()
     return dumps(data, cls= NpEncoder)
 
+@app.get("/imputed_data.csv")
+async def main():
+    data_path = os.getcwd() + "/data/tmp/imputed_data.csv"
+    return FileResponse(data_path)
 
 @app.post("/get-fulldata")
 def get_cluster(feature_name: str):
