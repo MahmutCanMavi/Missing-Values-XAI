@@ -6,7 +6,7 @@ import { groupcolor } from "../components/groupcolor";
 import Icons from "../components/icons";
 import StackedGradients from "../components/StackedGradients";
 import { FeatureInfo, FeatureGroup } from "../types/feature_types";
-
+import {feature_descriptions} from "../components/feature_descriptions"
 interface VizPageProps {
     data: FeatureInfo[] | null;
     groups: FeatureGroup[] | null;
@@ -71,7 +71,10 @@ class VizPage extends React.Component<VizPageProps,VizState> {
             <div className="infobox small"><Icons icon="info-circle"/> &nbsp;If you use your own data, it must have a column "id" which designates the patient ID, and the column "time", containing consecutive integers starting at 0 for each timestep, with no gaps between timesteps.   </div> 
                 <DataUploadPane features={feature_names} onChange={this.props.handleDataUpload}/>
                 <hr/>
+                {this.state.selectedFeature && <div>{feature_descriptions(this.state.selectedFeature.feature_name)} </div>}
+                <br/>
                 {this.state.selectedFeature && <D3Histogram featureInfo={this.state.selectedFeature}/>}
+                
                 <hr/>
                 {this.state.selectedFeature && <D3DetailSquares featureInfo={this.state.selectedFeature} 
                     setSelectedPatient={((patient_id:number)=>{window.scrollTo({top:4100}); this.setState({selectedPatient:patient_id})}).bind(this)} />}
