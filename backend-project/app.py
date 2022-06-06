@@ -10,6 +10,7 @@ import os
 #todo: add aiofiles to requirements if we want to use it
 import aiofiles
 import csv
+import json
 
 import pct_avail_pp
 # from io import StringIO
@@ -199,6 +200,18 @@ def get_imputation(inputs: dict):
 #     errors = impute.errors_e2e(errors, method = imputation_method)
     
 #     return dumps(errors, cls=NpEncoder)
+@app.post("/imputed_data")
+def get_imputation():
+    data_path = os.getcwd() + "/data/tmp/imputed_data.csv"
+    data = {}
+    with open(data_path) as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            id = row["rowid"]
+            del row[""]
+            data[str(id)] = row
+    file.close()
+    return dumps(data, cls= NpEncoder)
 
 
 @app.post("/get-fulldata")

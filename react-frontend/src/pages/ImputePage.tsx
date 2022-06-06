@@ -5,7 +5,7 @@ import { FeatureInfo, FeatureGroup, ImputationMethod } from "../types/feature_ty
 import { ImputationMenu } from "../components/ImputationMenu";
 import ErrorFeatureList from "../components/ErrorFeatureList";
 import Icons from "../components/icons";
-
+import queryImputedData from "../backend/QueryImputedData";
 
 
 
@@ -76,35 +76,31 @@ class ImputePage extends React.Component<ImputePageProps,{loading:boolean,appErr
         this.setState({loading:false})
     }
 
-    handleDownload(){
+    async handleDownload(){
         // Create blob link to download
-        if (this.props.features == null){
-            // TO DO 
-            // Throw error message!
-            let a = null;
-        }
-        else{
-            var featureDownload = this.props.features;
-            var b = new Blob([JSON.stringify(featureDownload)], {type : "application/json"})
-            const url = window.URL.createObjectURL(
-            new Blob([b]),
-            );
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute(
-                'download',
-                `FileName.json`,
-            );
+        
+        let result = await queryImputedData() as any;
+        // var featureDownload = this.props.features;
+        var b = new Blob([JSON.stringify(result)], {type : "application/json"})
+        const url = window.URL.createObjectURL(
+        new Blob([b]),
+        );
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute(
+            'download',
+            `FileName.json`,
+        );
   
-            // Append to html link element page
-            document.body.appendChild(link);
+        // Append to html link element page
+        document.body.appendChild(link);
   
-            // Start download
-            link.click();
+        // Start download
+        link.click();
   
-            // Clean up and remove the link
-            //link.parentNode.removeChild(link);}
-        }
+        // Clean up and remove the link
+        //link.parentNode.removeChild(link);}
+        
     }
 
     render(){
