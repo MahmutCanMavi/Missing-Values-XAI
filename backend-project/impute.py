@@ -207,7 +207,7 @@ def errors_e2e(features: list[str], method_name : str, method_parameters):
     if method_name == "value":
         # Check Parameters
         # method_parameters is an array. filter out "replacementValue"
-        repValParam=method_parameters["replacementValue"]
+        repValParam=method_parameters[0]
 
         # check if the replacementValue is numeric.
         if type(repValParam["value"])==str:
@@ -225,7 +225,7 @@ def errors_e2e(features: list[str], method_name : str, method_parameters):
     elif method_name == "knn" : 
         # Check Parameters
         # method_parameters is an array. filter out "replacementValue"
-        K_param=method_parameters["K"]
+        K_param=method_parameters[0]
         # check if the replacementValue is numeric in case its a string.
         if type(K_param["value"])==str and not K_param["value"].isnumeric():
             K=5

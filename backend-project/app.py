@@ -47,7 +47,7 @@ app = FastAPI(debug=True)
 # Allow CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://localhost", "http://localhost:3000"],
     allow_methods=["GET","POST"],
     allow_headers=["*"],
 )
@@ -173,13 +173,20 @@ def get_imputations(inputs: dict):
     outfeatureInfos = []
     for idx in group_ids:
         imputation_method = groups[idx]["imputation_method"]
-        imputable_features = [feat["feature_name"] for feat in groups[idx]["features"]]
-        parameters = imputation_method["parameters"]
-        print(idx, imputable_features)
-        error, imputation = impute.errors_e2e(imputable_features, imputation_method["name"], parameters)
-        
-        data[imputable_features] = imputation
-        outfeatureInfos.extend(error)
+        if imputation_method["name"] == "None" :
+            imputable_features = [feat["feature_name"] for feat in groups[idx]["features"]]
+            outfeatureInfos.extend([{"feature_name": name, 
+                                       "imputation_error" : None, 
+                                       "is_string" : None} for name in imputable_features])
+            print(outfeatureInfos)
+        else:
+            imputable_features = [feat["feature_name"] for feat in groups[idx]["features"]]
+            parameters = imputation_method["parameters"]
+            print(parameters)
+            error, imputation = impute.errors_e2e(imputable_features, imputation_method["name"], parameters)
+            
+            data[imputable_features] = imputation
+            outfeatureInfos.extend(error)
     
     # Store imputed data to disk
     dest_path = os.getcwd() + "/data/tmp/imputed_data.csv"
