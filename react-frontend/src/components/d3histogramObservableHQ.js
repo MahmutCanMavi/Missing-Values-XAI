@@ -30,7 +30,7 @@ function Histogram(svg,data
     const xRange = [marginLeft, width - marginRight]; // [left, right]
     const yType = d3.scaleLinear; // type of y-scale
     const yRange = [height - marginBottom, marginTop]; // [bottom, top]
-    const yLabel = "↑ Frequency"; // a label for the y-axis
+    const yLabel = "↑ Count"; // a label for the y-axis
     const color = "currentColor" // bar fill color
 
 

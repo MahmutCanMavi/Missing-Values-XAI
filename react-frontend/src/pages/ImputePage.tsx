@@ -119,7 +119,7 @@ class ImputePage extends React.Component<ImputePageProps,{loading:boolean,appErr
            
             <h2>Estimated imputation performance </h2>
             <div className="infobox"><Icons icon="info-circle"/> &nbsp;
-            The imputation score is calculated as follows: 10% of the avilable data is removed and then imputed using the chosen imputation method. To compare these imputations with the baseline, we chose the following formula, a root-mean-squared-error divided by the mean the absolute values: 
+            The imputation score is calculated as follows: 10% of the available data is removed and then imputed using the chosen imputation method. To compare these imputations with the baseline, we chose the following formula, a root-mean-squared-error divided by the mean the absolute values: 
             {/*Latex formula, https://latexeditor.lagrida.com/.  \sqrt{\frac{\sum^{N_{10\%}}_{i=1}(\bar{y_i}-y_i)^2}{N_{10\%}}} \cdot\frac{1}{\text{mean(abs(y))}}  */}
             <br></br><img alt="formula:  \sqrt{\frac{\sum^{N_{10\%}}_{i=1}(\bar{y_i}-y_i)^2}{N_{10\%}}} \cdot\frac{1}{\text{mean(abs(y))}} " src="/imputation-score-formula.png" height={60}></img>
             <br/> 

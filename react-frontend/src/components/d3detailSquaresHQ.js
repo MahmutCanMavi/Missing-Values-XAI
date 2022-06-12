@@ -79,7 +79,7 @@ function DetailSquares(svg, data, ylabel,setSelectedPatient) {
       .attr("fill", "black")
       .attr("text-anchor", "center")
       .attr("transform", `translate(${margin.left + 30},${margin.top-20})`)
-      .text("hours"));
+      .text("Time blocks (15 minutes increment)"));
     // .call(g => g.append("g")
     //   .attr("transform", `translate(0,${innerHeight + margin.top + 4})`)
     //   .call(d3.axisBottom(x)
