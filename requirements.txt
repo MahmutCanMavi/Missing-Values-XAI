@@ -90,7 +90,7 @@ traitlets==5.1.1
 typing_extensions==4.0.1
 ujson==4.3.0
 urllib3==1.26.8
-uvicorn==0.17.1
+uvicorn==0.16.0
 uvloop==0.16.0
 watchgod==0.7
 wcwidth==0.2.5
