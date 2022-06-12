@@ -18,7 +18,7 @@ function imputationColor(imp_err:number|null){
         if (val===null){
             return "#666";
         }
-        else if (val<=0){
+        else if (val<0){
             return "black"
         }
         else if (val>=1){

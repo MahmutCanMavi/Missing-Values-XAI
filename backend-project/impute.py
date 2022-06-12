@@ -1,8 +1,6 @@
 import numpy as np
 import pandas as pd
 import pathlib
-
-from sqlalchemy import null
 # from pct_avail_pp import pct_avail_pp
 from math import sqrt
 import app
@@ -69,6 +67,7 @@ class Forward_Fill(Imputation_Method):
         out = pd.DataFrame(columns=self.features)
         for patient in data["id"].unique(): 
             out = pd.concat([out, data.loc[data.id == patient][self.features].ffill().fillna(data[self.features].mean())])
+        print("what is output when features are empty",self.features)
         return out, self.features
 
 class Value_Fill(Imputation_Method):
@@ -100,6 +99,8 @@ class KNN_Impute(Imputation_Method):
         self.check_features(data)
         # Gets imputable features i.e. numbers
         self.imputable_features = [s for s in self.features if s in [data.columns[i] for i in range(len(data.dtypes)) if [data.dtypes != object][0].to_list()[i]]]
+        if len(self.imputable_features)==0:
+            return pd.DataFrame(), self.imputable_features
         # print("imputable features",self.imputable_features)
         imputed_data = self.imputer.fit_transform(data[self.imputable_features])
         # print("imputed data", imputed_data)
@@ -115,6 +116,8 @@ class Iterative_Impute(Imputation_Method):
     def impute(self, data: pd.DataFrame):
         self.check_features(data)
         self.imputable_features = [s for s in self.features if s in [data.columns[i] for i in range(len(data.dtypes)) if [data.dtypes != object][0].to_list()[i]]]
+        if len(self.imputable_features)==0:
+            return pd.DataFrame(), self.imputable_features
         # Two ways of doing this: 
         # 1) impute a smaller version of the data only comprising of the selected features 
         imputed_data = self.imputer.fit_transform(data[self.imputable_features])
