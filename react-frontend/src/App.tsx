@@ -2,14 +2,14 @@ import React from "react";
 import { FeatureInfo, FeatureGroup, IMPUTATION_METHODS, tsneDataPoint, ClusterResponse } from './types/feature_types';
 import VizPage from './pages/VizPage';
 import './App.css';
-//import 'bootstrap/dist/css/bootstrap.min.css';
+
 import Navbar from './components/Navbar';
 import GroupPage from "./pages/GroupPage";
 import Icons from "./components/icons";
 import ImputePage from "./pages/ImputePage";
 import queryBackend from "./backend/BackendQueryEngine";
 import queryImputationError from "./backend/QueryImputationError";
-import axios from 'axios';
+
 
 
 

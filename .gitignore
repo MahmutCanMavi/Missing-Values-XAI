@@ -2,5 +2,3 @@
 node_modules
 *.pyc
 .DS_Store
-backend-project/data/temp/*
-backend-project/data/tmp/*

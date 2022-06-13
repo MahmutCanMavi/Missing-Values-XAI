@@ -33,8 +33,6 @@ On the **`[ Group ]` tab**, the user defines groups of variables with similar mi
 
 On the **`[ Impute ]` tab**, the user specifies an imputation method for each group of variables. It is also on this tab that the user visualizes the error of the imputation. To estimate the imputation error, we artificially remove some existing data and assess how well our imputation methods perform.
 
-Up until this moment, we have made tremendous strides to implement our overall plan. But: **the best is yet to come!**
-
 - - -
 ## Folder Structure
 Specify here the structure of you code and comment what the most important files contain
@@ -57,12 +55,19 @@ Specify here the structure of you code and comment what the most important files
 ## Requirements
 <!-- Write here all intructions to build the environment and run your code.\
 **NOTE:** If we cannot run your code following these requirements we will not be able to evaluate it. -->
-Please make sure your system satisfies all the requirements in the `requirements.txt` file (standard format).
+Please make sure your system satisfies all the requirements in the `requirements.txt` file (standard format). You also need npm, nodejs and python 3.9 installed.
+
+To install all requirements, run the following commands 
+``` bash
+pip3 -r requirements.txt
+cd react-frontend
+npm install
+```
 
 ## How to Run
 <!-- Write here **DETAILED** intructions on how to run your code.\
-**NOTE:** If we cannot run your code following these instructions we will not be able to evaluate it. -->
-IMPORTANT: **Make sure there is a folder "tmp" inside "backend-project/data".** Otherwise, uploading data will not work.
+**NOTE:** If we cannot run your code following these instructions we will not be able to evaluate it. 
+IMPORTANT: **Make sure there is a folder "tmp" inside "backend-project/data".** Otherwise, uploading data will not work.-->
 
 Run **backend**: go inside the folder `./backend-project`, then enter the command `uvicorn app:app --reload`.
 
@@ -70,18 +75,19 @@ Run **frontend**: go inside the folder `./react-frontend`, then enter the comman
  
 
 #### Once it's running...
-###### (_For a quick overview, check out our demo video under release notes for the  Milestone1_MidApril tag!_)
 
-Choose a .csv file from within the folder `./example-data`. These files all contain the same data, but the variables names differ. In this way, you can see that the data changes when you upload a new file, as it should. 
+Choose a .csv file from within the folder `./example-data`.  
 
-After the data is loaded, you can play around with our visualization. The gradients on the left visualize the percentage of missing data per patient. Each gradient is made up of thin rectangles colored in grayscale. The brightness of each rectangle represents the percentage of missing data for a specific patient. These rectangles are ordered by their brightness. Thus, a gradient with mostly dark rectangles represents lots of missing data, and a gradient with mostly bright rectangles indicates little missing data. 
+After the data is loaded, you can play around with our visualization. The gradients on the left visualize the percentage of missing data per patient. Each gradient is made up of thin lines colored in grayscale. The brightness of each rectangle represents the percentage of missing data for a specific patient. These rectangles (patients) are ordered by their brightness (share of missing values). Thus, a gradient with mostly dark rectangles represents lots of missing data, and a gradient with mostly bright rectangles indicates little missing data. 
 
 Each gradient refers to one of the features in the data set. Clicking on a gradient reveals, for the chosen feature, the distribution of the percentage of missing values over all patients in the data set. We visualize this distribution as a histogram.
 It also showing a visualization of the actual data with colored squares, and black squares which reveal the missing values. (Experimental: clicking on a patient id shows the same view for a single patient and all features)
 
-On the grouping tab, you can put features in a group and choose the desired imputation method for this group.
+On the grouping tab, you can put features in a group and choose the desired imputation method for this group. The groups have already been initialized automatically, based on their missing value patterns. You can also add new groups, rename groups, and filter features according to their pre- and postfixes to add all of them to a group. 
 
-_You're looking at the beginnings of a very special tool for visualizing and imputing missing values. Savor the moment!_
+On the imputation page, you can again choose the imputation method for each group, impute the data, visualize the imputation error and download the imputed dataset. If the imputation error is not satisfactory, you can go back to the visualize page to find out why, create separate groups for the difficult features and try different imputation methods, until you receive the desired performance.
+
+
 
 
 ## Milestones
@@ -105,16 +111,17 @@ Major milestones of our code + future planned steps.\
   - [x] prepare imputation code
 
 
-- [ ] Week 19.05.2022
-  - [ ] connect clustering with frontend as group suggestions & tsne plot 
-  - [ ] clean up code 
-  - [ ] viz of how well the manually chosen group (?)
-  - [ ] start connecting some simple imputation methods with the frontend
+- [x ] Week 19.05.2022
+  - [ x] connect clustering with frontend as group suggestions & tsne plot 
+  - [ x] clean up code 
+  - [ x] viz of how well the manually chosen group (?)
+  - [ x] start connecting some simple imputation methods with the frontend
 
 
-- [ ] At some point  
+- [ x] At some point  
   
-  - [ ] add different imputation algorithms and display them on the imputation page
+  - [x ] add different imputation algorithms and display them on the imputation page
+  - [x] everything else which is now part of the final version
 
 <!-- Create a list subtask.\
 Open an issue for each subtask. Once you create a subtask, link the corresponding issue.\

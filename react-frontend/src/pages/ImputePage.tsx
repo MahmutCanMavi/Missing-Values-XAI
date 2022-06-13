@@ -1,6 +1,6 @@
-import { range } from "d3";
+
 import React from "react";
-import  { D3DetailSquaresPatient } from "../components/d3detailSquares";
+
 import { FeatureInfo, FeatureGroup, ImputationMethod } from "../types/feature_types";
 import { ImputationMenu } from "../components/ImputationMenu";
 import ErrorFeatureList from "../components/ErrorFeatureList";
