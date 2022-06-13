@@ -137,7 +137,7 @@ class ImputePage extends React.Component<ImputePageProps,{loading:boolean,appErr
             {this.props.features && this.props.features.filter(f=> f.imputation_error!==null).length!==0  &&
             <div>   
             <button onClick={this.handleDownload}><Icons icon="cloud-download"/>  Download imputed dataset as JSON</button> &nbsp;
-            <a href="http://127.0.0.1:8000/imputed_data.csv"><button onClick={this.handleDownload}><Icons icon="cloud-download"/>  Download imputed dataset as CSV</button></a>
+            <a href="http://127.0.0.1:8000/imputed_data.csv"><button><Icons icon="cloud-download"/>  Download imputed dataset as CSV</button></a>
             </div>
             }
             {this.props.features && this.props.groups && <ErrorFeatureList 

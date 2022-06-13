@@ -214,7 +214,7 @@ def get_imputation():
     with open(data_path) as file:
         reader = csv.DictReader(file)
         for row in reader:
-            id = row["rowid"]
+            id = str(row["id"])+ "-" + str(row["time"])
             del row[""]
             data[str(id)] = row
     file.close()
