@@ -67,7 +67,7 @@ class Forward_Fill(Imputation_Method):
         out = pd.DataFrame(columns=self.features)
         for patient in data["id"].unique(): 
             out = pd.concat([out, data.loc[data.id == patient][self.features].ffill().fillna(data[self.features].mean())])
-        print("what is output when features are empty",self.features)
+        print("some groups are empty or do not have imputable features ",self.features)
         return out, self.features
 
 class Value_Fill(Imputation_Method):

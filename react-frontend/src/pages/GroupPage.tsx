@@ -336,7 +336,7 @@ class GroupPage extends React.Component<GroupPageProps, { activeGroupId: number 
                                             (e) => this.changeGroupAttribute(this.state.activeGroupId,"imputation_method",
                                                 IMPUTATION_METHODS.filter( (method,ind) => method.name === e.target.value )[0])}>
                                               {
-                                                IMPUTATION_METHODS.map((method,ind) => <option value={method.name}> 
+                                                IMPUTATION_METHODS.map((method,ind) => <option key={ind} value={method.name}> 
                                                     {method.name} </option>)
                                               }
                                         </select>
@@ -353,7 +353,7 @@ class GroupPage extends React.Component<GroupPageProps, { activeGroupId: number 
                                 // for each feature that is in the active group
                                 this.props.features.filter(feature => feature.group_id === this.state.activeGroupId).map((feature, i) => {
                                     return (
-                                        <div className="feature-row" key={feature.feature_name} title={feature_descriptions(feature.feature_name)} >
+                                        <div className="feature-row" key={i} title={feature_descriptions(feature.feature_name)} >
                                             <div style={{ backgroundColor: groupcolor(feature.group_id) }} className="feature-colorbar"></div>
                                             <div className="feature-name">
 

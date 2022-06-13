@@ -74,7 +74,7 @@ class VizPage extends React.Component<VizPageProps,VizState> {
                 {this.state.selectedFeature && <div>{feature_descriptions(this.state.selectedFeature.feature_name)} </div>}
                 <br/>
                 {this.state.selectedFeature && <D3Histogram featureInfo={this.state.selectedFeature}/>}
-                
+                {!this.state.selectedFeature && "<-- Click on a feature to view its details"}
                 <hr/>
                 {this.state.selectedFeature && <D3DetailSquares featureInfo={this.state.selectedFeature} 
                     setSelectedPatient={((patient_id:number)=>{window.scrollTo({top:4100}); this.setState({selectedPatient:patient_id})}).bind(this)} />}

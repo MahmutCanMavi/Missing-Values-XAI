@@ -178,11 +178,11 @@ def get_imputations(inputs: dict):
             outfeatureInfos.extend([{"feature_name": name, 
                                        "imputation_error" : None, 
                                        "is_string" : None} for name in imputable_features])
-            print(outfeatureInfos)
+            # print(outfeatureInfos)
         else:
             imputable_features = [feat["feature_name"] for feat in groups[idx]["features"]]
             parameters = imputation_method["parameters"]
-            print(parameters)
+            # print(parameters)
             error, imputation = impute.errors_e2e(imputable_features, imputation_method["name"], parameters)
             
             data[imputable_features] = imputation

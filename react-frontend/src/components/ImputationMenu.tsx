@@ -20,7 +20,7 @@ class ImputationMenu extends React.Component<{ groups: FeatureGroup[], updateGro
         <div className="ImputationMenu">
           <h3>Choose Imputation Methods</h3>
           {
-            this.props.groups.map((grp,ind) => <ImputationOptions feature_group={grp} 
+            this.props.groups.map((grp,ind) => <ImputationOptions key={ind} feature_group={grp} 
                                                   onChange={this.handleChange}/>)
           }
       </div>
@@ -78,9 +78,9 @@ class ImputationOptions extends React.Component<{feature_group: FeatureGroup, on
           </select>
           
 
-          {this.props.feature_group.imputation_method.parameters?.map(p=>{
+          {this.props.feature_group.imputation_method.parameters?.map((p,i)=>{
             // shows why selection does not work
-            return <div className='imp-parameter'><label title={p.description}>{p.name}: </label><input type="text" name={p.name} defaultValue={p.value} size={1}
+            return <div key={i} className='imp-parameter'><label title={p.description}>{p.name}: </label><input type="text" name={p.name} defaultValue={p.value} size={1}
             onChange={(e)=>this.handleChangeParameter(e,p)}/>
             </div>
           })}
