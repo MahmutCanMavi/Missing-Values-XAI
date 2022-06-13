@@ -132,7 +132,7 @@ class App extends React.Component<{}, AppState> {
     this.setState({groups:newGroups})
   }
   setFeatures(newFeatures:FeatureInfo[] | null){
-    console.log(newFeatures)
+    // console.log(newFeatures)
     this.setState({features:newFeatures})
   }
 
